@@ -22,6 +22,7 @@
 6. **Announcements by the TA** (5 min)
 7. **Presentation of the Current App to TA** (0 min)
 8. **Talking Points**:
+    - **Discuss Project Expectations** (5 min)
     - **Go Over Backlog and Draft a Long-Term Plan** (5 min)
     - **Set Initial Milestones on GitLab** (5 min)
     - **Create a More Detailed Plan for The Next Week** (10 min)
