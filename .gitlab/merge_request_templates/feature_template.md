@@ -9,7 +9,7 @@
 ### **Changes Introduced**
 (Describe the major changes introduced by this merge request. Highlight new files, modified code, or major architectural changes.)
 
-- [ ] (Change 1: e.g., Added user authentication via JWT)
+- [x] (Change 1: e.g., Added user authentication via JWT)
 - [ ] (Change 2: e.g., Updated front-end UI for login page)
 - [ ] (Change 3: e.g., Refactored backend API to support token validation)
 
