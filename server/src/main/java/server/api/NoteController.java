@@ -1,11 +1,14 @@
 package server.api;
 
+import commons.ExceptionType;
 import commons.Note;
+import commons.ProcessOperationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.database.NoteRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/notes")
@@ -38,6 +41,28 @@ public class NoteController {
         }
         Note saved = repo.save(note);
         return ResponseEntity.ok(saved);
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Note> deleteNoteById(@PathVariable Long id) {
+        try {
+            if (id == null)
+                throw new ProcessOperationException("Note ID is NULL", 400,
+                    ExceptionType.INVALID_CREDENTIALS);
+            Optional<Note> optionalNote = repo.findById(id);
+            if (optionalNote.isEmpty())
+                throw new ProcessOperationException("Note ID is wrong", 400,
+                        ExceptionType.INVALID_REQUEST);
+            repo.delete(optionalNote.get());
+            return ResponseEntity.ok(optionalNote.get());
+        } catch (Exception e) {
+            if (e instanceof ProcessOperationException)
+                return ResponseEntity
+                        .status(((ProcessOperationException) e).getStatusCode())
+                        .build();
+            return ResponseEntity.status(500).build();
+        }
+
     }
 
     private static boolean isNullOrEmpty(String s) {

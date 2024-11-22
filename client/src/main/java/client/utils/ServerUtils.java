@@ -25,6 +25,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import commons.ExceptionType;
+import commons.ProcessOperationException;
+import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
 import commons.Quote;
@@ -36,6 +39,9 @@ import jakarta.ws.rs.core.GenericType;
 public class ServerUtils {
 
 	private static final String SERVER = "http://localhost:8080/";
+
+	public ServerUtils() {
+	}
 
 	public void getQuotesTheHardWay() throws IOException, URISyntaxException {
 		var url = new URI("http://localhost:8080/api/quotes").toURL();
@@ -73,5 +79,96 @@ public class ServerUtils {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * GET method
+	 *
+	 * @param endpoint the path to the specified item
+	 * @param type the type
+	 * @return the entity
+	 * @param <T> the type of the entity
+	 * @throws ProcessOperationException if the operation fails
+	 */
+	protected <T> T get(String endpoint, GenericType<T> type) throws ProcessOperationException {
+		Response response = ClientBuilder.newClient(new ClientConfig())
+				.target(this.SERVER).path(endpoint)
+				.request(APPLICATION_JSON)
+				.accept(APPLICATION_JSON)
+				.get();
+
+		if (response.getStatus() == 200 ||
+			response.getStatus() == 201 ||
+			response.getStatus() == 204)
+			return response.readEntity(type);
+
+		throw new ProcessOperationException("Operation",
+				response.getStatus(), ExceptionType.INVALID_CREDENTIALS);
+	}
+
+	/**
+	 * DELETE method
+	 *
+	 * @param endpoint the path to the specified item
+	 * @param type the type
+	 * @return the deleted entity
+	 * @param <T> the type of the entity
+	 * @throws ProcessOperationException if the operation fails
+	 */
+	protected <T> T delete(String endpoint, GenericType<T> type) throws ProcessOperationException {
+		Response response = ClientBuilder.newClient(new ClientConfig())
+				.target(this.SERVER).path(endpoint)
+				.request(APPLICATION_JSON)
+				.accept(APPLICATION_JSON)
+				.delete();
+		if (response.getStatus() == 200 || response.getStatus() == 201)
+			return response.readEntity(type);
+		throw new ProcessOperationException("Operation",
+				response.getStatus(), ExceptionType.INVALID_CREDENTIALS);
+	}
+
+	/**
+	 * PUT method
+	 *
+	 * @param endpoint the path to the specified item
+	 * @param body the object
+	 * @param type the type
+	 * @return the entity
+	 * @param <T> the type of the entity
+	 * @throws ProcessOperationException if the operation fails
+	 */
+	protected <T> T put(String endpoint, T body, GenericType<T> type) throws ProcessOperationException {
+		Response response = ClientBuilder.newClient(new ClientConfig())
+				.target(this.SERVER).path(endpoint)
+				.request(APPLICATION_JSON)
+				.accept(APPLICATION_JSON)
+				.put(Entity.entity(body, APPLICATION_JSON));
+		if (response.getStatus() == 200 || response.getStatus() == 201)
+			return response.readEntity(type);
+		throw new ProcessOperationException("Operation",
+				response.getStatus(), ExceptionType.INVALID_CREDENTIALS);
+	}
+
+	/**
+	 * POST method
+	 *
+	 * @param endpoint the endpoint
+	 * @param body the body
+	 * @param type the type
+	 * @return the entity or object
+	 * @param <T> the type
+	 * @throws ProcessOperationException if the operation fails
+	 */
+	protected <T> T post(String endpoint, T body, GenericType<T> type)
+			throws ProcessOperationException {
+		Response response = ClientBuilder.newClient(new ClientConfig()) //
+				.target(this.SERVER).path(endpoint)
+				.request(APPLICATION_JSON)
+				.accept(APPLICATION_JSON)
+				.post(Entity.entity(body, APPLICATION_JSON));
+		if (response.getStatus() == 200 || response.getStatus() == 201)
+			return response.readEntity(type);
+		throw new ProcessOperationException("Operation",
+				response.getStatus(), ExceptionType.INVALID_CREDENTIALS);
 	}
 }
