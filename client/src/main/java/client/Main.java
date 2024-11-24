@@ -20,18 +20,18 @@ import static com.google.inject.Guice.createInjector;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import client.scenes.NoteSelectionCtrl;
 import com.google.inject.Injector;
 
 import client.scenes.AddQuoteCtrl;
 import client.scenes.MainCtrl;
-import client.scenes.QuoteOverviewCtrl;
+//import client.scenes.QuoteOverviewCtrl;
 import client.utils.ServerUtils;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-
-	private static final Injector INJECTOR = createInjector(new MyModule());
+    private static final Injector INJECTOR = createInjector(new MyModule());
 	private static final MyFXML FXML = new MyFXML(INJECTOR);
 
 	public static void main(String[] args) throws URISyntaxException, IOException {
@@ -42,16 +42,23 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception {
 
 		var serverUtils = INJECTOR.getInstance(ServerUtils.class);
+
+		// Awaits for the server to become available instead of ending the program
 		if (!serverUtils.isServerAvailable()) {
-			var msg = "Server needs to be started before the client, but it does not seem to be available. Shutting down.";
+			var msg = "Server needs to be started before the client, but it does not seem to be available";
 			System.err.println(msg);
-			return;
+
+			while (!serverUtils.isServerAvailable()) {
+				System.out.println("Waiting for server...");
+				Thread.sleep(500);
+			}
+
+			System.out.println("Found server, starting program");
 		}
 
-		var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
-		var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
+		var overview = FXML.load(NoteSelectionCtrl.class, "client", "scenes", "MainScreen.fxml");
 
 		var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-		mainCtrl.initialize(primaryStage, overview, add);
+		mainCtrl.initialize(primaryStage, overview);
 	}
 }
