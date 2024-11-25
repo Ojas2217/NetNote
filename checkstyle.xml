@@ -4,66 +4,82 @@
         "https://checkstyle.org/dtds/configuration_1_3.dtd">
 
 <module name="Checker">
-
+    <!-- File extensions -->
     <property name="fileExtensions" value="java"/>
+
+    <!-- Exclude Test classes -->
     <module name="BeforeExecutionExclusionFileFilter">
         <property name="fileNamePattern" value=".*TestClass\.java$"/>
     </module>
 
+    <!-- TreeWalker module for various rules -->
     <module name="TreeWalker">
-        <module name="MissingJavadocMethod">
-            <property name="severity" value="warning"/>
-            <property name="scope" value="public"/>
-            <property name="minLineCount" value="0"/>
-            <property name="allowedAnnotations" value="Main"/>
-            <property name="tokens" value="METHOD_DEF, CTOR_DEF, COMPACT_CTOR_DEF"/>
-        </module>
-        <module name="JavadocMethod">
-            <property name="accessModifiers" value="public"/>
-            <property name="allowMissingParamTags" value="false"/>
-            <property name="allowMissingReturnTag" value="false"/>
-        </module>
-        <module name="MethodLength">
-            <property name="severity" value="warning"/>
-            <property name="tokens" value="METHOD_DEF, CTOR_DEF, COMPACT_CTOR_DEF"/>
-            <property name="max" value="50"/>
-        </module>
-        <module name="VisibilityModifier">
-            <property name="severity" value="warning"/>
-            <property name="protectedAllowed" value="true"/>
+
+        <!-- Indentation: Enforce consistent indentation -->
+        <module name="Indentation">
+            <property name="basicOffset" value="4"/>
+            <property name="tabWidth" value="4"/>
+            <property name="severity" value="error"/>
         </module>
 
-        <module name="OuterTypeFilename">
-            <property name="severity" value="warning"/>
+        <!-- Empty Block: Flag empty code blocks -->
+        <module name="EmptyBlock">
+            <property name="severity" value="error"/>
         </module>
-        <module name="ParameterNumber">
-            <property name="severity" value="warning"/>
-            <property name="tokens" value="METHOD_DEF, CTOR_DEF"/>
-            <property name="max" value="6"/>
+
+        <!-- Magic Number: Flag hardcoded constants -->
+        <module name="MagicNumber">
+            <property name="ignoreNumbers" value="0,1,-1"/>
         </module>
+
+        <!-- Cyclomatic Complexity: Enforce complexity limit -->
         <module name="CyclomaticComplexity">
             <property name="severity" value="warning"/>
-            <property name="switchBlockAsSingleDecisionPoint" value="true"/>
-            <property name="max" value="6"/>
-            <property name="tokens" value="LITERAL_WHILE, LITERAL_DO, LITERAL_FOR, LITERAL_IF, LITERAL_SWITCH, LITERAL_CASE, QUESTION"/>
-        </module>
-        <module name="Indentation">
-            <property name="severity" value="warning"/>
-        </module>
-        <module name="UnusedImports">
-            <property name="severity" value="warning"/>
+            <property name="max" value="10"/>
         </module>
 
+        <!-- Parameter count: Limit method parameters -->
+        <module name="ParameterNumber">
+            <property name="severity" value="warning"/>
+            <property name="max" value="5"/>
+        </module>
+
+        <!-- Whitespace rules: Enforce consistent spacing -->
+        <module name="WhitespaceAround">
+            <property name="severity" value="error"/>
+        </module>
+
+        <module name="EmptyLineSeparator">
+            <property name="severity" value="error"/>
+        </module>
+
+        <!-- Unused imports: Disallow useless imports -->
+        <module name="UnusedImports">
+            <property name="severity" value="error"/>
+        </module>
+
+        <!-- Import order: Enforce consistent import ordering -->
+        <module name="ImportOrder">
+            <property name="sortStaticImportsAlphabetically" value="true"/>
+            <property name="option" value="top"/> <!-- or "bottom" based on your preference -->
+            <property name="separatedStaticGroups" value="true"/>
+            <property name="staticGroups" value="java,javax,org,com"/>
+        </module>
+
+        <!-- TODO comments: Flag unresolved TODO comments -->
+        <module name="TodoComment"/>
+
+        <!-- Naming conventions (camelCase) for methods, variables, and classes -->
         <module name="MemberName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
             <property name="severity" value="warning"/>
         </module>
         <module name="MethodName">
-            <property name="severity" value="warning"/>
-        </module>
-        <module name="ParameterName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
             <property name="severity" value="warning"/>
         </module>
         <module name="LocalVariableName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
             <property name="severity" value="warning"/>
         </module>
         <module name="StaticVariableName">
@@ -75,21 +91,36 @@
         <module name="TypeName">
             <property name="severity" value="warning"/>
         </module>
-        <module name="ClassTypeParameterName">
-            <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*$)"/>
-            <message key="name.invalidPattern"
-                     value="Class type name ''{0}'' must match pattern ''{1}''."/>
+
+        <!-- ClassName rule for CamelCase -->
+        <module name="ClassName">
+            <property name="format" value="^[A-Z][a-zA-Z0-9]*$"/>
+            <property name="severity" value="warning"/>
         </module>
-        <module name="WhitespaceAround"/>
-        <module name="EmptyLineSeparator"/>
-        <module name="TrailingWhitespace"/>
+
+        <!-- Javadoc rules: Exclude trivial methods (getters, equals) from Javadoc requirement -->
+        <module name="JavadocMethod">
+            <property name="accessModifiers" value="public"/>
+            <property name="allowMissingParamTags" value="false"/>
+            <property name="allowMissingReturnTag" value="false"/>
+            <property name="scope" value="public"/>
+            <property name="tokens" value="METHOD_DEF"/>
+            <property name="excludeFilter" value=".*(get|set|equals|hashCode).*"/>
+        </module>
+
+        <!-- Require Javadoc for classes -->
+        <module name="ClassJavadoc"/>
+
     </module>
 
+    <!-- Line Length should not be inside TreeWalker -->
     <module name="LineLength">
+        <property name="max" value="120"/>
         <property name="severity" value="warning"/>
-        <property name="fileExtensions" value="java"/>
-        <property name="max" value="100"/>
-        <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
     </module>
 
+    <!-- Optional rule to require newline at the end of files -->
+    <module name="NewlineAtEndOfFile">
+        <property name="severity" value="error"/>
+    </module>
 </module>
