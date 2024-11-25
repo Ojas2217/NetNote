@@ -109,8 +109,9 @@
             <property name="allowMissingParamTags" value="false"/>
             <property name="allowMissingReturnTag" value="false"/>
         </module>
-        <!-- Require Javadoc for classes -->
-        <module name="ClassJavadoc"/>
+        <module name="MissingJavadocType">
+            <property name="scope" value="private"/>
+        </module>
 
     </module>
 
