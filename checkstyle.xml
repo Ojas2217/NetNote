@@ -67,7 +67,7 @@
             <property name="staticGroups" value="java,javax,org,com"/>
         </module>
 
-        <!-- TODO comments: Flag unresolved TODO comments -->
+        <!-- Flag unresolved to do comments -->
         <module name="TodoComment"/>
 
         <!-- Whitespace is required after stuff for better readability -->
