@@ -80,6 +80,9 @@
             <message key="name.invalidPattern"
                      value="Class type name ''{0}'' must match pattern ''{1}''."/>
         </module>
+        <module name="WhitespaceAround"/>
+        <module name="EmptyLineSeparator"/>
+        <module name="TrailingWhitespace"/>
     </module>
 
     <module name="LineLength">
