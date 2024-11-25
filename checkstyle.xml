@@ -96,21 +96,19 @@
             <message key="name.invalidPattern"
                      value="Class type name ''{0}'' must match pattern ''{1}''."/>
         </module>
-
         <module name="MissingJavadocMethod">
-            <!-- Ignore Javadoc for trivial methods (getter/setter with a small body) -->
-            <property name="minLineCount" value="2"/> <!-- Adjust the number of lines as needed -->
-
-            <!-- Allow missing Javadoc on getter and setter methods -->
+            <property name="severity" value="warning"/>
+            <property name="scope" value="public"/>
+            <property name="minLineCount" value="2"/>
+            <property name="allowedAnnotations" value="Main,Override,Deprecated"/>
+            <property name="tokens" value="METHOD_DEF, CTOR_DEF, COMPACT_CTOR_DEF"/>
             <property name="allowMissingPropertyJavadoc" value="true"/>
-
-            <!-- Optional: You can also ignore methods matching certain names with regex -->
-            <!-- <property name="ignoreMethodNamesRegex" value="^get.*|^set.*"/> -->
-
-            <!-- Optional: Specify annotations like @Override to skip Javadoc check -->
-            <property name="allowedAnnotations" value="Override,Deprecated"/>
         </module>
-
+        <module name="JavadocMethod">
+            <property name="accessModifiers" value="public"/>
+            <property name="allowMissingParamTags" value="false"/>
+            <property name="allowMissingReturnTag" value="false"/>
+        </module>
         <!-- Require Javadoc for classes -->
         <module name="ClassJavadoc"/>
 
