@@ -70,6 +70,9 @@
         <!-- TODO comments: Flag unresolved TODO comments -->
         <module name="TodoComment"/>
 
+        <!-- Whitespace is required after stuff for better readability -->
+        <module name="WhitespaceAfter"/>
+
         <!-- Naming conventions (camelCase) for methods, variables, and classes -->
         <module name="MemberName">
             <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
