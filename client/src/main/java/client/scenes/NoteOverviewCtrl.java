@@ -38,7 +38,7 @@ public class NoteOverviewCtrl implements Initializable {
         noteTitle.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().title));
     }
 
-    public void addNote() throws ProcessOperationException {
+    public void addNote(){
         mainCtrl.showAdd();
     }
     public void deleteNote() throws ProcessOperationException {

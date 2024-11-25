@@ -20,12 +20,7 @@ public class AddNoteControl {
     private final NoteUtils server;
     private final MainCtrl mainCtrl;
     @FXML
-    private TextArea currentNote;
-    @FXML
-    private ListView<Note> availableNotes;
-    @FXML
     private TextField noteTitle;
-    private List<Note> notes;
 
     @Inject
     public AddNoteControl(NoteUtils server, MainCtrl mainCtrl) {
