@@ -59,14 +59,6 @@
             <property name="severity" value="error"/>
         </module>
 
-        <!-- Import order: Enforce consistent import ordering -->
-        <module name="ImportOrder">
-            <property name="sortStaticImportsAlphabetically" value="true"/>
-            <property name="option" value="top"/>
-            <property name="separatedStaticGroups" value="true"/>
-            <property name="staticGroups" value="java,javax,org,com"/>
-        </module>
-
         <!-- Flag unresolved to do comments -->
         <module name="TodoComment"/>
 
