@@ -124,7 +124,7 @@
           <content>
             <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="545.0" prefWidth="389.0">
               <children>
-                        <TextArea fx:id="textAreaNote" layoutY="40.0" prefHeight="505.0" prefWidth="439.0" promptText=" [Write your note here]">
+                        <TextArea fx:id="currentNote" layoutY="40.0" prefHeight="505.0" prefWidth="439.0" promptText=" [Write your note here]">
                            <font>
                               <Font size="18.0" />
                            </font>

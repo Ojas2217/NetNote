@@ -14,10 +14,10 @@ import java.util.List;
 public class NoteSelectionCtrl {
 
     @FXML
-    private TextArea textAreaNote;
+    private TextArea currentNote;
 
     @FXML
-    private ListView<Note> listViewNoteSelection;
+    private ListView<Note> availableNotes;
 
     private List<Note> notes;
 
@@ -27,14 +27,14 @@ public class NoteSelectionCtrl {
     }
 
     /**
-     * Adds a note to listViewNoteSelection which content is equal to the content of the textAreaNote
+     * Adds a note to listViewNoteSelection which content is equal to the content of the currentNote
      */
     public void noteAddButton() {
-        Note newNote = new Note("", textAreaNote.getText()); //The title should still be implemented here
-        listViewNoteSelection.getItems().add(newNote);
+        Note newNote = new Note("", currentNote.getText()); //The title should still be implemented here
+        availableNotes.getItems().add(newNote);
 
         // Change the display text of the listView to the title of the Note
-        listViewNoteSelection.setCellFactory(param -> new TextFieldListCell<>(new StringConverter<Note>() {
+        availableNotes.setCellFactory(param -> new TextFieldListCell<>(new StringConverter<Note>() {
             @Override
             public String toString(Note note) {
                 String title = note.getTitle();
@@ -54,10 +54,10 @@ public class NoteSelectionCtrl {
      * Gets the selected Note in the listViewNoteSelection and removes that Note from the list
      */
     public void noteDeleteButton() {
-        Object selectedListViewItem = listViewNoteSelection.getSelectionModel().getSelectedItem();
+        Object selectedListViewItem = availableNotes.getSelectionModel().getSelectedItem();
 
         if (selectedListViewItem != null) {
-            listViewNoteSelection.getItems().remove(selectedListViewItem);
+            availableNotes.getItems().remove(selectedListViewItem);
         }
     }
 }
