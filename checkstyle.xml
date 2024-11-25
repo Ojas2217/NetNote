@@ -104,7 +104,7 @@
         <!-- Javadoc configuration -->
         <module name="MissingJavadocMethod">
             <property name="severity" value="warning"/>
-            <property name="scope" value="public"/>
+            <property name="scope" value="private"/>
             <property name="minLineCount" value="2"/>
             <property name="allowedAnnotations" value="Main,Override,Deprecated"/>
             <property name="tokens" value="METHOD_DEF, CTOR_DEF, COMPACT_CTOR_DEF"/>
@@ -112,7 +112,7 @@
         </module>
 
         <module name="JavadocMethod">
-            <property name="accessModifiers" value="public"/>
+            <property name="accessModifiers" value="private"/>
             <property name="allowMissingParamTags" value="false"/>
             <property name="allowMissingReturnTag" value="false"/>
         </module>
