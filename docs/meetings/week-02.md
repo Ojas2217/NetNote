@@ -25,6 +25,7 @@
     - **Finalize the code of conduct** (5 min)
     - **Discuss the issues created last friday** (10 min)
     - **Discuss any difficulties faced with the issues (3 min)**
+    - **Handling unrelated code in merge requests (3 min)**
     - **Discuss/Create issues for next week** (10 min)
     - **Create an agenda for the next friday meeting** (2 min)
 9. **Summarize Action Points**: Who, what, when? (5 min)
