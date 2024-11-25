@@ -43,6 +43,8 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -51,7 +53,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.web.WebView?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.NoteSelectionCtrl">
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.NoteOverviewCtrl">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -95,26 +97,23 @@
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
 
-            <Button fx:id="noteAddButton1" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Search" />
+                        <Button fx:id="noteAddButton1" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Search" />
          </children>
       </AnchorPane>
     <SplitPane dividerPositions="0.2505567928730512, 0.7505567928730512" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <items>
         <AnchorPane>
           <children>
-            <Label alignment="CENTER" layoutX="76.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Notes" textAlignment="CENTER" wrapText="false">
-              <font>
-                <Font size="18.0" fx:id="x1" />
-              </font>
-              <textFill>
-                <Color red="0.624" green="0.624" blue="0.624" fx:id="x2" />
-              </textFill>
-            </Label>
                   <ScrollPane layoutY="40.0" prefHeight="505.0" prefWidth="223.0">
                     <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="498.0" prefWidth="215.0">
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="498.0" prefWidth="670.0">
                            <children>
                               <ListView fx:id="listViewNoteSelection" layoutX="7.0" layoutY="14.0" prefHeight="477.0" prefWidth="200.0" />
+                              <TableView fx:id="table" layoutX="-4.0" layoutY="7.0" prefHeight="492.0" prefWidth="222.0">
+                                <columns>
+                                  <TableColumn fx:id="noteTitle" prefWidth="221.60000004768372" text="Notes" />
+                                </columns>
+                              </TableView>
                            </children></AnchorPane>
                     </content>
                   </ScrollPane>
@@ -132,7 +131,13 @@
                               <Insets top="100.0" />
                            </opaqueInsets>
                         </TextArea>
-                <Label alignment="CENTER" font="$x1" layoutX="179.0" layoutY="14.0" text="noteName" textAlignment="CENTER" textFill="$x2" wrapText="false" />
+                <Label alignment="CENTER" layoutX="179.0" layoutY="14.0" text="noteName" textAlignment="CENTER" wrapText="false">
+                           <font>
+                      <Font size="18.0" fx:id="x1" />
+                           </font>
+                           <textFill>
+                      <Color red="0.624" green="0.624" blue="0.624" fx:id="x2" />
+                           </textFill></Label>
               </children>
             </AnchorPane>
           </content>
@@ -149,9 +154,9 @@
          <children>
             <ButtonBar>
                <buttons>
-                  <Button fx:id="noteAddButton" mnemonicParsing="false" onAction="#noteAddButton" text="Add" />
-                  <Button fx:id="noteDeleteButton" mnemonicParsing="false" onAction="#noteDeleteButton" text="Delete" />
-                  <Button fx:id="noteRefreshButton" mnemonicParsing="false" text="Refresh" />
+                  <Button mnemonicParsing="false" onAction="#addNote" text="Add" />
+                  <Button fx:id="noteDeleteButton" mnemonicParsing="false" onAction="#deleteNote" text="Delete" />
+                  <Button fx:id="noteRefreshButton" mnemonicParsing="false" onAction="#refresh" text="Refresh" />
                </buttons>
             </ButtonBar>
          </children>

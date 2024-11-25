@@ -15,7 +15,6 @@ public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long id;
-
     public String title;
     public String content;
 
