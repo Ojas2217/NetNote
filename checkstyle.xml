@@ -91,21 +91,24 @@
         <module name="TypeName">
             <property name="severity" value="warning"/>
         </module>
-
-        <!-- ClassName rule for CamelCase -->
-        <module name="ClassName">
-            <property name="format" value="^[A-Z][a-zA-Z0-9]*$"/>
-            <property name="severity" value="warning"/>
+        <module name="ClassTypeParameterName">
+            <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*$)"/>
+            <message key="name.invalidPattern"
+                     value="Class type name ''{0}'' must match pattern ''{1}''."/>
         </module>
 
-        <!-- Javadoc rules: Exclude trivial methods (getters, equals) from Javadoc requirement -->
-        <module name="JavadocMethod">
-            <property name="accessModifiers" value="public"/>
-            <property name="allowMissingParamTags" value="false"/>
-            <property name="allowMissingReturnTag" value="false"/>
-            <property name="scope" value="public"/>
-            <property name="tokens" value="METHOD_DEF"/>
-            <property name="excludeFilter" value=".*(get|set|equals|hashCode).*"/>
+        <module name="MissingJavadocMethod">
+            <!-- Ignore Javadoc for trivial methods (getter/setter with a small body) -->
+            <property name="minLineCount" value="2"/> <!-- Adjust the number of lines as needed -->
+
+            <!-- Allow missing Javadoc on getter and setter methods -->
+            <property name="allowMissingPropertyJavadoc" value="true"/>
+
+            <!-- Optional: You can also ignore methods matching certain names with regex -->
+            <!-- <property name="ignoreMethodNamesRegex" value="^get.*|^set.*"/> -->
+
+            <!-- Optional: Specify annotations like @Override to skip Javadoc check -->
+            <property name="allowedAnnotations" value="Override,Deprecated"/>
         </module>
 
         <!-- Require Javadoc for classes -->
