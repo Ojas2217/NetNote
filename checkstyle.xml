@@ -51,6 +51,7 @@
 
         <module name="EmptyLineSeparator">
             <property name="severity" value="error"/>
+            <property name="allowNoEmptyLineBetweenFields" value="true"/>
         </module>
 
         <!-- Unused imports: Disallow useless imports -->
