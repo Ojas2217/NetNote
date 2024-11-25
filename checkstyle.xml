@@ -9,7 +9,7 @@
 
     <!-- Exclude Test classes -->
     <module name="BeforeExecutionExclusionFileFilter">
-        <property name="fileNamePattern" value=".*TestClass\.java$"/>
+        <property name="fileNamePattern" value=".*Test\.java$"/>
     </module>
 
     <!-- TreeWalker module for various rules -->
@@ -61,7 +61,7 @@
         <!-- Import order: Enforce consistent import ordering -->
         <module name="ImportOrder">
             <property name="sortStaticImportsAlphabetically" value="true"/>
-            <property name="option" value="top"/> <!-- or "bottom" based on your preference -->
+            <property name="option" value="top"/>
             <property name="separatedStaticGroups" value="true"/>
             <property name="staticGroups" value="java,javax,org,com"/>
         </module>
@@ -96,6 +96,8 @@
             <message key="name.invalidPattern"
                      value="Class type name ''{0}'' must match pattern ''{1}''."/>
         </module>
+
+        <!-- Javadoc configuration -->
         <module name="MissingJavadocMethod">
             <property name="severity" value="warning"/>
             <property name="scope" value="public"/>
@@ -104,24 +106,26 @@
             <property name="tokens" value="METHOD_DEF, CTOR_DEF, COMPACT_CTOR_DEF"/>
             <property name="allowMissingPropertyJavadoc" value="true"/>
         </module>
+
         <module name="JavadocMethod">
             <property name="accessModifiers" value="public"/>
             <property name="allowMissingParamTags" value="false"/>
             <property name="allowMissingReturnTag" value="false"/>
         </module>
+
         <module name="MissingJavadocType">
             <property name="scope" value="private"/>
         </module>
 
     </module>
 
-    <!-- Line Length should not be inside TreeWalker -->
+    <!-- Line Length -->
     <module name="LineLength">
         <property name="max" value="120"/>
         <property name="severity" value="warning"/>
     </module>
 
-    <!-- Optional rule to require newline at the end of files -->
+    <!-- Newline at end of file -->
     <module name="NewlineAtEndOfFile">
         <property name="severity" value="error"/>
     </module>
