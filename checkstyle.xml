@@ -4,56 +4,71 @@
         "https://checkstyle.org/dtds/configuration_1_3.dtd">
 
 <module name="Checker">
-
+    <!-- File extensions -->
     <property name="fileExtensions" value="java"/>
+
+    <!-- Exclude Test classes -->
     <module name="BeforeExecutionExclusionFileFilter">
-        <property name="fileNamePattern" value=".*TestClass\.java$"/>
+        <property name="fileNamePattern" value=".*Test\.java$"/>
     </module>
 
+    <!-- TreeWalker module for various rules -->
     <module name="TreeWalker">
+        <!-- Javadoc configuration -->
         <module name="MissingJavadocMethod">
             <property name="severity" value="warning"/>
-            <property name="scope" value="public"/>
-            <property name="minLineCount" value="0"/>
-            <property name="allowedAnnotations" value="Main"/>
+            <property name="scope" value="private"/>
+            <property name="minLineCount" value="2"/>
+            <property name="allowedAnnotations" value="Main,Override,Deprecated"/>
             <property name="tokens" value="METHOD_DEF, CTOR_DEF, COMPACT_CTOR_DEF"/>
+            <property name="allowMissingPropertyJavadoc" value="true"/>
         </module>
+
         <module name="JavadocMethod">
-            <property name="accessModifiers" value="public"/>
+            <property name="accessModifiers" value=""/>
             <property name="allowMissingParamTags" value="false"/>
             <property name="allowMissingReturnTag" value="false"/>
         </module>
+        <module name="MissingJavadocType">
+            <property name="scope" value="private"/>
+        </module>
+
         <module name="MethodLength">
             <property name="severity" value="warning"/>
             <property name="tokens" value="METHOD_DEF, CTOR_DEF, COMPACT_CTOR_DEF"/>
             <property name="max" value="50"/>
         </module>
-        <module name="VisibilityModifier">
-            <property name="severity" value="warning"/>
-            <property name="protectedAllowed" value="true"/>
-        </module>
-
         <module name="OuterTypeFilename">
             <property name="severity" value="warning"/>
         </module>
+
+        <!-- Parameter count: Limit method parameters -->
         <module name="ParameterNumber">
             <property name="severity" value="warning"/>
-            <property name="tokens" value="METHOD_DEF, CTOR_DEF"/>
             <property name="max" value="6"/>
         </module>
+
+        <!-- Cyclomatic Complexity: Enforce complexity limit -->
         <module name="CyclomaticComplexity">
             <property name="severity" value="warning"/>
             <property name="switchBlockAsSingleDecisionPoint" value="true"/>
             <property name="max" value="6"/>
             <property name="tokens" value="LITERAL_WHILE, LITERAL_DO, LITERAL_FOR, LITERAL_IF, LITERAL_SWITCH, LITERAL_CASE, QUESTION"/>
         </module>
+
+        <!-- Indentation: Enforce consistent indentation -->
         <module name="Indentation">
-            <property name="severity" value="warning"/>
-        </module>
-        <module name="UnusedImports">
-            <property name="severity" value="warning"/>
+            <property name="severity" value="error"/>
+            <property name="basicOffset" value="4"/>
+            <property name="tabWidth" value="4"/>
         </module>
 
+        <!-- Unused imports: Disallow useless imports -->
+        <module name="UnusedImports">
+            <property name="severity" value="error"/>
+        </module>
+
+        <!-- Naming conventions (camelCase) for methods, variables, and classes -->
         <module name="MemberName">
             <property name="severity" value="warning"/>
         </module>
@@ -80,13 +95,53 @@
             <message key="name.invalidPattern"
                      value="Class type name ''{0}'' must match pattern ''{1}''."/>
         </module>
+
+        <!-- Empty Block: Flag empty code blocks -->
+        <module name="EmptyBlock">
+            <property name="severity" value="error"/>
+        </module>
+
+        <!-- Magic Number: Flag hardcoded constants -->
+        <module name="MagicNumber">
+            <property name="ignoreNumbers" value="0,1,-1"/>
+        </module>
+
+        <!-- Whitespace rules: Enforce consistent spacing -->
+        <module name="WhitespaceAround">
+            <property name="severity" value="error"/>
+            <property name="tokens"
+                      value="ASSIGN, BAND, BAND_ASSIGN, BOR, BOR_ASSIGN, BSR, BSR_ASSIGN, BXOR, BXOR_ASSIGN,
+                            COLON, DIV, DIV_ASSIGN, DO_WHILE, EQUAL, GE, GT, LAMBDA, LAND, LE,
+                            LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_FOR,
+                            LITERAL_IF, LITERAL_RETURN, LITERAL_SWITCH, LITERAL_SYNCHRONIZED,
+                            LITERAL_TRY, LITERAL_WHILE, LOR, LT, MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN,
+                            NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION, SL, SLIST, SL_ASSIGN, SR,
+                            SR_ASSIGN, STAR, STAR_ASSIGN, LITERAL_ASSERT, TYPE_EXTENSION_AND,
+                            LITERAL_WHEN"/>
+        </module>
+
+        <module name="EmptyLineSeparator">
+            <property name="severity" value="error"/>
+            <property name="allowNoEmptyLineBetweenFields" value="true"/>
+        </module>
+
+        <!-- Flag unresolved to do comments -->
+        <module name="TodoComment"/>
+
+        <!-- Whitespace is required after stuff for better readability -->
+        <module name="WhitespaceAfter"/>
     </module>
 
+    <!-- Line Length -->
     <module name="LineLength">
         <property name="severity" value="warning"/>
         <property name="fileExtensions" value="java"/>
-        <property name="max" value="100"/>
+        <property name="max" value="120"/>
         <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
     </module>
 
+    <!-- Newline at end of file -->
+    <module name="NewlineAtEndOfFile">
+        <property name="severity" value="error"/>
+    </module>
 </module>
