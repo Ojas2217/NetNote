@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2021 Delft University of Technology
  *
@@ -13,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package commons;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
@@ -28,6 +30,22 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 
+/**
+ * Entity class representing a quote.
+ * <p>
+ * The {@code Quote} class is a JPA entity annotated with {@link Entity}, which maps
+ * it to a database table. It contains fields for the quote's ID, the associated {@link Person}
+ * who made the quote, and the quote text itself. The class includes constructors, and overrides
+ * for {@link Object#equals(Object)}, {@link Object#hashCode()}, and {@link Object#toString()}.
+ * </p>
+ * <ul>
+ *     <li>{@link Id} and {@link GeneratedValue} annotations are used to specify
+ *         that the {@code id} field is the primary key and its value is automatically generated.</li>
+ *     <li>{@link OneToOne} and {@link CascadeType#PERSIST} annotations are used to indicate that
+ *         the {@code person} field is a one-to-one relationship with the {@link Person} entity,
+ *         with cascade behavior for persisting the {@code Person} when saving the {@code Quote}.</li>
+ * </ul>
+ */
 @Entity
 public class Quote {
 
@@ -40,7 +58,7 @@ public class Quote {
 	public String quote;
 
 	@SuppressWarnings("unused")
-	private Quote() {
+	public Quote() {
 		// for object mappers
 	}
 

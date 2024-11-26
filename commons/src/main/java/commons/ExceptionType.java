@@ -1,5 +1,12 @@
 package commons;
 
+/**
+ * Enum representing various types of exceptions that can occur in the application.
+ * <p>
+ * Each enum constant has an associated string value for easier identification
+ * and usage within the application.
+ * </p>
+ */
 public enum ExceptionType {
 
     INVALID_REQUEST("INVALID_REQUEST"),
