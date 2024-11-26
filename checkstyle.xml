@@ -14,44 +14,53 @@
 
     <!-- TreeWalker module for various rules -->
     <module name="TreeWalker">
-
-        <!-- Indentation: Enforce consistent indentation -->
-        <module name="Indentation">
-            <property name="basicOffset" value="4"/>
-            <property name="tabWidth" value="4"/>
-            <property name="severity" value="error"/>
-        </module>
-
-        <!-- Empty Block: Flag empty code blocks -->
-        <module name="EmptyBlock">
-            <property name="severity" value="error"/>
-        </module>
-
-        <!-- Magic Number: Flag hardcoded constants -->
-        <module name="MagicNumber">
-            <property name="ignoreNumbers" value="0,1,-1"/>
-        </module>
-
-        <!-- Cyclomatic Complexity: Enforce complexity limit -->
-        <module name="CyclomaticComplexity">
+        <!-- Javadoc configuration -->
+        <module name="MissingJavadocMethod">
             <property name="severity" value="warning"/>
-            <property name="max" value="10"/>
+            <property name="scope" value="private"/>
+            <property name="minLineCount" value="2"/>
+            <property name="allowedAnnotations" value="Main,Override,Deprecated"/>
+            <property name="tokens" value="METHOD_DEF, CTOR_DEF, COMPACT_CTOR_DEF"/>
+            <property name="allowMissingPropertyJavadoc" value="true"/>
+        </module>
+
+        <module name="JavadocMethod">
+            <property name="accessModifiers" value=""/>
+            <property name="allowMissingParamTags" value="false"/>
+            <property name="allowMissingReturnTag" value="false"/>
+        </module>
+        <module name="MissingJavadocType">
+            <property name="scope" value="private"/>
+        </module>
+
+        <module name="MethodLength">
+            <property name="severity" value="warning"/>
+            <property name="tokens" value="METHOD_DEF, CTOR_DEF, COMPACT_CTOR_DEF"/>
+            <property name="max" value="50"/>
+        </module>
+        <module name="OuterTypeFilename">
+            <property name="severity" value="warning"/>
         </module>
 
         <!-- Parameter count: Limit method parameters -->
         <module name="ParameterNumber">
             <property name="severity" value="warning"/>
-            <property name="max" value="5"/>
+            <property name="max" value="6"/>
         </module>
 
-        <!-- Whitespace rules: Enforce consistent spacing -->
-        <module name="WhitespaceAround">
-            <property name="severity" value="error"/>
+        <!-- Cyclomatic Complexity: Enforce complexity limit -->
+        <module name="CyclomaticComplexity">
+            <property name="severity" value="warning"/>
+            <property name="switchBlockAsSingleDecisionPoint" value="true"/>
+            <property name="max" value="6"/>
+            <property name="tokens" value="LITERAL_WHILE, LITERAL_DO, LITERAL_FOR, LITERAL_IF, LITERAL_SWITCH, LITERAL_CASE, QUESTION"/>
         </module>
 
-        <module name="EmptyLineSeparator">
+        <!-- Indentation: Enforce consistent indentation -->
+        <module name="Indentation">
             <property name="severity" value="error"/>
-            <property name="allowNoEmptyLineBetweenFields" value="true"/>
+            <property name="basicOffset" value="4"/>
+            <property name="tabWidth" value="4"/>
         </module>
 
         <!-- Unused imports: Disallow useless imports -->
@@ -59,23 +68,17 @@
             <property name="severity" value="error"/>
         </module>
 
-        <!-- Flag unresolved to do comments -->
-        <module name="TodoComment"/>
-
-        <!-- Whitespace is required after stuff for better readability -->
-        <module name="WhitespaceAfter"/>
-
         <!-- Naming conventions (camelCase) for methods, variables, and classes -->
         <module name="MemberName">
-            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
             <property name="severity" value="warning"/>
         </module>
         <module name="MethodName">
-            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+            <property name="severity" value="warning"/>
+        </module>
+        <module name="ParameterName">
             <property name="severity" value="warning"/>
         </module>
         <module name="LocalVariableName">
-            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
             <property name="severity" value="warning"/>
         </module>
         <module name="StaticVariableName">
@@ -93,32 +96,39 @@
                      value="Class type name ''{0}'' must match pattern ''{1}''."/>
         </module>
 
-        <!-- Javadoc configuration -->
-        <module name="MissingJavadocMethod">
-            <property name="severity" value="warning"/>
-            <property name="scope" value="private"/>
-            <property name="minLineCount" value="2"/>
-            <property name="allowedAnnotations" value="Main,Override,Deprecated"/>
-            <property name="tokens" value="METHOD_DEF, CTOR_DEF, COMPACT_CTOR_DEF"/>
-            <property name="allowMissingPropertyJavadoc" value="true"/>
+        <!-- Empty Block: Flag empty code blocks -->
+        <module name="EmptyBlock">
+            <property name="severity" value="error"/>
         </module>
 
-        <module name="JavadocMethod">
-            <property name="accessModifiers" value=""/>
-            <property name="allowMissingParamTags" value="false"/>
-            <property name="allowMissingReturnTag" value="false"/>
+        <!-- Magic Number: Flag hardcoded constants -->
+        <module name="MagicNumber">
+            <property name="ignoreNumbers" value="0,1,-1"/>
         </module>
 
-        <module name="MissingJavadocType">
-            <property name="scope" value="private"/>
+        <!-- Whitespace rules: Enforce consistent spacing -->
+        <module name="WhitespaceAround">
+            <property name="severity" value="error"/>
         </module>
 
+        <module name="EmptyLineSeparator">
+            <property name="severity" value="error"/>
+            <property name="allowNoEmptyLineBetweenFields" value="true"/>
+        </module>
+
+        <!-- Flag unresolved to do comments -->
+        <module name="TodoComment"/>
+
+        <!-- Whitespace is required after stuff for better readability -->
+        <module name="WhitespaceAfter"/>
     </module>
 
     <!-- Line Length -->
     <module name="LineLength">
-        <property name="max" value="120"/>
         <property name="severity" value="warning"/>
+        <property name="fileExtensions" value="java"/>
+        <property name="max" value="120"/>
+        <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
     </module>
 
     <!-- Newline at end of file -->
