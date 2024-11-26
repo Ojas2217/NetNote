@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2021 Delft University of Technology
  *
@@ -13,12 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
+/**
+ * Main entry point for the Spring Boot application.
+ * <p>
+ * This class is annotated with {@link SpringBootApplication}, which enables
+ * Spring Boot's auto-configuration, component scanning, and additional setup.
+ * It also uses {@link EntityScan} to specify base packages for JPA entity scanning.
+ * </p>
+ */
 @SpringBootApplication
 @EntityScan(basePackages = { "commons", "server" })
 public class Main {

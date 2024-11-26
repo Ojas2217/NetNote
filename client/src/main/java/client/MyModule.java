@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package client;
 
 import client.scenes.NoteOverviewCtrl;
@@ -21,6 +22,20 @@ import com.google.inject.Module;
 import com.google.inject.Scopes;
 import client.scenes.MainCtrl;
 
+/**
+ * Guice module for configuring dependency bindings in the application.
+ * <p>
+ * The {@code MyModule} class implements the {@link Module} interface to define
+ * how various application components should be instantiated and managed.
+ * It binds controllers such as {@link MainCtrl}, and
+ * {@link NoteOverviewCtrl} as singletons, ensuring that only one instance of
+ * each is created and reused throughout the application's lifecycle.
+ * </p>
+ * <p>
+ * This module is used during the creation of the {@link com.google.inject.Injector}
+ * to enable dependency injection across the application.
+ * </p>
+ */
 public class MyModule implements Module {
 
     @Override

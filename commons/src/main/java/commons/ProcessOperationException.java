@@ -2,6 +2,25 @@ package commons;
 
 import java.util.Objects;
 
+/**
+ * Custom exception class for handling process operation errors.
+ * <p>
+ * The {@code ProcessOperationException} class extends {@link Exception} and is used
+ * to represent errors that occur during the execution of a process. It includes
+ * an HTTP status code and an {@link ExceptionType} to categorize the type of error.
+ * </p>
+ * <p>
+ * This exception is thrown when specific operational issues are encountered,
+ * and provides methods to access the status code, exception type, and message.
+ * </p>
+ * <ul>
+ *     <li>{@link #getStatusCode()}: Returns the HTTP status code associated with the exception.</li>
+ *     <li>{@link #getType()}: Returns the {@link ExceptionType} indicating the category of the error.</li>
+ *     <li>{@link #toString()}: Provides a string representation of the exception.</li>
+ *     <li>{@link #equals(Object)}: Compares the exception with another object for equality.</li>
+ *     <li>{@link #hashCode()}: Computes the hash code for this exception.</li>
+ * </ul>
+ */
 public class ProcessOperationException extends Exception {
     private int statusCode;
     private ExceptionType type;
