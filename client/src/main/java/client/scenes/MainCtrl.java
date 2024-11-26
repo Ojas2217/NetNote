@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2021 Delft University of Technology
  *
@@ -13,14 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package client.scenes;
 
-import commons.Note;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+/**
+ * Controller class for managing the primary stage and scenes of the client application.
+ * <p>
+ * The {@code MainCtrl} class acts as a central point for navigation and UI management.
+ * It initializes the main application stage and handles transitions between the
+ * "Quote Overview" and "Add Quote" scenes.
+ * </p>
+ * <p>
+ * The class depends on {@link NoteOverviewCtrl} and {@link AddNoteControl} for managing
+ * specific functionalities in their respective scenes. It also dynamically updates
+ * the stage's title and content based on the active scene.
+ * </p>
+ */
 public class MainCtrl {
 
     private Stage primaryStage;
@@ -29,19 +43,21 @@ public class MainCtrl {
     private AddNoteControl addCtrl;
     private Scene add;
 
-    public void initialize(Stage primaryStage, Pair<NoteOverviewCtrl, Parent> overview,Pair<AddNoteControl, Parent> add) {
+    public void initialize(Stage primaryStage, Pair<NoteOverviewCtrl, Parent> overview, Pair<AddNoteControl, Parent> add) {
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
-        this.addCtrl=add.getKey();
+        this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
         showOverview();
         primaryStage.show();
     }
+
     public void showOverview() {
         primaryStage.setTitle("Main");
         primaryStage.setScene(overview);
     }
+
     public void showAdd() {
         primaryStage.setTitle("Notes: Adding Note");
         primaryStage.setScene(add);

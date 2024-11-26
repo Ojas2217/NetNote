@@ -6,11 +6,30 @@ import jakarta.ws.rs.core.GenericType;
 
 import java.util.List;
 
+/**
+ * Utility class for interacting with the note-related API endpoints.
+ * <p>
+ * The {@code NoteUtils} class extends {@link ServerUtils} and provides various methods to
+ * interact with the backend API for managing notes. These methods include retrieving, creating,
+ * editing, and deleting notes through HTTP requests.
+ * </p>
+ * <p>
+ * Each method makes a corresponding API call using the {@link ServerUtils} methods, handles exceptions,
+ * and returns the appropriate data, throwing a {@link ProcessOperationException} in case of errors.
+ * </p>
+ * <ul>
+ *     <li>{@link #getNote(long)}: Fetches a specific note by ID.</li>
+ *     <li>{@link #getAllNotes()}: Fetches all notes.</li>
+ *     <li>{@link #createNote(Note)}: Creates a new note.</li>
+ *     <li>{@link #editNote(Note)}: A placeholder method for editing notes (to be implemented with WebSockets).</li>
+ *     <li>{@link #deleteNote(long)}: Deletes a note by its ID.</li>
+ * </ul>
+ */
 public class NoteUtils extends ServerUtils {
-
 
     /**
      * A function that gets a note
+     *
      * @param id the note id
      * @return the note
      * @throws ProcessOperationException e
@@ -20,7 +39,7 @@ public class NoteUtils extends ServerUtils {
             return super.get("/api/notes/" + id,
                     new GenericType<>(){});
         } catch (Exception e) {
-            if(e instanceof ProcessOperationException)
+            if (e instanceof ProcessOperationException)
                 throw (ProcessOperationException) e;
             throw e;
         }
@@ -36,7 +55,7 @@ public class NoteUtils extends ServerUtils {
             return super.get("/api/notes",
                     new GenericType<>(){});
         } catch (Exception e) {
-            if(e instanceof ProcessOperationException)
+            if (e instanceof ProcessOperationException)
                 throw (ProcessOperationException) e;
             throw e;
         }
@@ -53,7 +72,7 @@ public class NoteUtils extends ServerUtils {
             return super.post("/api/notes/", note,
                     new GenericType<>(){});
         } catch (Exception e) {
-            if(e instanceof ProcessOperationException)
+            if (e instanceof ProcessOperationException)
                 throw (ProcessOperationException) e;
             throw e;
         }
@@ -80,7 +99,7 @@ public class NoteUtils extends ServerUtils {
             return super.delete("/api/notes/" + id,
                     new GenericType<>(){});
         } catch (Exception e) {
-            if(e instanceof ProcessOperationException)
+            if (e instanceof ProcessOperationException)
                 throw (ProcessOperationException) e;
             throw e;
         }

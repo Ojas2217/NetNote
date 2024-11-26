@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2021 Delft University of Technology
  *
@@ -13,22 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package client;
 
 import static com.google.inject.Guice.createInjector;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-
 import client.scenes.NoteOverviewCtrl;
 import com.google.inject.Injector;
 import client.scenes.AddNoteControl;
 import client.scenes.MainCtrl;
-
 import client.utils.ServerUtils;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+/**
+ * Main class for the client application.
+ * <p>
+ * This class extends {@link Application} and serves as the entry point for the
+ * JavaFX client. It initializes the dependency injection using Guice, loads
+ * the FXML views, and sets up the primary stage for the application.
+ * </p>
+ * <p>
+ * The {@link ServerUtils} class is used to ensure that the server is available
+ * before proceeding, and controllers like {@link NoteOverviewCtrl},
+ * and {@link MainCtrl} are managed via dependency injection.
+ * </p>
+ */
 public class Main extends Application {
     private static final Injector INJECTOR = createInjector(new MyModule());
 	private static final MyFXML FXML = new MyFXML(INJECTOR);
@@ -43,13 +56,16 @@ public class Main extends Application {
 		var serverUtils = INJECTOR.getInstance(ServerUtils.class);
 
 		// Awaits for the server to become available instead of ending the program
-		if (!serverUtils.isServerAvailable()) {
+		if (!serverUtils.isServerAvailable()) //noinspection CheckStyle
+        {
 			var msg = "Server needs to be started before the client, but it does not seem to be available";
 			System.err.println(msg);
 
+			final int SLEEP_DURATION = 500;
+
 			while (!serverUtils.isServerAvailable()) {
 				System.out.println("Waiting for server...");
-				Thread.sleep(500);
+				Thread.sleep(SLEEP_DURATION);
 			}
 
 			System.out.println("Found server, starting program");
@@ -58,6 +74,6 @@ public class Main extends Application {
 		var overview = FXML.load(NoteOverviewCtrl.class, "client", "scenes", "MainScreen.fxml");
 		var add = FXML.load(AddNoteControl.class, "client", "scenes", "AddNote.fxml");
 		var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-		mainCtrl.initialize(primaryStage, overview,add);
+		mainCtrl.initialize(primaryStage, overview, add);
 	}
 }

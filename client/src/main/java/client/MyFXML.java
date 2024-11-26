@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2021 Delft University of Technology
  *
@@ -13,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package client;
 
 import java.io.IOException;
@@ -29,6 +31,19 @@ import javafx.util.BuilderFactory;
 import javafx.util.Callback;
 import javafx.util.Pair;
 
+/**
+ * Utility class for loading FXML files and injecting dependencies.
+ * <p>
+ * The {@code MyFXML} class simplifies the process of loading FXML files and
+ * initializing their controllers using Guice dependency injection. It supports
+ * dynamic construction of controllers and views, ensuring seamless integration
+ * between FXML files and the application's dependency injection framework.
+ * </p>
+ * <p>
+ * The {@link FXMLLoader} is configured with a custom {@link MyFactory} to retrieve
+ * instances of controllers and other dependencies from the provided {@link Injector}.
+ * </p>
+ */
 public class MyFXML {
 
     private Injector injector;
@@ -53,6 +68,19 @@ public class MyFXML {
         return MyFXML.class.getClassLoader().getResource(path);
     }
 
+    /**
+     * Custom factory for building and injecting instances of FXML controllers and components.
+     * <p>
+     * The {@code MyFactory} class implements both {@link BuilderFactory} and
+     * {@link Callback} to integrate Guice dependency injection into the FXML loading process.
+     * It provides custom logic to retrieve instances of required types from the
+     * {@link Injector}, ensuring that all dependencies are properly resolved.
+     * </p>
+     * <ul>
+     *     <li>{@link #getBuilder(Class)}: Creates a {@link Builder} to construct instances of the given type.</li>
+     *     <li>{@link #call(Class)}: Directly retrieves an instance of the given type from the {@link Injector}.</li>
+     * </ul>
+     */
     private class MyFactory implements BuilderFactory, Callback<Class<?>, Object> {
 
         @Override
