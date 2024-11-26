@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2021 Delft University of Technology
  *
@@ -13,60 +14,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package client.utils;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.ConnectException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-
 import commons.ExceptionType;
 import commons.ProcessOperationException;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
-
-import commons.Note;
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
+import org.springframework.http.HttpStatus;
 
+/**
+ * Utility class for interacting with a remote server.
+ * <p>
+ * {@code ServerUtils} provides methods for making HTTP requests to a server, handling GET, POST, PUT, and DELETE operations.
+ * The class includes functionality to check the availability of the server and performs operations on various resources (e.g., notes) using RESTful endpoints.
+ * </p>
+ * <p>
+ * The class has the following methods:
+ * <ul>
+ *     <li>{@link #isServerAvailable()} - Checks if the server is reachable.</li>
+ *     <li>{@link #get(String, GenericType)} - Performs a GET request to the server for a specified endpoint.</li>
+ *     <li>{@link #delete(String, GenericType)} - Performs a DELETE request to the server for a specified endpoint.</li>
+ *     <li>{@link #put(String, Object, GenericType)} - Performs a PUT request to the server to update a specified resource.</li>
+ *     <li>{@link #post(String, Object, GenericType)} - Performs a POST request to the server to create a new resource.</li>
+ * </ul>
+ * </p>
+ * <p>
+ * The methods handle the response from the server, and throw a {@link ProcessOperationException} if the operation fails.
+ * </p>
+ */
 public class ServerUtils {
 
 	private static final String SERVER = "http://localhost:8080/";
 
 	public ServerUtils() {
 	}
-//
-//	public void getQuotesTheHardWay() throws IOException, URISyntaxException {
-//		var url = new URI("http://localhost:8080/api/notes").toURL();
-//		var is = url.openConnection().getInputStream();
-//		var br = new BufferedReader(new InputStreamReader(is));
-//		String line;
-//		while ((line = br.readLine()) != null) {
-//			System.out.println(line);
-//		}
-//	}
-//
-//	public List<Note> getNotes() {
-//		return ClientBuilder.newClient(new ClientConfig()) //
-//				.target(SERVER).path("api/notes") //
-//				.request(APPLICATION_JSON) //
-//				.get(new GenericType<List<Note>>() {});
-//	}
-//
-//	public Note addNote(Note note) {
-//		return ClientBuilder.newClient(new ClientConfig()) //
-//				.target(SERVER).path("api/notes") //
-//				.request(APPLICATION_JSON) //
-//				.post(Entity.entity(note, APPLICATION_JSON), Note.class);
-//	}
 
+	/**
+	 * Returns whether the server is available.
+	 * */
 	public boolean isServerAvailable() {
 		try {
 			ClientBuilder.newClient(new ClientConfig()) //
@@ -97,9 +89,9 @@ public class ServerUtils {
 				.accept(APPLICATION_JSON)
 				.get();
 
-		if (response.getStatus() == 200 ||
-			response.getStatus() == 201 ||
-			response.getStatus() == 204)
+		if (response.getStatus() == HttpStatus.OK.value() ||
+			response.getStatus() == HttpStatus.CREATED.value() ||
+			response.getStatus() == HttpStatus.NO_CONTENT.value())
 			return response.readEntity(type);
 
 		throw new ProcessOperationException("Operation",
@@ -121,7 +113,7 @@ public class ServerUtils {
 				.request(APPLICATION_JSON)
 				.accept(APPLICATION_JSON)
 				.delete();
-		if (response.getStatus() == 200 || response.getStatus() == 201)
+		if (response.getStatus() == HttpStatus.OK.value() || response.getStatus() == HttpStatus.CREATED.value())
 			return response.readEntity(type);
 		throw new ProcessOperationException("Operation",
 				response.getStatus(), ExceptionType.INVALID_CREDENTIALS);
@@ -143,7 +135,7 @@ public class ServerUtils {
 				.request(APPLICATION_JSON)
 				.accept(APPLICATION_JSON)
 				.put(Entity.entity(body, APPLICATION_JSON));
-		if (response.getStatus() == 200 || response.getStatus() == 201)
+		if (response.getStatus() == HttpStatus.OK.value() || response.getStatus() == HttpStatus.CREATED.value())
 			return response.readEntity(type);
 		throw new ProcessOperationException("Operation",
 				response.getStatus(), ExceptionType.INVALID_CREDENTIALS);
@@ -166,7 +158,7 @@ public class ServerUtils {
 				.request(APPLICATION_JSON)
 				.accept(APPLICATION_JSON)
 				.post(Entity.entity(body, APPLICATION_JSON));
-		if (response.getStatus() == 200 || response.getStatus() == 201)
+		if (response.getStatus() == HttpStatus.OK.value() || response.getStatus() == HttpStatus.CREATED.value())
 			return response.readEntity(type);
 		throw new ProcessOperationException("Operation",
 				response.getStatus(), ExceptionType.INVALID_CREDENTIALS);

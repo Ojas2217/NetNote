@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2021 Delft University of Technology
  *
@@ -13,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package server;
 
 import java.util.Random;
@@ -20,6 +22,13 @@ import java.util.Random;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuration class that defines beans for the application context.
+ * <p>
+ * This class is annotated with {@code @Configuration}, indicating that it contains
+ * one or more {@code @Bean} definitions that can be managed by the Spring container.
+ * </p>
+ */
 @Configuration
 public class Config {
 

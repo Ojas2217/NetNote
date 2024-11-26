@@ -1,3 +1,4 @@
+
 /**
  * Copyright 2024 Sebastian Proksch
  * 
@@ -13,6 +14,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package server.api;
 
 import java.util.LinkedList;
@@ -26,6 +28,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 import commons.Person;
 
+/**
+ * REST controller for managing a list of people.
+ * <p>
+ * The {@code PersonListingController} class provides endpoints to list and add {@link Person}
+ * objects. It is annotated with {@link RestController} and {@link RequestMapping}, with the
+ * base path set to {@code /api/people}.
+ * </p>
+ * <p>
+ * This controller allows clients to:
+ * <ul>
+ *     <li>Retrieve the list of people ({@link GetMapping}).</li>
+ *     <li>Add a new person to the list ({@link PostMapping}).</li>
+ * </ul>
+ * </p>
+ * <p>
+ * The list of people is maintained in memory, and new people are added via a {@link PostMapping}
+ * request. If the person is not already in the list, they are added to the {@link List}.
+ * </p>
+ */
 @RestController
 @RequestMapping("/api/people")
 public class PersonListingController {

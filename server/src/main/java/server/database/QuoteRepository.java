@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package server.database;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import commons.Quote;
 
+/***/
 public interface QuoteRepository extends JpaRepository<Quote, Long> {}

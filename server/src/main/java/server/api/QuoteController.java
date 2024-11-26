@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2021 Delft University of Technology
  *
@@ -13,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package server.api;
 
 import java.util.List;
@@ -29,6 +31,26 @@ import org.springframework.web.bind.annotation.RestController;
 import commons.Quote;
 import server.database.QuoteRepository;
 
+/**
+ * REST controller for managing quotes.
+ * <p>
+ * The {@code QuoteController} class provides endpoints to list, add, retrieve, and get a random quote.
+ * It is annotated with {@link RestController} and {@link RequestMapping}, with the base path set to {@code /api/quotes}.
+ * </p>
+ * <p>
+ * This controller allows clients to:
+ * <ul>
+ *     <li>Retrieve the list of all quotes ({@link GetMapping}).</li>
+ *     <li>Retrieve a specific quote by its ID ({@link GetMapping} with {@link PathVariable}).</li>
+ *     <li>Add a new quote to the collection ({@link PostMapping}).</li>
+ *     <li>Retrieve a random quote from the collection ({@link GetMapping} with a custom path).</li>
+ * </ul>
+ * </p>
+ * <p>
+ * The controller uses a {@link Random} object for generating random selections and interacts with
+ * a {@link QuoteRepository} to store and retrieve quotes.
+ * </p>
+ */
 @RestController
 @RequestMapping("/api/quotes")
 public class QuoteController {
