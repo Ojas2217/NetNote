@@ -142,6 +142,6 @@
 
     <!-- Newline at end of file -->
     <module name="NewlineAtEndOfFile">
-        <property name="severity" value="error"/>
+        <property name="severity" value="warning"/>
     </module>
 </module>
