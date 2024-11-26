@@ -30,7 +30,7 @@ import commons.ProcessOperationException;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
-import commons.Quote;
+import commons.Note;
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -42,30 +42,30 @@ public class ServerUtils {
 
 	public ServerUtils() {
 	}
-
-	public void getQuotesTheHardWay() throws IOException, URISyntaxException {
-		var url = new URI("http://localhost:8080/api/quotes").toURL();
-		var is = url.openConnection().getInputStream();
-		var br = new BufferedReader(new InputStreamReader(is));
-		String line;
-		while ((line = br.readLine()) != null) {
-			System.out.println(line);
-		}
-	}
-
-	public List<Quote> getQuotes() {
-		return ClientBuilder.newClient(new ClientConfig()) //
-				.target(SERVER).path("api/quotes") //
-				.request(APPLICATION_JSON) //
-				.get(new GenericType<List<Quote>>() {});
-	}
-
-	public Quote addQuote(Quote quote) {
-		return ClientBuilder.newClient(new ClientConfig()) //
-				.target(SERVER).path("api/quotes") //
-				.request(APPLICATION_JSON) //
-				.post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
-	}
+//
+//	public void getQuotesTheHardWay() throws IOException, URISyntaxException {
+//		var url = new URI("http://localhost:8080/api/notes").toURL();
+//		var is = url.openConnection().getInputStream();
+//		var br = new BufferedReader(new InputStreamReader(is));
+//		String line;
+//		while ((line = br.readLine()) != null) {
+//			System.out.println(line);
+//		}
+//	}
+//
+//	public List<Note> getNotes() {
+//		return ClientBuilder.newClient(new ClientConfig()) //
+//				.target(SERVER).path("api/notes") //
+//				.request(APPLICATION_JSON) //
+//				.get(new GenericType<List<Note>>() {});
+//	}
+//
+//	public Note addNote(Note note) {
+//		return ClientBuilder.newClient(new ClientConfig()) //
+//				.target(SERVER).path("api/notes") //
+//				.request(APPLICATION_JSON) //
+//				.post(Entity.entity(note, APPLICATION_JSON), Note.class);
+//	}
 
 	public boolean isServerAvailable() {
 		try {

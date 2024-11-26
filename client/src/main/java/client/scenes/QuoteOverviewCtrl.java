@@ -59,7 +59,7 @@
 //        colQuote.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().quote));
 //    }
 //
-//    public void addQuote() {
+//    public void addNote() {
 //        mainCtrl.showAdd();
 //    }
 //

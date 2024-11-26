@@ -15,7 +15,7 @@
  */
 package client;
 
-import client.scenes.NoteSelectionCtrl;
+import client.scenes.NoteOverviewCtrl;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
@@ -31,6 +31,6 @@ public class MyModule implements Module {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
         //binder.bind(AddQuoteCtrl.class).in(Scopes.SINGLETON);
         //binder.bind(QuoteOverviewCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(NoteSelectionCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(NoteOverviewCtrl.class).in(Scopes.SINGLETON);
     }
 }
