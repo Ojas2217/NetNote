@@ -42,31 +42,6 @@ public class ServerUtils {
 
 	public ServerUtils() {
 	}
-//
-//	public void getQuotesTheHardWay() throws IOException, URISyntaxException {
-//		var url = new URI("http://localhost:8080/api/notes").toURL();
-//		var is = url.openConnection().getInputStream();
-//		var br = new BufferedReader(new InputStreamReader(is));
-//		String line;
-//		while ((line = br.readLine()) != null) {
-//			System.out.println(line);
-//		}
-//	}
-//
-//	public List<Note> getNotes() {
-//		return ClientBuilder.newClient(new ClientConfig()) //
-//				.target(SERVER).path("api/notes") //
-//				.request(APPLICATION_JSON) //
-//				.get(new GenericType<List<Note>>() {});
-//	}
-//
-//	public Note addNote(Note note) {
-//		return ClientBuilder.newClient(new ClientConfig()) //
-//				.target(SERVER).path("api/notes") //
-//				.request(APPLICATION_JSON) //
-//				.post(Entity.entity(note, APPLICATION_JSON), Note.class);
-//	}
-
 	public boolean isServerAvailable() {
 		try {
 			ClientBuilder.newClient(new ClientConfig()) //
