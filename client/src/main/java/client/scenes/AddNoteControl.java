@@ -51,6 +51,10 @@ public class AddNoteControl {
         mainCtrl.showOverview();
     }
 
+    /**
+     * Adds a note on the server.
+     * In case of exceptions, shows an alert.
+     **/
     public void ok() {
         try {
             server.createNote(new Note(noteTitle.getText(), "empty"));
@@ -69,6 +73,10 @@ public class AddNoteControl {
         noteTitle.clear();
     }
 
+
+    /**
+     * Handles keyboard input
+     * */
     public void keyPressed(KeyEvent e) {
         switch (e.getCode()) {
             case ENTER:

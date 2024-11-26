@@ -32,8 +32,10 @@ import org.springframework.http.HttpStatus;
 /**
  * Utility class for interacting with a remote server.
  * <p>
- * {@code ServerUtils} provides methods for making HTTP requests to a server, handling GET, POST, PUT, and DELETE operations.
- * The class includes functionality to check the availability of the server and performs operations on various resources (e.g., notes) using RESTful endpoints.
+ * {@code ServerUtils} provides methods for making HTTP requests to a server, handling GET, POST, PUT,
+ * and DELETE operations.
+ * The class includes functionality to check the availability of the server and performs operations on
+ * various resources (e.g., notes) using RESTful endpoints.
  * </p>
  * <p>
  * The class has the following methods:
@@ -41,12 +43,15 @@ import org.springframework.http.HttpStatus;
  *     <li>{@link #isServerAvailable()} - Checks if the server is reachable.</li>
  *     <li>{@link #get(String, GenericType)} - Performs a GET request to the server for a specified endpoint.</li>
  *     <li>{@link #delete(String, GenericType)} - Performs a DELETE request to the server for a specified endpoint.</li>
- *     <li>{@link #put(String, Object, GenericType)} - Performs a PUT request to the server to update a specified resource.</li>
- *     <li>{@link #post(String, Object, GenericType)} - Performs a POST request to the server to create a new resource.</li>
+ *     <li>{@link #put(String, Object, GenericType)} - Performs a PUT request to the server to update
+ *     a specified resource.</li>
+ *     <li>{@link #post(String, Object, GenericType)} - Performs a POST request to the server to create
+ *     a new resource.</li>
  * </ul>
  * </p>
  * <p>
- * The methods handle the response from the server, and throw a {@link ProcessOperationException} if the operation fails.
+ * The methods handle the response from the server, and throw a {@link ProcessOperationException}
+ * if the operation fails.
  * </p>
  */
 public class ServerUtils {

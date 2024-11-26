@@ -43,7 +43,16 @@ public class MainCtrl {
     private AddNoteControl addCtrl;
     private Scene add;
 
-    public void initialize(Stage primaryStage, Pair<NoteOverviewCtrl, Parent> overview, Pair<AddNoteControl, Parent> add) {
+    /**
+     * Initializes the primary stage and sets up the scenes and controllers for the application.
+     *
+     * @param primaryStage the main application stage
+     * @param overview a pair containing the controller and root node for the note overview scene
+     * @param add a pair containing the controller and root node for the add note scene
+     */
+    public void initialize(Stage primaryStage,
+                           Pair<NoteOverviewCtrl, Parent> overview,
+                           Pair<AddNoteControl, Parent> add) {
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
@@ -62,6 +71,5 @@ public class MainCtrl {
         primaryStage.setTitle("Notes: Adding Note");
         primaryStage.setScene(add);
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
-
     }
 }

@@ -47,6 +47,13 @@ public class NoteController {
         return repo.findAll();
     }
 
+    /**
+     * Handles a GET request to retrieve a Note by its ID.
+     *
+     * @param id the ID of the Note to retrieve
+     * @return a ResponseEntity containing the Note if found, or a bad request response if the ID is invalid
+     * or does not exist.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Note> getById(@PathVariable("id") long id) {
         if (id < 0 || !repo.existsById(id)) {
@@ -55,6 +62,12 @@ public class NoteController {
         return ResponseEntity.ok(repo.findById(id).get());
     }
 
+    /**
+     * Handles a POST request to add a new Note.
+     *
+     * @param note the Note to be added, provided in the request body
+     * @return a ResponseEntity containing the saved Note if valid, or a bad request response if the Note is invalid
+     */
     @PostMapping(path = {"", "/"})
     public ResponseEntity<Note> add(@RequestBody Note note) {
         if (isNullOrEmpty(note.title) || isNullOrEmpty(note.content)) {
@@ -64,6 +77,13 @@ public class NoteController {
         return ResponseEntity.ok(saved);
     }
 
+    /**
+     * Handles a DELETE request to remove a Note by its ID.
+     *
+     * @param id the ID of the Note to be deleted
+     * @return a ResponseEntity containing the deleted Note if successful,
+     *         a bad request response if the ID is invalid, or a forbidden response if an error occurs
+     */
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Note> deleteNoteById(@PathVariable Long id) {
         try {

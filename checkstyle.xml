@@ -18,7 +18,7 @@
         <module name="MissingJavadocMethod">
             <property name="severity" value="warning"/>
             <property name="scope" value="private"/>
-            <property name="minLineCount" value="2"/>
+            <property name="minLineCount" value="3"/>
             <property name="allowedAnnotations" value="Main,Override,Deprecated"/>
             <property name="tokens" value="METHOD_DEF, CTOR_DEF, COMPACT_CTOR_DEF"/>
             <property name="allowMissingPropertyJavadoc" value="true"/>

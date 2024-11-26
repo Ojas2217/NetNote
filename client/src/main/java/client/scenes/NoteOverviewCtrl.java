@@ -57,6 +57,11 @@ public class NoteOverviewCtrl implements Initializable {
         mainCtrl.showAdd();
     }
 
+    /**
+     * Deletes the selected note from the table and refreshes the table view.
+     *
+     * @throws ProcessOperationException if there is an issue during the deletion process
+     */
     public void deleteNote() throws ProcessOperationException {
         Note note = table.getSelectionModel().getSelectedItem();
         if (note != null) {

@@ -42,7 +42,8 @@
 //     * Adds a note to listViewNoteSelection which content is equal to the content of the currentNote
 //     */
 //    public void noteAddButton() {
-//        Note newNote = new Note(noteTitle.getText(), currentNote.getText()); //The title should still be implemented here
+//        Note newNote = new Note(noteTitle.getText(), currentNote.getText());
+// The title should still be implemented here
 //        availableNotes.getItems().add(newNote);
 //
 //        // Change the display text of the listView to the title of the Note

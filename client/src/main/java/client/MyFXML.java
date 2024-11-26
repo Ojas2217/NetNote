@@ -52,6 +52,15 @@ public class MyFXML {
         this.injector = injector;
     }
 
+    /**
+     * Loads an FXML file, initializes its controller, and returns a pair containing the controller and its parent node.
+     *
+     * @param <T> the type of the controller
+     * @param c the class of the controller
+     * @param parts the path parts to locate the FXML file
+     * @return a pair containing the controller of type T and the parent node
+     * @throws RuntimeException if an IOException occurs during the loading process
+     */
     public <T> Pair<T, Parent> load(Class<T> c, String... parts) {
         try {
             var loader = new FXMLLoader(getLocation(parts), null, null, new MyFactory(), StandardCharsets.UTF_8);

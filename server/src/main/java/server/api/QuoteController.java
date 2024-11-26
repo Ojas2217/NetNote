@@ -35,7 +35,8 @@ import server.database.QuoteRepository;
  * REST controller for managing quotes.
  * <p>
  * The {@code QuoteController} class provides endpoints to list, add, retrieve, and get a random quote.
- * It is annotated with {@link RestController} and {@link RequestMapping}, with the base path set to {@code /api/quotes}.
+ * It is annotated with {@link RestController} and {@link RequestMapping}, with the base path set to
+ * {@code /api/quotes}.
  * </p>
  * <p>
  * This controller allows clients to:
@@ -68,6 +69,7 @@ public class QuoteController {
         return repo.findAll();
     }
 
+    /***/
     @GetMapping("/{id}")
     public ResponseEntity<Quote> getById(@PathVariable("id") long id) {
         if (id < 0 || !repo.existsById(id)) {
@@ -76,6 +78,7 @@ public class QuoteController {
         return ResponseEntity.ok(repo.findById(id).get());
     }
 
+    /***/
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Quote> add(@RequestBody Quote quote) {
 
@@ -92,6 +95,7 @@ public class QuoteController {
         return s == null || s.isEmpty();
     }
 
+    /***/
     @GetMapping("rnd")
     public ResponseEntity<Quote> getRandom() {
         var quotes = repo.findAll();
