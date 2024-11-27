@@ -1,6 +1,7 @@
 package client.scenes;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
@@ -13,6 +14,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+
+import javax.swing.*;
 
 /**
  * Controller for the Note Overview view.
@@ -41,6 +45,10 @@ public class NoteOverviewCtrl implements Initializable {
     private TableView<Note> table;
     @FXML
     private TableColumn<Note, String> noteTitle;
+    @FXML
+    private TextField searchText;
+
+    private List<Note> notes;
 
     @Inject
     public NoteOverviewCtrl(NoteUtils server, MainCtrl mainCtrl) {
@@ -70,9 +78,27 @@ public class NoteOverviewCtrl implements Initializable {
         refresh();
     }
 
-    public void refresh() throws ProcessOperationException {
-        var notes = server.getAllNotes();
-        data = FXCollections.observableList(notes);
+    public void refresh() {
+        try {
+            notes = server.getAllNotes();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            String errorMessage = "Error retrieving data from the server, unable to refresh notes";
+            JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
+        }
+
+        String text = searchText.getText();
+        List<Note> filteredNotes = notes
+                .stream()
+                .filter(x -> x.getTitle().contains(text))
+                .toList();
+
+        data = FXCollections.observableList(filteredNotes);
         table.setItems(data);
+    }
+
+    public void empty() {
+        searchText.setText("");
+        refresh();
     }
 }
