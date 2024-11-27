@@ -87,12 +87,6 @@ public class NoteOverviewCtrl implements Initializable {
         displaySelectedNote();
     }
 
-    public Optional<Note> selectAndUpdate() throws ProcessOperationException {
-        if (table.getSelectionModel().getSelectedItem() != null)
-            return Optional.of(server.getNote(table.getSelectionModel().getSelectedItem().id));
-        return Optional.empty();
-    }
-
     /**
      * If a note is selected, updates the overview to show the title and content.
      * */
@@ -102,5 +96,15 @@ public class NoteOverviewCtrl implements Initializable {
             selectedNoteTitle.setText(note.get().title);
             selectedNoteContent.setText(note.get().content);
         }
+    }
+
+    /**
+     * @return Optional {@code Note} with a note if one is selected.
+     *         Empty Optional else.
+     * */
+    public Optional<Note> selectAndUpdate() throws ProcessOperationException {
+        if (table.getSelectionModel().getSelectedItem() != null)
+            return Optional.of(server.getNote(table.getSelectionModel().getSelectedItem().id));
+        return Optional.empty();
     }
 }
