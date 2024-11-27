@@ -2,8 +2,6 @@ package client.scenes;
 
 import java.net.URL;
 import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.OptionalLong;
 import java.util.ResourceBundle;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
@@ -18,8 +16,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
-
-import javax.swing.text.html.Option;
 
 /**
  * Controller for the Note Overview view.
