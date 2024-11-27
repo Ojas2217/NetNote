@@ -11,8 +11,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 
 /**
  * Controller for the Note Overview view.
@@ -36,11 +38,15 @@ import javafx.scene.control.TableView;
 public class NoteOverviewCtrl implements Initializable {
     private final NoteUtils server;
     private final MainCtrl mainCtrl;
-    private ObservableList<Note> data;
     @FXML
     private TableView<Note> table;
     @FXML
     private TableColumn<Note, String> noteTitle;
+    @FXML
+    private Label selectedNoteTitle;
+    @FXML
+    private TextArea selectedNoteContent;
+
 
     @Inject
     public NoteOverviewCtrl(NoteUtils server, MainCtrl mainCtrl) {
@@ -58,7 +64,7 @@ public class NoteOverviewCtrl implements Initializable {
     }
 
     /**
-     * Deletes the selected note from the table and refreshes the table view.
+     * Deletes the selected note from the table and refreshes the overview.
      *
      * @throws ProcessOperationException if there is an issue during the deletion process
      */
@@ -70,9 +76,23 @@ public class NoteOverviewCtrl implements Initializable {
         refresh();
     }
 
+    /**
+     * Responsible for refreshing all content in the overview screen.
+     * */
     public void refresh() throws ProcessOperationException {
         var notes = server.getAllNotes();
-        data = FXCollections.observableList(notes);
+        ObservableList<Note> data = FXCollections.observableList(notes);
         table.setItems(data);
+        displaySelectedNote();
+    }
+
+    public Note selectAndUpdate() throws ProcessOperationException {
+        return server.getNote(table.getSelectionModel().getSelectedItem().id);
+    }
+
+    public void displaySelectedNote() throws ProcessOperationException {
+        Note note = selectAndUpdate();
+        selectedNoteTitle.setText(note.title);
+        selectedNoteContent.setText(note.content);
     }
 }
