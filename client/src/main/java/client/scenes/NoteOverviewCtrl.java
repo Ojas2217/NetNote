@@ -1,6 +1,9 @@
 package client.scenes;
 
 import java.net.URL;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 import java.util.ResourceBundle;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
@@ -15,6 +18,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+
+import javax.swing.text.html.Option;
 
 /**
  * Controller for the Note Overview view.
@@ -86,13 +91,20 @@ public class NoteOverviewCtrl implements Initializable {
         displaySelectedNote();
     }
 
-    public Note selectAndUpdate() throws ProcessOperationException {
-        return server.getNote(table.getSelectionModel().getSelectedItem().id);
+    public Optional<Note> selectAndUpdate() throws ProcessOperationException {
+        if (table.getSelectionModel().getSelectedItem() != null)
+            return Optional.of(server.getNote(table.getSelectionModel().getSelectedItem().id));
+        return Optional.empty();
     }
 
+    /**
+     * If a note is selected, updates the overview to show the title and content.
+     * */
     public void displaySelectedNote() throws ProcessOperationException {
-        Note note = selectAndUpdate();
-        selectedNoteTitle.setText(note.title);
-        selectedNoteContent.setText(note.content);
+        Optional<Note> note = selectAndUpdate();
+        if (note.isPresent()) {
+            selectedNoteTitle.setText(note.get().title);
+            selectedNoteContent.setText(note.get().content);
+        }
     }
 }
