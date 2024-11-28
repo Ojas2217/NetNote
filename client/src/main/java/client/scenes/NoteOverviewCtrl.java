@@ -3,6 +3,7 @@ package client.scenes;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalLong;
 import java.util.ResourceBundle;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
@@ -51,6 +52,7 @@ public class NoteOverviewCtrl implements Initializable {
     private Label selectedNoteTitle;
     @FXML
     private TextArea selectedNoteContent;
+    private OptionalLong selectedNoteId = OptionalLong.empty();
 
     @Inject
     public NoteOverviewCtrl(NoteUtils server, MainCtrl mainCtrl) {
@@ -104,29 +106,49 @@ public class NoteOverviewCtrl implements Initializable {
     }
 
     /**
-     * If a note is selected, updates the overview to show the title and content.
-     * */
-    public void displaySelectedNote() {
-        Optional<Note> note = selectAndUpdate();
-        if (note.isPresent()) {
-            selectedNoteTitle.setText(note.get().title);
-            selectedNoteContent.setText(note.get().content);
+     * Updates locally stored {@code selectedNoteId}
+     * <p>
+     * Since the id is used in many parts of the code, this method seeks to make the code more readable by
+     * locally storing the id.
+     * </p>
+     */
+    public void updateSelection() {
+        int index = table.getSelectionModel().getSelectedIndex();
+
+        if (index == -1) {                           // from what I understand, -1 is the default
+            selectedNoteId = OptionalLong.empty();   // for when nothing is selected
+        } else {
+            selectedNoteId = OptionalLong.of(table.getSelectionModel().getSelectedItem().id);
         }
     }
 
     /**
-     * @return {@code Optional<Note>} with the {@code Note} if one is selected.
-     *         {@code Optional.empty()} if a note isn't selected or doesn't exist on the server.
+     * If a note is selected, updates the overview to show the title and content.
      * */
-    public Optional<Note> selectAndUpdate() {
-        if (table.getSelectionModel().getSelectedItem() != null) {
-            try {
-                return Optional.of(server.getNote(table.getSelectionModel().getSelectedItem().id));
-            } catch (Exception e) {
-                return Optional.empty();
-            }
+    public void displaySelectedNote() {
+        updateSelection();
+        if (selectedNoteId.isEmpty()) return;
+
+        Optional<Note> note = fetchSelectedNote();
+        if (note.isEmpty()) return;
+
+        selectedNoteTitle.setText(note.get().title);
+        selectedNoteContent.setText(note.get().content);
+    }
+
+    /**
+     * @return {@code Optional<Note>} with the {@code Note} if one is selected.
+     * {@code Optional.empty()} if a note isn't selected or doesn't exist on the server.
+     */
+    public Optional<Note> fetchSelectedNote() {
+        if (selectedNoteId.isEmpty())
+            return Optional.empty();
+
+        try {
+            return Optional.of(server.getNote(selectedNoteId.getAsLong()));
+        } catch (Exception e) {
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     public void empty() {
