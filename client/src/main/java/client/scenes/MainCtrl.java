@@ -62,9 +62,14 @@ public class MainCtrl {
         primaryStage.show();
     }
 
+    /**
+     * Shows the main overview and refreshes the tableView with all the notes from the server
+     */
     public void showOverview() {
         primaryStage.setTitle("Main");
         primaryStage.setScene(overview);
+
+        overviewCtrl.refresh();
     }
 
     public void showAdd() {
