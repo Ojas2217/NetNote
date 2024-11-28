@@ -15,8 +15,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
-
-
 import javax.swing.*;
 
 /**
@@ -54,6 +52,7 @@ public class NoteOverviewCtrl implements Initializable {
     private Label selectedNoteTitle;
     @FXML
     private TextArea selectedNoteContent;
+
     @Inject
     public NoteOverviewCtrl(NoteUtils server, MainCtrl mainCtrl) {
         this.server = server;
@@ -127,13 +126,12 @@ public class NoteOverviewCtrl implements Initializable {
     /**
      * If there is text in the search bar, displays notes whose title contains the text.
      */
-    public void search(){
+    public void search() {
         String text = searchText.getText();
         List<Note> filteredNotes = notes
                 .stream()
                 .filter(x -> x.getTitle().contains(text))
                 .toList();
-
         data = FXCollections.observableList(filteredNotes);
         table.setItems(data);
         displaySelectedNote();
