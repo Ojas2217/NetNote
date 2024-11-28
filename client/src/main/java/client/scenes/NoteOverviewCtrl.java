@@ -56,7 +56,7 @@ public class NoteOverviewCtrl implements Initializable {
     @FXML
     private TextArea selectedNoteContent;
     private String selectedNoteContentBuffer;
-    private OptionalLong selectedNoteId = OptionalLong.empty();
+
     private long selectedNoteId;
 
     @Inject
