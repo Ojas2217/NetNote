@@ -57,6 +57,7 @@ public class NoteOverviewCtrl implements Initializable {
     private TextArea selectedNoteContent;
     private String selectedNoteContentBuffer;
     private OptionalLong selectedNoteId = OptionalLong.empty();
+    private long selectedNoteId;
 
     @Inject
     public NoteOverviewCtrl(NoteUtils server, MainCtrl mainCtrl) {
@@ -82,10 +83,10 @@ public class NoteOverviewCtrl implements Initializable {
         updateSelection();
         Optional<Note> note = fetchSelectedNote();
 
-        if (selectedNoteId.isEmpty()) return;
+        if (getSelectedNoteId().isEmpty()) return;
 
         if (note.isPresent()) {
-            server.deleteNote(selectedNoteId.getAsLong());
+            server.deleteNote(getSelectedNoteId().getAsLong());
         }
 
         refresh();
@@ -125,9 +126,9 @@ public class NoteOverviewCtrl implements Initializable {
         int index = table.getSelectionModel().getSelectedIndex();
 
         if (index == -1) {                           // from what I understand, -1 is the default
-            selectedNoteId = OptionalLong.empty();   // for when nothing is selected
+            selectedNoteId = -1;   // for when nothing is selected
         } else {
-            selectedNoteId = OptionalLong.of(table.getSelectionModel().getSelectedItem().id);
+            selectedNoteId = table.getSelectionModel().getSelectedItem().id;
         }
     }
 
@@ -136,7 +137,7 @@ public class NoteOverviewCtrl implements Initializable {
      * */
     public void displaySelectedNote() {
         updateSelection();
-        if (selectedNoteId.isEmpty()) return;
+        if (getSelectedNoteId().isEmpty()) return;
 
         Optional<Note> note = fetchSelectedNote();
         if (note.isEmpty()) return;
@@ -150,11 +151,11 @@ public class NoteOverviewCtrl implements Initializable {
      * {@code Optional.empty()} if a note isn't selected or doesn't exist on the server.
      */
     public Optional<Note> fetchSelectedNote() {
-        if (selectedNoteId.isEmpty())
+        if (getSelectedNoteId().isEmpty())
             return Optional.empty();
 
         try {
-            return Optional.of(server.getNote(selectedNoteId.getAsLong()));
+            return Optional.of(server.getNote(getSelectedNoteId().getAsLong()));
         } catch (Exception e) {
             return Optional.empty();
         }
@@ -197,5 +198,10 @@ public class NoteOverviewCtrl implements Initializable {
     public void empty() {
         searchText.setText("");
         refresh();
+    }
+
+    public OptionalLong getSelectedNoteId() {
+        if (selectedNoteId < 0) return OptionalLong.empty();
+        return OptionalLong.of(selectedNoteId);
     }
 }
