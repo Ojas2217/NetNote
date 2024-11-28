@@ -1,6 +1,7 @@
 package client.scenes;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import client.utils.NoteUtils;
@@ -12,10 +13,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
+import javax.swing.*;
 
 /**
  * Controller for the Note Overview view.
@@ -39,15 +38,19 @@ import javafx.scene.control.TextArea;
 public class NoteOverviewCtrl implements Initializable {
     private final NoteUtils server;
     private final MainCtrl mainCtrl;
+    private ObservableList<Note> data;
     @FXML
     private TableView<Note> table;
     @FXML
     private TableColumn<Note, String> noteTitle;
     @FXML
+    private TextField searchText;
+
+    private List<Note> notes;
+    @FXML
     private Label selectedNoteTitle;
     @FXML
     private TextArea selectedNoteContent;
-
 
     @Inject
     public NoteOverviewCtrl(NoteUtils server, MainCtrl mainCtrl) {
@@ -80,9 +83,22 @@ public class NoteOverviewCtrl implements Initializable {
     /**
      * Responsible for refreshing all content in the overview screen.
      * */
-    public void refresh() throws ProcessOperationException {
-        var notes = server.getAllNotes();
-        ObservableList<Note> data = FXCollections.observableList(notes);
+    public void refresh() {
+        try {
+            notes = server.getAllNotes();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            String errorMessage = "Error retrieving data from the server, unable to refresh notes";
+            JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
+        }
+
+        String text = searchText.getText();
+        List<Note> filteredNotes = notes
+                .stream()
+                .filter(x -> x.getTitle().contains(text))
+                .toList();
+
+        data = FXCollections.observableList(filteredNotes);
         table.setItems(data);
         displaySelectedNote();
     }
@@ -106,5 +122,10 @@ public class NoteOverviewCtrl implements Initializable {
         if (table.getSelectionModel().getSelectedItem() != null)
             return Optional.of(server.getNote(table.getSelectionModel().getSelectedItem().id));
         return Optional.empty();
+    }
+
+    public void empty() {
+        searchText.setText("");
+        refresh();
     }
 }
