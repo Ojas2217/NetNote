@@ -17,13 +17,10 @@
 
 package client.scenes;
 
-import commons.ProcessOperationException;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-
-import javax.swing.*;
 
 /**
  * Controller class for managing the primary stage and scenes of the client application.
@@ -72,13 +69,7 @@ public class MainCtrl {
         primaryStage.setTitle("Main");
         primaryStage.setScene(overview);
 
-        try {
-            overviewCtrl.refresh();
-        } catch (ProcessOperationException ex) {
-            System.out.println(ex.getMessage());
-            String errorMessage = "Error retrieving data from the server, unable to refresh notes";
-            JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
-        }
+        overviewCtrl.refresh();
     }
 
     public void showAdd() {
