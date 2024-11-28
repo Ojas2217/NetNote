@@ -79,10 +79,15 @@ public class NoteOverviewCtrl implements Initializable {
      * @throws ProcessOperationException if there is an issue during the deletion process
      */
     public void deleteNote() throws ProcessOperationException {
-        Note note = table.getSelectionModel().getSelectedItem();
-        if (note != null) {
-            server.deleteNote(note.id);
+        updateSelection();
+        Optional<Note> note = fetchSelectedNote();
+
+        if (selectedNoteId.isEmpty()) return;
+
+        if (note.isPresent()) {
+            server.deleteNote(selectedNoteId.getAsLong());
         }
+
         refresh();
     }
 
