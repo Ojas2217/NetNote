@@ -109,7 +109,7 @@
           <content>
             <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="545.0" prefWidth="389.0">
               <children>
-                        <TextArea fx:id="currentNote" layoutY="40.0" prefHeight="505.0" prefWidth="439.0" promptText=" [Write your note here]">
+                        <TextArea fx:id="selectedNoteContent" layoutY="41.0" prefHeight="505.0" prefWidth="439.0" promptText=" [Write your note here]">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -117,7 +117,7 @@
                               <Insets top="100.0" />
                            </opaqueInsets>
                         </TextArea>
-                <Label alignment="CENTER" layoutX="179.0" layoutY="14.0" text="noteName" textAlignment="CENTER" wrapText="false">
+                <Label fx:id="selectedNoteTitle" alignment="CENTER" layoutX="179.0" layoutY="14.0" text="noteName" textAlignment="CENTER" wrapText="false">
                            <font>
                       <Font size="18.0" fx:id="x1" />
                            </font>
