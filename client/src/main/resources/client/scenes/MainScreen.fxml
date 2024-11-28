@@ -95,10 +95,9 @@
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="498.0" prefWidth="670.0">
                            <children>
-                              <ListView fx:id="listViewNoteSelection" layoutX="7.0" layoutY="14.0" prefHeight="477.0" prefWidth="200.0" />
                               <TableView fx:id="table" layoutX="-4.0" layoutY="7.0" prefHeight="492.0" prefWidth="222.0">
                                 <columns>
-                                  <TableColumn fx:id="noteTitle" prefWidth="221.60000004768372" text="Notes" />
+                                  <TableColumn fx:id="noteTitles" prefWidth="221.60000004768372" text="Notes" />
                                 </columns>
                               </TableView>
                            </children></AnchorPane>
