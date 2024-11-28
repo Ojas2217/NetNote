@@ -7,6 +7,7 @@ import java.util.OptionalLong;
 import java.util.ResourceBundle;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
+import commons.ExceptionType;
 import commons.Note;
 import commons.ProcessOperationException;
 import javafx.beans.property.SimpleStringProperty;
@@ -52,6 +53,7 @@ public class NoteOverviewCtrl implements Initializable {
     private Label selectedNoteTitle;
     @FXML
     private TextArea selectedNoteContent;
+    private String selectedNoteContentBuffer;
     private OptionalLong selectedNoteId = OptionalLong.empty();
 
     @Inject
@@ -149,6 +151,40 @@ public class NoteOverviewCtrl implements Initializable {
         } catch (Exception e) {
             return Optional.empty();
         }
+    }
+
+    /**
+     * Sends {@link Note} content to the server.
+     * <p>
+     *     This method verifies whether the currently selected {@link Note} exists on the server
+     *     and if yes, sends any changes back to the server. If the note is not present,
+     *     shows an error message using an {@link Alert}.
+     * </p>
+     * */
+    public void sendNoteContentToServer() {
+        Optional<Note> note = fetchSelectedNote();
+        try {
+            if (note.isEmpty())
+                throw new ProcessOperationException(
+                        "The note you're trying to edit is not on the server",
+                        HttpStatus.NOT_FOUND.value(),
+                        ExceptionType.SERVER_ERROR
+                );
+
+            updateContentBuffer();
+            note.get().content = selectedNoteContentBuffer;
+            server.editNote(note.get());
+
+        } catch (ProcessOperationException e) {
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    public void updateContentBuffer() {
+        selectedNoteContentBuffer = selectedNoteContent.getText();
     }
 
     public void empty() {
