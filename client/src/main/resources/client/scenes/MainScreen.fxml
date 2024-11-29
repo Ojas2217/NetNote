@@ -52,7 +52,7 @@
 
 <VBox alignment="CENTER" prefHeight="646.0" prefWidth="1017.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.NoteOverviewCtrl">
   <children>
-    <MenuBar VBox.vgrow="NEVER">
+    <MenuBar VBox.vgrow="ALWAYS">
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
@@ -91,23 +91,23 @@
         </Menu>
       </menus>
     </MenuBar>
-      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="1018.0">
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="1018.0" VBox.vgrow="ALWAYS">
          <children>
-            <AnchorPane layoutX="912.0" prefHeight="30.0" prefWidth="107.0">
+            <HBox layoutY="-1.0" prefHeight="32.0" prefWidth="1018.0">
                <children>
-                  <Button layoutY="-2.0" mnemonicParsing="false" onAction="#empty" prefHeight="32.0" prefWidth="107.0" text="Clear">
+                  <Button mnemonicParsing="false" onAction="#search" prefHeight="48.0" prefWidth="97.0" text="Search" HBox.hgrow="ALWAYS">
                      <font>
-                        <Font name="System Bold" size="13.0" />
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Button>
+                  <TextField fx:id="searchText" prefHeight="32.0" prefWidth="826.0" HBox.hgrow="ALWAYS" />
+                  <Button mnemonicParsing="false" onAction="#empty" prefHeight="39.0" prefWidth="94.0" text="Clear" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
                      </font>
                   </Button>
                </children>
-            </AnchorPane>
-            <TextField fx:id="searchText" layoutX="106.0" layoutY="-2.0" prefHeight="32.0" prefWidth="805.0" />
-            <Button layoutY="-1.0" mnemonicParsing="false" onAction="#search" prefHeight="30.0" prefWidth="107.0" text="Search">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Button>
+            </HBox>
          </children>
       </AnchorPane>
     <SplitPane focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
@@ -118,7 +118,7 @@
                      <children>
                         <HBox fx:id="hbox" alignment="CENTER" prefHeight="556.0" prefWidth="1016.8" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <AnchorPane prefHeight="556.0" prefWidth="222.0" style="-fx-background-color: black;">
+                              <AnchorPane prefHeight="556.0" prefWidth="222.0" style="-fx-background-color: black;" HBox.hgrow="ALWAYS">
                                  <children>
                                     <TableView fx:id="table" prefHeight="556.0" prefWidth="222.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <columns>
@@ -127,7 +127,7 @@
                                     </TableView>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane prefHeight="498.0" prefWidth="527.0">
+                              <AnchorPane prefHeight="498.0" prefWidth="527.0" HBox.hgrow="ALWAYS">
                                  <children>
                                     <Label fx:id="selectedNoteTitle" layoutX="225.0" text="NoteTitle">
                                        <font>
@@ -137,10 +137,11 @@
                                     <TextArea fx:id="selectedNoteContent" layoutY="28.0" prefHeight="528.0" prefWidth="527.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="28.0">
                                        <font>
                                           <Font size="22.0" />
-                                       </font></TextArea>
+                                       </font>
+                                    </TextArea>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane prefHeight="512.0" prefWidth="268.0">
+                              <AnchorPane prefHeight="512.0" prefWidth="268.0" HBox.hgrow="ALWAYS">
                                  <children>
                                     <TextArea layoutY="27.0" prefHeight="528.0" prefWidth="268.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0" />
                                     <Label layoutX="76.0" layoutY="1.0" text="MarkdownView">
@@ -158,9 +159,9 @@
             </SplitPane>
          </items>
     </SplitPane>
-      <HBox id="HBox" alignment="CENTER_LEFT" prefHeight="22.0" prefWidth="1017.0" spacing="5.0">
+      <HBox id="HBox" alignment="CENTER_LEFT" maxHeight="-Infinity" prefHeight="0.0" prefWidth="1018.0" spacing="5.0" VBox.vgrow="ALWAYS">
          <children>
-            <ButtonBar>
+            <ButtonBar maxHeight="-Infinity" maxWidth="-Infinity" nodeOrientation="RIGHT_TO_LEFT" prefHeight="94.0" prefWidth="1012.0" HBox.hgrow="ALWAYS">
                <buttons>
                   <Button mnemonicParsing="false" onAction="#addNote" text="Add">
                      <font>
