@@ -11,9 +11,7 @@
       <Button layoutX="419.0" layoutY="105.0" mnemonicParsing="false" onAction="#ok" text="Ok" />
       <Button layoutX="14.0" layoutY="105.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" />
       <TextField fx:id="noteTitle" layoutX="43.0" layoutY="61.0" prefHeight="26.0" prefWidth="383.0" />
-      <Label layoutX="216.0" layoutY="29.0" />
-      <Label layoutX="28.0" layoutY="66.0" />
-      <Label layoutX="71.0" layoutY="22.0" prefHeight="30.0" prefWidth="327.0" text="Please enter the title of your Note:">
+      <Label layoutX="73.0" layoutY="27.0" prefHeight="35.0" prefWidth="383.0" text="Please enter the title of your Note:" textAlignment="CENTER" AnchorPane.bottomAnchor="85.0" AnchorPane.leftAnchor="73.0" AnchorPane.rightAnchor="14.199999999999989" AnchorPane.topAnchor="27.0">
          <font>
             <Font size="20.0" />
          </font>
