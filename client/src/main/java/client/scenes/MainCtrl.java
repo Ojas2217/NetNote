@@ -71,7 +71,7 @@ public class MainCtrl {
     public void showOverview() {
         primaryStage.setTitle("Main");
         primaryStage.setScene(overview);
-
+        overview.setOnKeyPressed(e -> overviewCtrl.keyPressed(e));
         overviewCtrl.refresh();
     }
 
