@@ -98,6 +98,7 @@ public class NoteOverviewCtrl implements Initializable {
      * Responsible for refreshing all content in the overview screen.
      * */
     public void refresh() {
+        sendNoteContentToServer();
         try {
             notes = server.getAllNotes();
         } catch (Exception e) {
