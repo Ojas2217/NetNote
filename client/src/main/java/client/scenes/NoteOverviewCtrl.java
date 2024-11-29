@@ -14,6 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javax.swing.*;
 
 /**
@@ -58,6 +59,8 @@ public class NoteOverviewCtrl implements Initializable {
         this.mainCtrl = mainCtrl;
     }
 
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         noteTitle.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().title));
@@ -91,16 +94,7 @@ public class NoteOverviewCtrl implements Initializable {
             String errorMessage = "Error retrieving data from the server, unable to refresh notes";
             JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
         }
-
-        String text = searchText.getText();
-        List<Note> filteredNotes = notes
-                .stream()
-                .filter(x -> x.getTitle().contains(text))
-                .toList();
-
-        data = FXCollections.observableList(filteredNotes);
-        table.setItems(data);
-        displaySelectedNote();
+        search();
     }
 
     /**
@@ -127,6 +121,35 @@ public class NoteOverviewCtrl implements Initializable {
             }
         }
         return Optional.empty();
+    }
+
+    /**
+     * If there is text in the search bar, displays notes whose title contains the text.
+     */
+    public void search() {
+        String text = searchText.getText();
+        List<Note> filteredNotes = notes
+                .stream()
+                .filter(x -> x.getTitle().contains(text))
+                .toList();
+        data = FXCollections.observableList(filteredNotes);
+        table.setItems(data);
+        displaySelectedNote();
+    }
+
+    /**
+     * Currently only has a keyboard shortcut for refreshing/searching
+     * more shortcuts can be added in the future.
+     * @param e
+     */
+    public void keyPressed(KeyEvent e) {
+        switch (e.getCode()) {
+            case ENTER:
+                refresh();
+                break;
+            default:
+                break;
+        }
     }
 
     public void empty() {
