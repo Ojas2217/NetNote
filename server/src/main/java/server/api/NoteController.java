@@ -78,6 +78,21 @@ public class NoteController {
     }
 
     /**
+     * Handles a PUT request to add a new Note.
+     *
+     * @param note the Note to be updated, provided in the request body
+     * @return a ResponseEntity containing the changed Note if valid, or a bad request response if the Note is invalid
+     */
+    @PutMapping(path = {"", "/"})
+    public ResponseEntity<Note> update(@RequestBody Note note) {
+        if (isNullOrEmpty(note.title) || !repo.existsById(note.id)) {
+            return ResponseEntity.badRequest().build();
+        }
+        Note saved = repo.save(note);
+        return ResponseEntity.ok(saved);
+    }
+
+    /**
      * Handles a DELETE request to remove a Note by its ID.
      *
      * @param id the ID of the Note to be deleted
