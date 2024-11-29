@@ -1,6 +1,7 @@
 package client.scenes;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
@@ -13,9 +14,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.control.TextField;
+
+import javax.swing.*;
 
 /**
  * Controller for the Note Overview view.
@@ -43,7 +44,11 @@ public class NoteOverviewCtrl implements Initializable {
     @FXML
     private TableView<Note> table;
     @FXML
-    private TableColumn<Note, String> noteTitles;
+    private TableColumn<Note, String> noteTitle;
+    @FXML
+    private TextField searchText;
+
+    private List<Note> notes;
 
     @Inject
     public NoteOverviewCtrl(NoteUtils server, MainCtrl mainCtrl) {
@@ -53,7 +58,7 @@ public class NoteOverviewCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        noteTitles.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().title));
+        noteTitle.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().title));
     }
 
     public void addNote() {
@@ -73,21 +78,27 @@ public class NoteOverviewCtrl implements Initializable {
         refresh();
     }
 
-    public void changeTitle(){
-        table.setOnKeyPressed(event -> {
-            if(event.isControlDown() && event.getCode() == KeyCode.T){
-                System.out.println("ctrl+t");
-                if(table.getSelectionModel().getSelectedItem() != null){
-                    Note note = table.getSelectionModel().getSelectedItem();
-                    NewNoteTitleCtrl.ok(note);
-                }
-            }
-        });
+    public void refresh() {
+        try {
+            notes = server.getAllNotes();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            String errorMessage = "Error retrieving data from the server, unable to refresh notes";
+            JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
+        }
+
+        String text = searchText.getText();
+        List<Note> filteredNotes = notes
+                .stream()
+                .filter(x -> x.getTitle().contains(text))
+                .toList();
+
+        data = FXCollections.observableList(filteredNotes);
+        table.setItems(data);
     }
 
-    public void refresh() throws ProcessOperationException {
-        var notes = server.getAllNotes();
-        data = FXCollections.observableList(notes);
-        table.setItems(data);
+    public void empty() {
+        searchText.setText("");
+        refresh();
     }
 }
