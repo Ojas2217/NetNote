@@ -84,8 +84,14 @@ public class NoteUtils extends ServerUtils {
      * @throws ProcessOperationException e
      */
     public void editNote(Note note) throws ProcessOperationException {
-        //This will be something that is done with websockets,
-        //that is basically a communication system that is more instant but is more costly
+        try {
+            super.put("/api/notes/", note,
+                    new GenericType<>(){});
+        } catch (Exception e) {
+            if (e instanceof ProcessOperationException)
+                throw (ProcessOperationException) e;
+            throw e;
+        }
     }
 
     /**
