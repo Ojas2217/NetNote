@@ -13,6 +13,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 /**
  * Controller for the Note Overview view.
@@ -40,7 +43,7 @@ public class NoteOverviewCtrl implements Initializable {
     @FXML
     private TableView<Note> table;
     @FXML
-    private TableColumn<Note, String> noteTitle;
+    private TableColumn<Note, String> noteTitles;
 
     @Inject
     public NoteOverviewCtrl(NoteUtils server, MainCtrl mainCtrl) {
@@ -50,7 +53,7 @@ public class NoteOverviewCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        noteTitle.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().title));
+        noteTitles.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().title));
     }
 
     public void addNote() {
@@ -68,6 +71,18 @@ public class NoteOverviewCtrl implements Initializable {
             server.deleteNote(note.id);
         }
         refresh();
+    }
+
+    public void changeTitle(){
+        table.setOnKeyPressed(event -> {
+            if(event.isControlDown() && event.getCode() == KeyCode.T){
+                System.out.println("ctrl+t");
+                if(table.getSelectionModel().getSelectedItem() != null){
+                    Note note = table.getSelectionModel().getSelectedItem();
+                    NewNoteTitleCtrl.ok(note);
+                }
+            }
+        });
     }
 
     public void refresh() throws ProcessOperationException {
