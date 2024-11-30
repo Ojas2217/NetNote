@@ -83,9 +83,9 @@ public class NoteUtils extends ServerUtils {
      * @param note the note
      * @throws ProcessOperationException e
      */
-    public Note editNote(Note note) throws ProcessOperationException {
+    public void editNote(Note note) throws ProcessOperationException {
         try {
-            return super.put("/api/notes/", note,
+            super.put("/api/notes/", note,
                     new GenericType<>(){});
         } catch (Exception e) {
             if (e instanceof ProcessOperationException)

@@ -3,9 +3,11 @@ package client.scenes;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalLong;
 import java.util.ResourceBundle;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
+import commons.ExceptionType;
 import commons.Note;
 import commons.ProcessOperationException;
 import javafx.beans.property.SimpleStringProperty;
@@ -14,7 +16,10 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
+import org.springframework.http.HttpStatus;
 import javafx.scene.input.KeyEvent;
+
 import javax.swing.*;
 
 /**
@@ -52,14 +57,15 @@ public class NoteOverviewCtrl implements Initializable {
     private Label selectedNoteTitle;
     @FXML
     private TextArea selectedNoteContent;
+    private String selectedNoteContentBuffer;
+
+    private long selectedNoteId;
 
     @Inject
     public NoteOverviewCtrl(NoteUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
     }
-
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -76,10 +82,15 @@ public class NoteOverviewCtrl implements Initializable {
      * @throws ProcessOperationException if there is an issue during the deletion process
      */
     public void deleteNote() throws ProcessOperationException {
-        Note note = table.getSelectionModel().getSelectedItem();
-        if (note != null) {
-            server.deleteNote(note.id);
+        updateSelection();
+        Optional<Note> note = fetchSelectedNote();
+
+        if (getSelectedNoteId().isEmpty()) return;
+
+        if (note.isPresent()) {
+            server.deleteNote(getSelectedNoteId().getAsLong());
         }
+
         refresh();
     }
 
@@ -87,6 +98,7 @@ public class NoteOverviewCtrl implements Initializable {
      * Responsible for refreshing all content in the overview screen.
      * */
     public void refresh() {
+        sendNoteContentToServer();
         try {
             notes = server.getAllNotes();
         } catch (Exception e) {
@@ -98,29 +110,83 @@ public class NoteOverviewCtrl implements Initializable {
     }
 
     /**
-     * If a note is selected, updates the overview to show the title and content.
-     * */
-    public void displaySelectedNote() {
-        Optional<Note> note = selectAndUpdate();
-        if (note.isPresent()) {
-            selectedNoteTitle.setText(note.get().title);
-            selectedNoteContent.setText(note.get().content);
+     * Updates locally stored {@code selectedNoteId}
+     * <p>
+     * Since the id is used in many parts of the code, this method seeks to make the code more readable by
+     * locally storing the id.
+     * </p>
+     */
+    public void updateSelection() {
+        int index = table.getSelectionModel().getSelectedIndex();
+
+        if (index == -1) {                           // from what I understand, -1 is the default
+            selectedNoteId = -1;   // for when nothing is selected
+        } else {
+            selectedNoteId = table.getSelectionModel().getSelectedItem().id;
         }
     }
 
     /**
-     * @return {@code Optional<Note>} with the {@code Note} if one is selected.
-     *         {@code Optional.empty()} if a note isn't selected or doesn't exist on the server.
+     * If a note is selected, updates the overview to show the title and content.
      * */
-    public Optional<Note> selectAndUpdate() {
-        if (table.getSelectionModel().getSelectedItem() != null) {
-            try {
-                return Optional.of(server.getNote(table.getSelectionModel().getSelectedItem().id));
-            } catch (Exception e) {
-                return Optional.empty();
-            }
+    public void displaySelectedNote() {
+        updateSelection();
+        if (getSelectedNoteId().isEmpty()) return;
+
+        Optional<Note> note = fetchSelectedNote();
+        if (note.isEmpty()) return;
+
+        selectedNoteTitle.setText(note.get().title);
+        selectedNoteContent.setText(note.get().content);
+    }
+
+    /**
+     * @return {@code Optional<Note>} with the {@code Note} if one is selected.
+     * {@code Optional.empty()} if a note isn't selected or doesn't exist on the server.
+     */
+    public Optional<Note> fetchSelectedNote() {
+        if (getSelectedNoteId().isEmpty())
+            return Optional.empty();
+
+        try {
+            return Optional.of(server.getNote(getSelectedNoteId().getAsLong()));
+        } catch (Exception e) {
+            return Optional.empty();
         }
-        return Optional.empty();
+    }
+
+    /**
+     * Sends {@link Note} content to the server.
+     * <p>
+     *     This method verifies whether the currently selected {@link Note} exists on the server
+     *     and if yes, sends any changes back to the server. If the note is not present,
+     *     shows an error message using an {@link Alert}.
+     * </p>
+     * */
+    public void sendNoteContentToServer() {
+        Optional<Note> note = fetchSelectedNote();
+        try {
+            if (note.isEmpty())
+                throw new ProcessOperationException(
+                        "The note you're trying to edit is not on the server",
+                        HttpStatus.NOT_FOUND.value(),
+                        ExceptionType.SERVER_ERROR
+                );
+
+            updateContentBuffer();
+            note.get().content = selectedNoteContentBuffer;
+            server.editNote(note.get());
+
+        } catch (ProcessOperationException e) {
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    public void updateContentBuffer() {
+        selectedNoteContentBuffer = selectedNoteContent.getText();
     }
 
     public Note getNote() {
@@ -173,5 +239,10 @@ public class NoteOverviewCtrl implements Initializable {
     public void empty() {
         searchText.setText("");
         refresh();
+    }
+
+    public OptionalLong getSelectedNoteId() {
+        if (selectedNoteId < 0) return OptionalLong.empty();
+        return OptionalLong.of(selectedNoteId);
     }
 }
