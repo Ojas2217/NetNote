@@ -85,7 +85,7 @@ public class NoteController {
      */
     @PutMapping(path = {"", "/"})
     public ResponseEntity<Note> update(@RequestBody Note note) {
-        if (isNullOrEmpty(note.title)) {
+        if (isNullOrEmpty(note.title) || !repo.existsById(note.id)) {
             return ResponseEntity.badRequest().build();
         }
         Note saved = repo.save(note);
