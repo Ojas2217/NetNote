@@ -41,6 +41,7 @@ public class MainCtrl {
     private NoteOverviewCtrl overviewCtrl;
     private Scene overview;
     private AddNoteControl addCtrl;
+    private NewNoteTitleCtrl newCtrl;
     private Scene add;
     private Scene title;
 
@@ -59,6 +60,7 @@ public class MainCtrl {
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
         this.addCtrl = add.getKey();
+        this.newCtrl = title.getKey();
         this.add = new Scene(add.getValue());
         this.title = new Scene(title.getValue());
         showOverview();
@@ -84,6 +86,14 @@ public class MainCtrl {
     public void showNewTitle() {
         primaryStage.setTitle("New Title");
         primaryStage.setScene(title);
-        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
+        title.setOnKeyPressed(e -> newCtrl.keyPressed(e));
+    }
+
+    public NewNoteTitleCtrl getNewCtrl() {
+        return newCtrl;
+    }
+
+    public NoteOverviewCtrl getOverviewCtrl() {
+        return overviewCtrl;
     }
 }

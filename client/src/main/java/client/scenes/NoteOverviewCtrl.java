@@ -123,6 +123,10 @@ public class NoteOverviewCtrl implements Initializable {
         return Optional.empty();
     }
 
+    public Note getNote() {
+        return table.getSelectionModel().getSelectedItem();
+    }
+
     /**
      * If there is text in the search bar, displays notes whose title contains the text.
      */
@@ -147,9 +151,23 @@ public class NoteOverviewCtrl implements Initializable {
             case ENTER:
                 refresh();
                 break;
+            case CONTROL:
+//                switch (e.getCode()) {
+//                    case T:
+//                        System.out.println("ctrlt");
+//                        mainCtrl.getNewCtrl().newTitle(table.getSelectionModel().getSelectedItem());
+//                        break;
+//                    default:
+//                        break;
+//                }
+                break;
             default:
                 break;
         }
+    }
+
+    public void title() {
+        mainCtrl.getNewCtrl().newTitle(table.getSelectionModel().getSelectedItem());
     }
 
     public void empty() {
