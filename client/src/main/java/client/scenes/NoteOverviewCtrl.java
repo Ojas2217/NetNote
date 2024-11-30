@@ -58,7 +58,6 @@ public class NoteOverviewCtrl implements Initializable {
     @FXML
     private TextArea selectedNoteContent;
     private String selectedNoteContentBuffer;
-
     private long selectedNoteId;
 
     @Inject
@@ -145,10 +144,12 @@ public class NoteOverviewCtrl implements Initializable {
      * {@code Optional.empty()} if a note isn't selected or doesn't exist on the server.
      */
     public Optional<Note> fetchSelectedNote() {
-        if (getSelectedNoteId().isEmpty())
+        if (getSelectedNoteId().isEmpty()) {
+            System.out.println(getSelectedNoteId());
             return Optional.empty();
-
+        }
         try {
+            System.out.println(getSelectedNoteId());
             return Optional.of(server.getNote(getSelectedNoteId().getAsLong()));
         } catch (Exception e) {
             return Optional.empty();
@@ -166,16 +167,17 @@ public class NoteOverviewCtrl implements Initializable {
     public void sendNoteContentToServer() {
         Optional<Note> note = fetchSelectedNote();
         try {
-            if (note.isEmpty())
+            if (note.isEmpty()&&!table.getSelectionModel().isEmpty()){
                 throw new ProcessOperationException(
                         "The note you're trying to edit is not on the server",
                         HttpStatus.NOT_FOUND.value(),
                         ExceptionType.SERVER_ERROR
                 );
-
-            updateContentBuffer();
-            note.get().content = selectedNoteContentBuffer;
-            server.editNote(note.get());
+            }if(note.isPresent()) {
+                updateContentBuffer();
+                note.get().content = selectedNoteContentBuffer;
+                server.editNote(note.get());
+            }
 
         } catch (ProcessOperationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -227,4 +229,5 @@ public class NoteOverviewCtrl implements Initializable {
         if (selectedNoteId < 0) return OptionalLong.empty();
         return OptionalLong.of(selectedNoteId);
     }
+
 }
