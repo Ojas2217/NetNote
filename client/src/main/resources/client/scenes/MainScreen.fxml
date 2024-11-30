@@ -120,7 +120,7 @@
                            <children>
                               <AnchorPane prefHeight="556.0" prefWidth="222.0" style="-fx-background-color: black;" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <TableView fx:id="table" prefHeight="556.0" prefWidth="222.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <TableView fx:id="table" onMouseClicked="#refresh" prefHeight="556.0" prefWidth="222.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <columns>
                                         <TableColumn fx:id="noteTitle" prefWidth="220.80000606775283" sortable="false" text="Notes" />
                                       </columns>
