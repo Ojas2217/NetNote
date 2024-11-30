@@ -106,4 +106,37 @@ class NoteControllerTest {
         assertEquals(note, result.getBody());
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
+
+    @Test
+    public void testUpdateNoteCorrect() {
+        Note note = new Note("title", "content");
+        when(noteRepository.save(note)).thenReturn(note);
+        when(noteRepository.existsById(note.id)).thenReturn(true);
+        ResponseEntity<Note> result = noteController.update(note);
+        assertEquals(note, result.getBody());
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    public void testUpdateNoteNonExistent() {
+        Note note = new Note("title", "content");
+        when(noteRepository.save(note)).thenReturn(note);
+        when(noteRepository.existsById(note.id)).thenReturn(false);
+        ResponseEntity<Note> result = noteController.update(note);
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+    }
+
+    @Test
+    public void testUpdateNoteInvalidTitle() {
+        Note note1 = new Note(null, "content");
+        Note note2 = new Note("", "content");
+        when(noteRepository.save(note1)).thenReturn(note1);
+        when(noteRepository.existsById(note1.id)).thenReturn(true);
+        when(noteRepository.save(note2)).thenReturn(note2);
+        when(noteRepository.existsById(note2.id)).thenReturn(true);
+        ResponseEntity<Note> result1 = noteController.update(note1);
+        ResponseEntity<Note> result2 = noteController.update(note2);
+        assertEquals(HttpStatus.BAD_REQUEST, result1.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, result2.getStatusCode());
+    }
 }
