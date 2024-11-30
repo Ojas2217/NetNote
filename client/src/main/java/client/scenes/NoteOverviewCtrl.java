@@ -5,17 +5,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.ResourceBundle;
+
+import client.services.Markdown;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.ExceptionType;
 import commons.Note;
 import commons.ProcessOperationException;
+import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import org.springframework.http.HttpStatus;
 import javafx.scene.input.KeyEvent;
@@ -51,6 +55,9 @@ public class NoteOverviewCtrl implements Initializable {
     private TableColumn<Note, String> noteTitle;
     @FXML
     private TextField searchText;
+    @FXML
+    private WebView webView;
+    private Markdown markdown;
 
     private List<Note> notes;
     @FXML
@@ -70,6 +77,24 @@ public class NoteOverviewCtrl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         noteTitle.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().title));
+        selectedNoteContent.textProperty().addListener((observable, old, newValue) -> {
+                   markdownView(newValue);
+                }
+        );
+        markdownView("");
+    }
+
+    /**
+     * Loads the rendered {@link Markdown} version of the note to the WebView part of the NoteOverview Scene.
+     * @param commonmark HTML to be printed
+     */
+    private void markdownView(String commonmark) {
+        try {
+            String html = markdown.render(commonmark);
+            webView.getEngine().loadContent(html);
+        } catch (Exception e) {
+            webView.getEngine().loadContent("<h3>Live Markdown rendering to be implemented. </h3>");
+        }
     }
 
     public void addNote() {
@@ -128,7 +153,7 @@ public class NoteOverviewCtrl implements Initializable {
 
     /**
      * If a note is selected, updates the overview to show the title and content.
-     * */
+     */
     public void displaySelectedNote() {
         updateSelection();
         if (getSelectedNoteId().isEmpty()) return;
@@ -158,11 +183,11 @@ public class NoteOverviewCtrl implements Initializable {
     /**
      * Sends {@link Note} content to the server.
      * <p>
-     *     This method verifies whether the currently selected {@link Note} exists on the server
-     *     and if yes, sends any changes back to the server. If the note is not present,
-     *     shows an error message using an {@link Alert}.
+     * This method verifies whether the currently selected {@link Note} exists on the server
+     * and if yes, sends any changes back to the server. If the note is not present,
+     * shows an error message using an {@link Alert}.
      * </p>
-     * */
+     */
     public void sendNoteContentToServer() {
         Optional<Note> note = fetchSelectedNote();
         try {
@@ -206,6 +231,7 @@ public class NoteOverviewCtrl implements Initializable {
     /**
      * Currently only has a keyboard shortcut for refreshing/searching
      * more shortcuts can be added in the future.
+     *
      * @param e
      */
     public void keyPressed(KeyEvent e) {
