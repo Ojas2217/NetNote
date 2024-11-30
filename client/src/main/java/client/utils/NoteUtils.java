@@ -3,6 +3,7 @@ package client.utils;
 import commons.Note;
 import commons.ProcessOperationException;
 import jakarta.ws.rs.core.GenericType;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 
@@ -103,6 +104,22 @@ public class NoteUtils extends ServerUtils {
     public Note deleteNote(long id) throws ProcessOperationException {
         try {
             return super.delete("/api/notes/" + id,
+                    new GenericType<>(){});
+        } catch (Exception e) {
+            if (e instanceof ProcessOperationException)
+                throw (ProcessOperationException) e;
+            throw e;
+        }
+    }
+
+    /**
+     * A function that gets all IDs and titles of notes in {@code List<Pair<Long, String>>} format.
+     * @return the deleted note
+     * @throws ProcessOperationException e
+     */
+    public List<Pair<Long, String>> getIdsAndTitles() throws ProcessOperationException {
+        try {
+            return super.get("/api/notes?idsAndTitles",
                     new GenericType<>(){});
         } catch (Exception e) {
             if (e instanceof ProcessOperationException)
