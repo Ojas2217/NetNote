@@ -8,12 +8,18 @@ import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 
 import java.util.Arrays;
+/**
+ * Markdown class to parse, render, and print Note content as HTML.
+ */
 
 @Singleton
 public class Markdown {
     private final HtmlRenderer htmlRenderer;
     private final Parser parser;
 
+    /**
+     * Contructor for no-param
+     */
     public Markdown() {
         MutableDataSet options = new MutableDataSet();
 

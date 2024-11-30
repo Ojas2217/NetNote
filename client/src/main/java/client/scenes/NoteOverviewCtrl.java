@@ -12,7 +12,6 @@ import com.google.inject.Inject;
 import commons.ExceptionType;
 import commons.Note;
 import commons.ProcessOperationException;
-import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -78,14 +77,15 @@ public class NoteOverviewCtrl implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         noteTitle.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().title));
         selectedNoteContent.textProperty().addListener((observable, old, newValue) -> {
-                   markdownView(newValue);
-                }
+            markdownView(newValue);
+            }
         );
         markdownView("");
     }
 
     /**
      * Loads the rendered {@link Markdown} version of the note to the WebView part of the NoteOverview Scene.
+     *
      * @param commonmark HTML to be printed
      */
     private void markdownView(String commonmark) {
@@ -121,7 +121,7 @@ public class NoteOverviewCtrl implements Initializable {
 
     /**
      * Responsible for refreshing all content in the overview screen.
-     * */
+     */
     public void refresh() {
         sendNoteContentToServer();
         try {
