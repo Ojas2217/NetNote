@@ -69,12 +69,12 @@ class MarkdownTest {
                 "apr. 3. thu|20:00|4h\n" +
                 "dec. 7. wed|20:40|9h 20m\n" +
                 "total:|| 23h");
-        String expected = "| day         | time  |   spent |\n" +
-                "|:------------|:-----:|--------:|\n" +
-                "| feb. 7. wed | 18:00 |  4h 40m |\n" +
-                "| apr. 3. thu | 20:00 |      4h |\n" +
-                "| dec. 7. wed | 20:40 |  9h 20m |\n" +
-                "| total:             ||     23h |";
-        assertEquals("", result);
+        String expected = "<p>day|time|spent\n" +
+                ":---|:---:|--:\n" +
+                "feb. 7. wed|18:00|4h 40m\n" +
+                "apr. 3. thu|20:00|4h\n" +
+                "dec. 7. wed|20:40|9h 20m\n" +
+                "total:|| 23h</p>\n";
+        assertEquals(expected, result);
     }
 }
