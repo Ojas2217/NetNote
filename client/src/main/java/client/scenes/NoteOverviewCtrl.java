@@ -75,6 +75,9 @@ public class NoteOverviewCtrl implements Initializable {
                 displaySelectedNote();
             }
         });
+        selectedNoteContent.textProperty().addListener((observable, oldValue, newValue) -> {
+            sendNoteContentToServer();
+        });
     }
 
     public void addNote() {
@@ -102,11 +105,8 @@ public class NoteOverviewCtrl implements Initializable {
      * Responsible for refreshing all content in the overview screen.
      * */
     public void refresh() {
-        if (table.getItems().isEmpty()) {
-            selectedNoteContent.setDisable(true);
-        } else {
-            selectedNoteContent.setDisable(false);
-        }
+
+        selectedNoteContent.setDisable(false);
         sendNoteContentToServer();
         try {
             notes = server.getAllNotes();
