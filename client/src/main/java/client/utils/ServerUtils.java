@@ -102,6 +102,32 @@ public class ServerUtils {
 				response.getStatus(), ExceptionType.INVALID_CREDENTIALS);
 	}
 
+    /**
+     * GET method with one parameter
+     *
+     * @param endpoint the path to the specified item
+     * @param type the type
+     * @return the entity
+     * @param <T> the type of the entity
+     * @throws ProcessOperationException if the operation fails
+     */
+    protected <T> T get(String endpoint, String param, String value, GenericType<T> type) throws ProcessOperationException {
+        Response response = ClientBuilder.newClient(new ClientConfig())
+                .target(this.SERVER).path(endpoint)
+                .queryParam(param, value)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get();
+
+        if (response.getStatus() == HttpStatus.OK.value() ||
+                response.getStatus() == HttpStatus.CREATED.value() ||
+                response.getStatus() == HttpStatus.NO_CONTENT.value())
+            return response.readEntity(type);
+
+        throw new ProcessOperationException("Operation",
+                response.getStatus(), ExceptionType.INVALID_CREDENTIALS);
+    }
+
 	/**
 	 * DELETE method
 	 *
