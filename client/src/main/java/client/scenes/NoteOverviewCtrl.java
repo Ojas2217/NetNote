@@ -151,11 +151,9 @@ public class NoteOverviewCtrl implements Initializable {
      */
     public Optional<Note> fetchSelectedNote() {
         if (getSelectedNoteId().isEmpty()) {
-            System.out.println(getSelectedNoteId());
             return Optional.empty();
         }
         try {
-            System.out.println(getSelectedNoteId());
             return Optional.of(server.getNote(getSelectedNoteId().getAsLong()));
         } catch (Exception e) {
             return Optional.empty();
