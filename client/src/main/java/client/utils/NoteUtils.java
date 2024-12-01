@@ -4,7 +4,6 @@ import commons.Note;
 import commons.NoteDTO;
 import commons.ProcessOperationException;
 import jakarta.ws.rs.core.GenericType;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 

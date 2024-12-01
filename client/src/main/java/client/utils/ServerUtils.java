@@ -111,7 +111,8 @@ public class ServerUtils {
      * @param <T> the type of the entity
      * @throws ProcessOperationException if the operation fails
      */
-    protected <T> T get(String endpoint, String param, String value, GenericType<T> type) throws ProcessOperationException {
+    protected <T> T get(String endpoint, String param, String value, GenericType<T> type)
+			throws ProcessOperationException {
         Response response = ClientBuilder.newClient(new ClientConfig())
                 .target(this.SERVER).path(endpoint)
                 .queryParam(param, value)

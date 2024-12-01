@@ -52,7 +52,9 @@ public class NoteService {
     public Note createNote(Note note) throws ProcessOperationException {
         if (isNullOrEmpty(note.title) || isNullOrEmpty(note.content)) {
             throw new ProcessOperationException(
-                    "Note title or content cannot be empty", HttpStatus.BAD_REQUEST.value(), ExceptionType.INVALID_REQUEST);
+                    "Note title or content cannot be empty",
+                    HttpStatus.BAD_REQUEST.value(),
+                    ExceptionType.INVALID_REQUEST);
         }
         return repo.save(note);
     }
