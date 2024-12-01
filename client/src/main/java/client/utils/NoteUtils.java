@@ -1,6 +1,7 @@
 package client.utils;
 
 import commons.Note;
+import commons.NoteDTO;
 import commons.ProcessOperationException;
 import jakarta.ws.rs.core.GenericType;
 import org.apache.commons.lang3.tuple.Pair;
@@ -119,8 +120,7 @@ public class NoteUtils extends ServerUtils {
      */
     public List<Pair<Long, String>> getIdsAndTitles() throws ProcessOperationException {
         try {
-            return super.get("/api/notes?idsAndTitles",
-                    new GenericType<>(){});
+            return super.get("/api/notes", "idsAndTitles", "", new GenericType<>(){});
         } catch (Exception e) {
             if (e instanceof ProcessOperationException)
                 throw (ProcessOperationException) e;
