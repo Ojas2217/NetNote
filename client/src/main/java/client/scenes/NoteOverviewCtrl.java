@@ -102,7 +102,11 @@ public class NoteOverviewCtrl implements Initializable {
      * Responsible for refreshing all content in the overview screen.
      * */
     public void refresh() {
-        selectedNoteContent.setDisable(false);
+        if(table.getItems().isEmpty()){
+            selectedNoteContent.setDisable(true);
+        }else {
+            selectedNoteContent.setDisable(false);
+        }
         sendNoteContentToServer();
         try {
             notes = server.getAllNotes();
