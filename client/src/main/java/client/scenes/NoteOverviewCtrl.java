@@ -89,7 +89,7 @@ public class NoteOverviewCtrl implements Initializable {
     public void deleteNote() throws ProcessOperationException {
         Optional<Note> note = fetchSelectedNote();
         if (note.isEmpty()) return;
-        else{
+        else {
             server.deleteNote(getSelectedNoteId().getAsLong());
         }
         selectedNoteTitle.setText(" ");
@@ -173,7 +173,7 @@ public class NoteOverviewCtrl implements Initializable {
     public void sendNoteContentToServer() {
         Optional<Note> note = fetchSelectedNote();
         try {
-            if(note.isPresent()) {
+            if (note.isPresent()) {
                 updateContentBuffer();
                 note.get().content = selectedNoteContentBuffer;
                 server.editNote(note.get());
