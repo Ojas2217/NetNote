@@ -9,6 +9,7 @@ import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.ExceptionType;
 import commons.Note;
+import commons.NoteDTO;
 import commons.ProcessOperationException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -45,14 +46,18 @@ public class NoteOverviewCtrl implements Initializable {
     private final NoteUtils server;
     private final MainCtrl mainCtrl;
     private ObservableList<Note> data;
+    private ObservableList<NoteDTO> data;
     @FXML
     private TableView<Note> table;
+    private TableView<NoteDTO> table;
     @FXML
     private TableColumn<Note, String> noteTitle;
+    private TableColumn<NoteDTO, String> noteTitle;
     @FXML
     private TextField searchText;
 
     private List<Note> notes;
+    private List<NoteDTO> notes;
     @FXML
     private Label selectedNoteTitle;
     @FXML
@@ -69,7 +74,7 @@ public class NoteOverviewCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        noteTitle.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().title));
+        noteTitle.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().getTitle()));
     }
 
     public void addNote() {
@@ -100,7 +105,7 @@ public class NoteOverviewCtrl implements Initializable {
     public void refresh() {
         sendNoteContentToServer();
         try {
-            notes = server.getAllNotes();
+            notes = server.getIdsAndTitles();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             String errorMessage = "Error retrieving data from the server, unable to refresh notes";
@@ -122,7 +127,7 @@ public class NoteOverviewCtrl implements Initializable {
         if (index == -1) {                           // from what I understand, -1 is the default
             selectedNoteId = -1;   // for when nothing is selected
         } else {
-            selectedNoteId = table.getSelectionModel().getSelectedItem().id;
+            selectedNoteId = table.getSelectionModel().getSelectedItem().getId();
         }
     }
 
@@ -194,7 +199,15 @@ public class NoteOverviewCtrl implements Initializable {
      */
     public void search() {
         String text = searchText.getText();
-        List<Note> filteredNotes = notes
+        try {
+            if (notes == null) throw new NullPointerException();
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
+            String errorMessage = "Error: notes was null. Something went wrong in search()";
+            JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        List<NoteDTO> filteredNotes = notes
                 .stream()
                 .filter(x -> x.getTitle().contains(text))
                 .toList();

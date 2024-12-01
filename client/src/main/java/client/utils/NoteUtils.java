@@ -118,7 +118,7 @@ public class NoteUtils extends ServerUtils {
      * @return the deleted note
      * @throws ProcessOperationException e
      */
-    public List<Pair<Long, String>> getIdsAndTitles() throws ProcessOperationException {
+    public List<NoteDTO> getIdsAndTitles() throws ProcessOperationException {
         try {
             return super.get("/api/notes", "idsAndTitles", "", new GenericType<>(){});
         } catch (Exception e) {

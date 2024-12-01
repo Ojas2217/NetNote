@@ -2,8 +2,8 @@ package server.service;
 
 import commons.ExceptionType;
 import commons.Note;
+import commons.NoteDTO;
 import commons.ProcessOperationException;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import server.database.NoteRepository;
@@ -97,7 +97,7 @@ public class NoteService {
      * Gets the IDs and titles of all notes in the repo.
      * @throws ProcessOperationException if query result is empty
      * */
-    public List<Pair<Long, String>> getIdsAndTitles() throws ProcessOperationException {
+    public List<NoteDTO> getIdsAndTitles() throws ProcessOperationException {
         List<Object[]> result = repo.findIdAndTitle();
         if (result.isEmpty()) {
             throw new ProcessOperationException(
@@ -105,7 +105,7 @@ public class NoteService {
             );
         }
         return result.stream()
-                .map(e -> Pair.of((Long) e[0], (String) e[1]))
+                .map(e -> NoteDTO.of((Long) e[0], (String) e[1]))
                 .toList();
     }
 }

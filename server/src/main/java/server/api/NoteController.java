@@ -2,8 +2,8 @@ package server.api;
 
 import commons.ExceptionType;
 import commons.Note;
+import commons.NoteDTO;
 import commons.ProcessOperationException;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -117,7 +117,7 @@ public class NoteController {
      * Gets IDs and titles stored in the repo.
      * */
     @GetMapping(params = "idsAndTitles")
-    public ResponseEntity<List<Pair<Long, String>>> getIdsAndTitles() {
+    public ResponseEntity<List<NoteDTO>> getIdsAndTitles() {
         try {
             return ResponseEntity.ok(service.getIdsAndTitles());
         } catch (ProcessOperationException e) {
