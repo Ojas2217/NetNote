@@ -84,14 +84,12 @@ public class NoteOverviewCtrl implements Initializable {
         });
 
         selectedNoteContent.textProperty().addListener((observable, oldValue, newValue) -> {
-                    sendNoteContentToServer();
-                }
-        );
+            sendNoteContentToServer();
+        });
 
         selectedNoteContent.textProperty().addListener((observable, old, newValue) -> {
-                    markdownView(newValue);
-                }
-        );
+            markdownView(newValue);
+        });
         markdownView("");
     }
 
@@ -134,8 +132,11 @@ public class NoteOverviewCtrl implements Initializable {
      * Responsible for refreshing all content in the overview screen.
      */
     public void refresh() {
-
-        selectedNoteContent.setDisable(false);
+        if (table.getItems().isEmpty()) {
+            selectedNoteContent.setDisable(true);
+        } else {
+            selectedNoteContent.setDisable(false);
+        }
         sendNoteContentToServer();
         try {
             notes = server.getAllNotes();
@@ -230,10 +231,7 @@ public class NoteOverviewCtrl implements Initializable {
      */
     public void search() {
         String text = searchText.getText();
-        List<Note> filteredNotes = notes
-                .stream()
-                .filter(x -> x.getTitle().contains(text))
-                .toList();
+        List<Note> filteredNotes = notes.stream().filter(x -> x.getTitle().contains(text)).toList();
         data = FXCollections.observableList(filteredNotes);
         table.setItems(data);
         displaySelectedNote();
@@ -242,6 +240,7 @@ public class NoteOverviewCtrl implements Initializable {
     /**
      * Currently only has a keyboard shortcut for refreshing/searching
      * more shortcuts can be added in the future.
+     *
      * @param e
      */
     public void keyPressed(KeyEvent e) {

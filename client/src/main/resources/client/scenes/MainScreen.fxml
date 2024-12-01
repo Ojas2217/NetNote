@@ -127,28 +127,28 @@
                                     </TableView>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane prefHeight="498.0" prefWidth="527.0" HBox.hgrow="ALWAYS">
+                              <AnchorPane prefHeight="554.0" prefWidth="550.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <Label fx:id="selectedNoteTitle" layoutX="225.0" text="NoteTitle">
+                                    <Label fx:id="selectedNoteTitle" layoutX="238.0" text="Note Title">
                                        <font>
                                           <Font size="19.0" />
                                        </font>
                                     </Label>
-                                    <TextArea fx:id="selectedNoteContent" layoutY="28.0" prefHeight="528.0" prefWidth="527.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="28.0">
+                                    <TextArea fx:id="selectedNoteContent" layoutY="28.0" prefHeight="526.0" prefWidth="546.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="28.0">
                                        <font>
                                           <Font size="22.0" />
                                        </font>
                                     </TextArea>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane prefHeight="558.0" prefWidth="160.0" HBox.hgrow="ALWAYS">
+                              <AnchorPane prefHeight="554.0" prefWidth="211.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <Label layoutX="51.0" layoutY="1.0" text="MarkdownView">
+                                    <Label layoutX="32.0" prefHeight="28.0" prefWidth="152.0" text="Markdown View">
                                        <font>
-                                          <Font size="17.0" />
+                                          <Font size="19.0" />
                                        </font>
                                     </Label>
-                                    <WebView fx:id="webView" layoutY="29.0" prefHeight="530.0" prefWidth="197.0" />
+                                    <WebView fx:id="webView" layoutX="-12.8" layoutY="27.0" prefHeight="526.0" prefWidth="227.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="-13.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="27.0" />
                                  </children>
                               </AnchorPane>
                            </children>
