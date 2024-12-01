@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.ResourceBundle;
+
+import client.services.Markdown;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.Note;
@@ -15,6 +17,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.scene.input.KeyEvent;
 
@@ -49,6 +52,9 @@ public class NoteOverviewCtrl implements Initializable {
     private TableColumn<Note, String> noteTitle;
     @FXML
     private TextField searchText;
+    @FXML
+    private WebView webView;
+    private Markdown markdown;
 
     private List<Note> notes;
     @FXML
@@ -56,6 +62,7 @@ public class NoteOverviewCtrl implements Initializable {
     @FXML
     private TextArea selectedNoteContent;
     private String selectedNoteContentBuffer;
+
     private long selectedNoteId;
 
     @Inject
@@ -75,9 +82,31 @@ public class NoteOverviewCtrl implements Initializable {
                 displaySelectedNote();
             }
         });
+
         selectedNoteContent.textProperty().addListener((observable, oldValue, newValue) -> {
-            sendNoteContentToServer();
-        });
+                    sendNoteContentToServer();
+                }
+        );
+
+        selectedNoteContent.textProperty().addListener((observable, old, newValue) -> {
+                    markdownView(newValue);
+                }
+        );
+        markdownView("");
+    }
+
+    /**
+     * Loads the rendered {@link Markdown} version of the note to the WebView part of the NoteOverview Scene.
+     *
+     * @param commonmark HTML to be printed
+     */
+    private void markdownView(String commonmark) {
+        try {
+            String html = markdown.render(commonmark);
+            webView.getEngine().loadContent(html);
+        } catch (Exception e) {
+            webView.getEngine().loadContent("<h3>Live Markdown rendering to be implemented. </h3>");
+        }
     }
 
     public void addNote() {
@@ -103,7 +132,7 @@ public class NoteOverviewCtrl implements Initializable {
 
     /**
      * Responsible for refreshing all content in the overview screen.
-     * */
+     */
     public void refresh() {
 
         selectedNoteContent.setDisable(false);
@@ -117,7 +146,6 @@ public class NoteOverviewCtrl implements Initializable {
         }
         search();
     }
-
 
     /**
      * Updates locally stored {@code selectedNoteId}
@@ -137,7 +165,7 @@ public class NoteOverviewCtrl implements Initializable {
 
     /**
      * If a note is selected, updates the overview to show the title and content.
-     * */
+     */
     public void displaySelectedNote() {
         updateSelection();
         if (getSelectedNoteId().isEmpty()) return;
@@ -167,11 +195,11 @@ public class NoteOverviewCtrl implements Initializable {
     /**
      * Sends {@link Note} content to the server.
      * <p>
-     *     This method verifies whether the currently selected {@link Note} exists on the server
-     *     and if yes, sends any changes back to the server. If the note is not present,
-     *     shows an error message using an {@link Alert}.
+     * This method verifies whether the currently selected {@link Note} exists on the server
+     * and if yes, sends any changes back to the server. If the note is not present,
+     * shows an error message using an {@link Alert}.
      * </p>
-     * */
+     */
     public void sendNoteContentToServer() {
         Optional<Note> note = fetchSelectedNote();
         try {
@@ -191,6 +219,10 @@ public class NoteOverviewCtrl implements Initializable {
 
     public void updateContentBuffer() {
         selectedNoteContentBuffer = selectedNoteContent.getText();
+    }
+
+    public Note getNote() {
+        return table.getSelectionModel().getSelectedItem();
     }
 
     /**
@@ -228,6 +260,10 @@ public class NoteOverviewCtrl implements Initializable {
         }
     }
 
+    public void title() {
+        mainCtrl.getNewCtrl().newTitle(table.getSelectionModel().getSelectedItem());
+    }
+
     public void empty() {
         searchText.setText("");
         refresh();
@@ -237,5 +273,4 @@ public class NoteOverviewCtrl implements Initializable {
         if (selectedNoteId < 0) return OptionalLong.empty();
         return OptionalLong.of(selectedNoteId);
     }
-
 }
