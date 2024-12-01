@@ -9,7 +9,6 @@ import java.util.ResourceBundle;
 import client.services.Markdown;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
-import commons.ExceptionType;
 import commons.Note;
 import commons.ProcessOperationException;
 import javafx.beans.property.SimpleStringProperty;
@@ -20,7 +19,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
-import org.springframework.http.HttpStatus;
 import javafx.scene.input.KeyEvent;
 
 import javax.swing.*;
@@ -56,7 +54,7 @@ public class NoteOverviewCtrl implements Initializable {
     private TextField searchText;
     @FXML
     private WebView webView;
-    private Markdown markdown;
+    private Markdown markdown = new Markdown();
 
     private List<Note> notes;
     @FXML
@@ -76,11 +74,22 @@ public class NoteOverviewCtrl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         noteTitle.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().title));
+        table.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                selectedNoteId = -1;
+            } else {
+                selectedNoteId = newValue.id;
+                displaySelectedNote();
+            }
+        });
+
+        selectedNoteContent.textProperty().addListener((observable, oldValue, newValue) -> {
+            sendNoteContentToServer();
+        });
+
         selectedNoteContent.textProperty().addListener((observable, old, newValue) -> {
             markdownView(newValue);
-            }
-        );
-        markdownView("");
+        });
     }
 
     /**
@@ -89,12 +98,8 @@ public class NoteOverviewCtrl implements Initializable {
      * @param commonmark HTML to be printed
      */
     private void markdownView(String commonmark) {
-        try {
-            String html = markdown.render(commonmark);
-            webView.getEngine().loadContent(html);
-        } catch (Exception e) {
-            webView.getEngine().loadContent("<h3>Live Markdown rendering to be implemented. </h3>");
-        }
+        String html = markdown.render(commonmark);
+        webView.getEngine().loadContent(html);
     }
 
     public void addNote() {
@@ -107,22 +112,26 @@ public class NoteOverviewCtrl implements Initializable {
      * @throws ProcessOperationException if there is an issue during the deletion process
      */
     public void deleteNote() throws ProcessOperationException {
-        updateSelection();
         Optional<Note> note = fetchSelectedNote();
-
-        if (getSelectedNoteId().isEmpty()) return;
-
-        if (note.isPresent()) {
+        if (note.isEmpty()) return;
+        else {
             server.deleteNote(getSelectedNoteId().getAsLong());
         }
-
+        selectedNoteTitle.setText(" ");
+        selectedNoteContent.setText(" ");
         refresh();
+        selectedNoteContent.setDisable(true);
     }
 
     /**
      * Responsible for refreshing all content in the overview screen.
      */
     public void refresh() {
+        if (table.getItems().isEmpty()) {
+            selectedNoteContent.setDisable(true);
+        } else {
+            selectedNoteContent.setDisable(false);
+        }
         sendNoteContentToServer();
         try {
             notes = server.getAllNotes();
@@ -143,9 +152,8 @@ public class NoteOverviewCtrl implements Initializable {
      */
     public void updateSelection() {
         int index = table.getSelectionModel().getSelectedIndex();
-
-        if (index == -1) {                           // from what I understand, -1 is the default
-            selectedNoteId = -1;   // for when nothing is selected
+        if (index == -1) {
+            selectedNoteId = -1; // for when nothing is selected
         } else {
             selectedNoteId = table.getSelectionModel().getSelectedItem().id;
         }
@@ -170,9 +178,9 @@ public class NoteOverviewCtrl implements Initializable {
      * {@code Optional.empty()} if a note isn't selected or doesn't exist on the server.
      */
     public Optional<Note> fetchSelectedNote() {
-        if (getSelectedNoteId().isEmpty())
+        if (getSelectedNoteId().isEmpty()) {
             return Optional.empty();
-
+        }
         try {
             return Optional.of(server.getNote(getSelectedNoteId().getAsLong()));
         } catch (Exception e) {
@@ -191,16 +199,11 @@ public class NoteOverviewCtrl implements Initializable {
     public void sendNoteContentToServer() {
         Optional<Note> note = fetchSelectedNote();
         try {
-            if (note.isEmpty())
-                throw new ProcessOperationException(
-                        "The note you're trying to edit is not on the server",
-                        HttpStatus.NOT_FOUND.value(),
-                        ExceptionType.SERVER_ERROR
-                );
-
-            updateContentBuffer();
-            note.get().content = selectedNoteContentBuffer;
-            server.editNote(note.get());
+            if (note.isPresent()) {
+                updateContentBuffer();
+                note.get().content = selectedNoteContentBuffer;
+                server.editNote(note.get());
+            }
 
         } catch (ProcessOperationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -223,10 +226,7 @@ public class NoteOverviewCtrl implements Initializable {
      */
     public void search() {
         String text = searchText.getText();
-        List<Note> filteredNotes = notes
-                .stream()
-                .filter(x -> x.getTitle().contains(text))
-                .toList();
+        List<Note> filteredNotes = notes.stream().filter(x -> x.getTitle().contains(text)).toList();
         data = FXCollections.observableList(filteredNotes);
         table.setItems(data);
         displaySelectedNote();
@@ -243,15 +243,11 @@ public class NoteOverviewCtrl implements Initializable {
             case ENTER:
                 refresh();
                 break;
-            case CONTROL:
-//                switch (e.getCode()) {
-//                    case T:
-//                        System.out.println("ctrlt");
-//                        mainCtrl.getNewCtrl().newTitle(table.getSelectionModel().getSelectedItem());
-//                        break;
-//                    default:
-//                        break;
-//                }
+            case ESCAPE:
+                searchText.requestFocus();
+                break;
+            case A:
+                addNote();
                 break;
             default:
                 break;

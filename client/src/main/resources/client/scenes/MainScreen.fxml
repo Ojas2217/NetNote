@@ -92,25 +92,21 @@
         </Menu>
       </menus>
     </MenuBar>
-      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="1018.0" VBox.vgrow="ALWAYS">
-         <children>
-            <HBox layoutY="-1.0" prefHeight="32.0" prefWidth="1018.0">
-               <children>
-                  <Button mnemonicParsing="false" onAction="#search" prefHeight="48.0" prefWidth="97.0" text="Search" HBox.hgrow="ALWAYS">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                  </Button>
-                  <TextField fx:id="searchText" prefHeight="32.0" prefWidth="826.0" HBox.hgrow="ALWAYS" />
-                  <Button mnemonicParsing="false" onAction="#empty" prefHeight="39.0" prefWidth="94.0" text="Clear" HBox.hgrow="ALWAYS">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                  </Button>
-               </children>
-            </HBox>
-         </children>
-      </AnchorPane>
+      <HBox layoutY="-1.0" prefHeight="32.0" prefWidth="1018.0">
+          <children>
+              <Button mnemonicParsing="false" onAction="#search" prefHeight="48.0" prefWidth="97.0" text="Search" HBox.hgrow="ALWAYS">
+                  <font>
+                      <Font name="System Bold" size="12.0" />
+                  </font>
+              </Button>
+              <TextField fx:id="searchText" onKeyTyped="#search" prefHeight="32.0" prefWidth="826.0" HBox.hgrow="ALWAYS" />
+              <Button mnemonicParsing="false" onAction="#empty" prefHeight="39.0" prefWidth="94.0" text="Clear" HBox.hgrow="ALWAYS">
+                  <font>
+                      <Font name="System Bold" size="12.0" />
+                  </font>
+              </Button>
+          </children>
+      </HBox>
     <SplitPane focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <items>
             <SplitPane prefHeight="160.0" prefWidth="200.0">
@@ -125,31 +121,34 @@
                                       <columns>
                                         <TableColumn fx:id="noteTitle" prefWidth="220.80000606775283" sortable="false" text="Notes" />
                                       </columns>
+                                       <columnResizePolicy>
+                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                       </columnResizePolicy>
                                     </TableView>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane prefHeight="498.0" prefWidth="527.0" HBox.hgrow="ALWAYS">
+                              <AnchorPane prefHeight="554.0" prefWidth="550.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <Label fx:id="selectedNoteTitle" layoutX="225.0" text="NoteTitle">
+                                    <Label fx:id="selectedNoteTitle" layoutX="238.0" text="Note Title">
                                        <font>
                                           <Font size="19.0" />
                                        </font>
                                     </Label>
-                                    <TextArea fx:id="selectedNoteContent" layoutY="28.0" prefHeight="528.0" prefWidth="527.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="28.0">
+                                    <TextArea fx:id="selectedNoteContent" layoutY="28.0" prefHeight="526.0" prefWidth="546.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="28.0">
                                        <font>
                                           <Font size="22.0" />
                                        </font>
                                     </TextArea>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane prefHeight="558.0" prefWidth="160.0" HBox.hgrow="ALWAYS">
+                              <AnchorPane prefHeight="554.0" prefWidth="211.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <Label layoutX="51.0" layoutY="1.0" text="MarkdownView">
+                                    <Label layoutX="32.0" prefHeight="28.0" prefWidth="152.0" text="Markdown View">
                                        <font>
-                                          <Font size="17.0" />
+                                          <Font size="19.0" />
                                        </font>
                                     </Label>
-                                    <WebView fx:id="webView" layoutY="29.0" prefHeight="530.0" prefWidth="197.0" />
+                                    <WebView fx:id="webView" fontScale="1.2" layoutX="-12.8" layoutY="27.0" prefHeight="526.0" prefWidth="227.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="-13.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="27.0" />
                                  </children>
                               </AnchorPane>
                            </children>
