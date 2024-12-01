@@ -45,18 +45,14 @@ import javax.swing.*;
 public class NoteOverviewCtrl implements Initializable {
     private final NoteUtils server;
     private final MainCtrl mainCtrl;
-    private ObservableList<Note> data;
     private ObservableList<NoteDTO> data;
     @FXML
-    private TableView<Note> table;
     private TableView<NoteDTO> table;
     @FXML
-    private TableColumn<Note, String> noteTitle;
     private TableColumn<NoteDTO, String> noteTitle;
     @FXML
     private TextField searchText;
 
-    private List<Note> notes;
     private List<NoteDTO> notes;
     @FXML
     private Label selectedNoteTitle;
