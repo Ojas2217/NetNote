@@ -17,10 +17,13 @@
 
 package client.scenes;
 
+import client.handlers.NoteSearchResult;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+
+import java.util.List;
 
 /**
  * Controller class for managing the primary stage and scenes of the client application.
@@ -44,6 +47,8 @@ public class MainCtrl {
     private NewNoteTitleCtrl newCtrl;
     private Scene add;
     private Scene title;
+    private SearchNoteContentCtrl searchNoteContentCtrl;
+    private Scene searchContentScene;
 
     /**
      * Initializes the primary stage and sets up the scenes and controllers for the application.
@@ -55,7 +60,8 @@ public class MainCtrl {
     public void initialize(Stage primaryStage,
                            Pair<NoteOverviewCtrl, Parent> overview,
                            Pair<AddNoteControl, Parent> add,
-                           Pair<NewNoteTitleCtrl, Parent> title) {
+                           Pair<SearchNoteContentCtrl, Parent> searchContent,
+                           Pair<NewNoteTitleCtrl, Parent> title){
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
@@ -63,6 +69,9 @@ public class MainCtrl {
         this.newCtrl = title.getKey();
         this.add = new Scene(add.getValue());
         this.title = new Scene(title.getValue());
+        this.searchNoteContentCtrl = searchContent.getKey();
+        this.searchContentScene = new Scene(searchContent.getValue());
+
         showOverview();
         primaryStage.show();
     }
@@ -74,6 +83,8 @@ public class MainCtrl {
         primaryStage.setTitle("Main");
         primaryStage.setScene(overview);
         overview.setOnKeyPressed(e -> overviewCtrl.keyPressed(e));
+
+        overviewCtrl.emptySearchText();
         overviewCtrl.refresh();
     }
 
@@ -95,5 +106,19 @@ public class MainCtrl {
 
     public NoteOverviewCtrl getOverviewCtrl() {
         return overviewCtrl;
+    }
+
+    /**
+     * Shows the searchResult UI that lists the notes and their indices where a SearchValue is found
+     * in the content of a note. The User is able to select one of the SearchResults in a listView
+     * and go to the corresponding note and index inside the content of that note.
+     *
+     * @param searchResult the list of all notes and their indices where a certain SearchValue was found
+     */
+    public void showSearchContent(List<NoteSearchResult> searchResult) {
+        primaryStage.setTitle("Notes: Content search result");
+        primaryStage.setScene(searchContentScene);
+        searchNoteContentCtrl.init();
+        searchNoteContentCtrl.setSearchResult(searchResult);
     }
 }
