@@ -54,7 +54,7 @@ public class NoteOverviewCtrl implements Initializable {
     private TextField searchText;
     @FXML
     private WebView webView;
-    private Markdown markdown;
+    private Markdown markdown = new Markdown();
 
     private List<Note> notes;
     @FXML
@@ -90,7 +90,6 @@ public class NoteOverviewCtrl implements Initializable {
         selectedNoteContent.textProperty().addListener((observable, old, newValue) -> {
             markdownView(newValue);
         });
-        markdownView("");
     }
 
     /**
@@ -99,12 +98,8 @@ public class NoteOverviewCtrl implements Initializable {
      * @param commonmark HTML to be printed
      */
     private void markdownView(String commonmark) {
-        try {
-            String html = markdown.render(commonmark);
-            webView.getEngine().loadContent(html);
-        } catch (Exception e) {
-            webView.getEngine().loadContent("<h3>Live Markdown rendering to be implemented. </h3>");
-        }
+        String html = markdown.render(commonmark);
+        webView.getEngine().loadContent(html);
     }
 
     public void addNote() {

@@ -148,7 +148,7 @@
                                           <Font size="19.0" />
                                        </font>
                                     </Label>
-                                    <WebView fx:id="webView" layoutX="-12.8" layoutY="27.0" prefHeight="526.0" prefWidth="227.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="-13.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="27.0" />
+                                    <WebView fx:id="webView" fontScale="1.2" fontSmoothingType="GRAY" layoutX="-12.8" layoutY="27.0" prefHeight="526.0" prefWidth="227.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="-13.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="27.0" />
                                  </children>
                               </AnchorPane>
                            </children>
