@@ -7,7 +7,6 @@ import java.util.OptionalLong;
 import java.util.ResourceBundle;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
-import commons.ExceptionType;
 import commons.Note;
 import commons.ProcessOperationException;
 import javafx.beans.property.SimpleStringProperty;
@@ -17,7 +16,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
-import org.springframework.http.HttpStatus;
 import javafx.scene.input.KeyEvent;
 
 import javax.swing.*;
@@ -69,6 +67,14 @@ public class NoteOverviewCtrl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         noteTitle.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().title));
+        table.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                selectedNoteId = -1;
+            } else {
+                selectedNoteId = newValue.id;
+                displaySelectedNote();
+            }
+        });
     }
 
     public void addNote() {
@@ -81,22 +87,22 @@ public class NoteOverviewCtrl implements Initializable {
      * @throws ProcessOperationException if there is an issue during the deletion process
      */
     public void deleteNote() throws ProcessOperationException {
-        updateSelection();
         Optional<Note> note = fetchSelectedNote();
-
-        if (getSelectedNoteId().isEmpty()) return;
-
-        if (note.isPresent()) {
+        if (note.isEmpty()) return;
+        else{
             server.deleteNote(getSelectedNoteId().getAsLong());
         }
-
+        selectedNoteTitle.setText(" ");
+        selectedNoteContent.setText(" ");
         refresh();
+        selectedNoteContent.setDisable(true);
     }
 
     /**
      * Responsible for refreshing all content in the overview screen.
      * */
     public void refresh() {
+        selectedNoteContent.setDisable(false);
         sendNoteContentToServer();
         try {
             notes = server.getAllNotes();
@@ -108,6 +114,7 @@ public class NoteOverviewCtrl implements Initializable {
         search();
     }
 
+
     /**
      * Updates locally stored {@code selectedNoteId}
      * <p>
@@ -117,9 +124,8 @@ public class NoteOverviewCtrl implements Initializable {
      */
     public void updateSelection() {
         int index = table.getSelectionModel().getSelectedIndex();
-
-        if (index == -1) {                           // from what I understand, -1 is the default
-            selectedNoteId = -1;   // for when nothing is selected
+        if (index == -1) {
+            selectedNoteId = -1; // for when nothing is selected
         } else {
             selectedNoteId = table.getSelectionModel().getSelectedItem().id;
         }
@@ -167,13 +173,7 @@ public class NoteOverviewCtrl implements Initializable {
     public void sendNoteContentToServer() {
         Optional<Note> note = fetchSelectedNote();
         try {
-            if (note.isEmpty()&&!table.getSelectionModel().isEmpty()){
-                throw new ProcessOperationException(
-                        "The note you're trying to edit is not on the server",
-                        HttpStatus.NOT_FOUND.value(),
-                        ExceptionType.SERVER_ERROR
-                );
-            }if(note.isPresent()) {
+            if(note.isPresent()) {
                 updateContentBuffer();
                 note.get().content = selectedNoteContentBuffer;
                 server.editNote(note.get());
@@ -214,6 +214,12 @@ public class NoteOverviewCtrl implements Initializable {
         switch (e.getCode()) {
             case ENTER:
                 refresh();
+                break;
+            case ESCAPE:
+                searchText.requestFocus();
+                break;
+            case A:
+                addNote();
                 break;
             default:
                 break;
