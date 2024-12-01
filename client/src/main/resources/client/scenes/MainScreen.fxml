@@ -175,6 +175,11 @@
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font></Button>
+                  <Button mnemonicParsing="false" onAction="#title" text="Edit Title">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Button>
                </buttons>
             </ButtonBar>
          </children>
