@@ -7,9 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.database.NoteRepository;
+import server.service.NoteService;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST controller for managing notes via HTTP requests.
@@ -36,15 +36,15 @@ import java.util.Optional;
 public class NoteController {
 
     private Note selected;
-    private final NoteRepository repo;
+    private final NoteService service;
 
-    public NoteController(NoteRepository repo) {
-        this.repo = repo;
+    public NoteController(NoteService service) {
+        this.service = service;
     }
 
     @GetMapping(path = {"", "/"})
     public List<Note> getAll() {
-        return repo.findAll();
+        return service.getAllNotes();
     }
 
     /**
@@ -56,10 +56,11 @@ public class NoteController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Note> getById(@PathVariable("id") long id) {
-        if (id < 0 || !repo.existsById(id)) {
+        try {
+            return ResponseEntity.ok(service.getNoteById(id));
+        } catch (ProcessOperationException e) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(repo.findById(id).get());
     }
 
     /**
@@ -70,11 +71,11 @@ public class NoteController {
      */
     @PostMapping(path = {"", "/"})
     public ResponseEntity<Note> add(@RequestBody Note note) {
-        if (isNullOrEmpty(note.title) || isNullOrEmpty(note.content)) {
+        try {
+            return ResponseEntity.ok(service.createNote(note));
+        } catch (ProcessOperationException e) {
             return ResponseEntity.badRequest().build();
         }
-        Note saved = repo.save(note);
-        return ResponseEntity.ok(saved);
     }
 
     /**
@@ -85,11 +86,11 @@ public class NoteController {
      */
     @PutMapping(path = {"", "/"})
     public ResponseEntity<Note> update(@RequestBody Note note) {
-        if (isNullOrEmpty(note.title) || !repo.existsById(note.id)) {
+        try {
+            return ResponseEntity.ok(service.updateNote(note));
+        } catch (ProcessOperationException e) {
             return ResponseEntity.badRequest().build();
         }
-        Note saved = repo.save(note);
-        return ResponseEntity.ok(saved);
     }
 
     /**
@@ -105,23 +106,9 @@ public class NoteController {
             if (id == null)
                 throw new ProcessOperationException("Note ID is NULL", HttpStatus.BAD_REQUEST.value(),
                     ExceptionType.INVALID_CREDENTIALS);
-            Optional<Note> optionalNote = repo.findById(id);
-            if (optionalNote.isEmpty())
-                throw new ProcessOperationException("Note ID is wrong", HttpStatus.BAD_REQUEST.value(),
-                        ExceptionType.INVALID_REQUEST);
-            repo.delete(optionalNote.get());
-            return ResponseEntity.ok(optionalNote.get());
-        } catch (Exception e) {
-            if (e instanceof ProcessOperationException)
-                return ResponseEntity
-                        .status(((ProcessOperationException) e).getStatusCode())
-                        .build();
-            return ResponseEntity.status(HttpStatus.FORBIDDEN.value()).build();
+            return ResponseEntity.ok(service.deleteNoteById(id));
+        } catch (ProcessOperationException e) {
+            return ResponseEntity.badRequest().build();
         }
-
-    }
-
-    private static boolean isNullOrEmpty(String s) {
-        return s == null || s.isEmpty();
     }
 }
