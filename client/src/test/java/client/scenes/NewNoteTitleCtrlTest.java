@@ -26,10 +26,7 @@ public class NewNoteTitleCtrlTest {
     private TextField newNoteTitle;
     private TableView<Note> noteTable;
     private TableView.TableViewSelectionModel<Note> selectionModel;
-    @BeforeAll
-    public static void initJavaFX() {
-        Platform.startup(() -> {});
-    }
+
     @BeforeEach
     public void setUp() throws InterruptedException {
         server = mock(NoteUtils.class);
@@ -60,7 +57,7 @@ public class NewNoteTitleCtrlTest {
     }
     @Test
     public void newTitleTest(){
-        Platform.runLater(() -> newNoteTitleCtrl.newTitle(note));
+        newNoteTitleCtrl.newTitle(note);
         try {
             assertEquals(server.getAllNotes().get(0).getTitle(),"new title");
         } catch (ProcessOperationException e) {

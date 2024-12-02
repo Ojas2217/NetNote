@@ -22,7 +22,6 @@ public class AddNoteControlTest {
     private NoteUtils server;
     private MainCtrl mainCtrl;
     private TextField title;
-
     @BeforeAll
     public static void initJavaFX() {
         Platform.startup(() -> {});
