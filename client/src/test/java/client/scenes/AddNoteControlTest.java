@@ -24,6 +24,7 @@ public class AddNoteControlTest extends BaseTest {
 
     @BeforeEach
     public void setUp() throws InterruptedException {
+        System.setProperty("java.awt.headless", "true");
         server = mock(NoteUtils.class);
         mainCtrl = mock(MainCtrl.class);
         addNoteControl = new AddNoteControl(server, mainCtrl);
