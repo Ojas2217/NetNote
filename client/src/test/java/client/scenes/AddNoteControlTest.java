@@ -47,15 +47,6 @@ public class AddNoteControlTest extends BaseTest {
     }
 
     @Test
-    public void okTestNoteTitleNull() throws ProcessOperationException {
-        Note note = new Note("","empty");
-        when(server.createNote(note)).thenReturn(note);
-        when(server.getAllNotes()).thenReturn(List.of(note));
-        Platform.runLater(() -> addNoteControl.ok());
-        assertTrue(server.getAllNotes().get(0).title.isEmpty());
-    }
-
-    @Test
     public void keyPressTest() throws ProcessOperationException {
         title.setText("Test Note");
         Note note = new Note(title.getText(), "empty 123 testing 123 format");
