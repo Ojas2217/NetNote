@@ -8,7 +8,6 @@ import static org.mockito.Mockito.*;
 import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import javafx.scene.control.TextField;
@@ -17,15 +16,12 @@ import java.util.concurrent.CountDownLatch;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class AddNoteControlTest {
+public class AddNoteControlTest extends BaseTest {
     private AddNoteControl addNoteControl;
     private NoteUtils server;
     private MainCtrl mainCtrl;
     private TextField title;
-    @BeforeAll
-    public static void initJavaFX() {
-        Platform.startup(() -> {});
-    }
+
     @BeforeEach
     public void setUp() throws InterruptedException {
         server = mock(NoteUtils.class);
@@ -75,4 +71,6 @@ public class AddNoteControlTest {
         Platform.runLater(() -> addNoteControl.keyPressed(test));
         assertEquals(server.getAllNotes().get(0), note);
     }
+
+
 }

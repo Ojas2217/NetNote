@@ -8,7 +8,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.List;
@@ -17,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class NewNoteTitleCtrlTest {
+public class NewNoteTitleCtrlTest extends BaseTest {
     private NewNoteTitleCtrl newNoteTitleCtrl;
     private NoteUtils server;
     private MainCtrl mainCtrl;
@@ -89,4 +88,5 @@ public class NewNoteTitleCtrlTest {
         }
         assertEquals("new title", note.getTitle());
     }
+
 }
