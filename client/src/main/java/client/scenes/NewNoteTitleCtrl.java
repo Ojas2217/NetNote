@@ -51,6 +51,10 @@ public class NewNoteTitleCtrl {
         mainCtrl.showOverview();
     }
 
+    public void setNewNoteTitle(TextField newNoteTitle) {
+        this.newNoteTitle = newNoteTitle;
+    }
+
     /**
      *Creates a new note with the user inputted title.
      *Shows a message if user tries to press ok/enter without

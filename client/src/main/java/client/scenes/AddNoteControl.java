@@ -51,6 +51,10 @@ public class AddNoteControl {
         mainCtrl.showOverview();
     }
 
+    public void setNoteTitle(TextField noteTitle) {
+        this.noteTitle = noteTitle;
+    }
+
     /**
      * Adds a note on the server.
      * In case of exceptions, shows an alert.
