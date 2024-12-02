@@ -57,19 +57,25 @@ public class AddNoteControl {
      **/
     public void ok() {
         try {
-            server.createNote(new Note(noteTitle.getText(), "empty 123 testing 123 format"));
+            if (!noteTitle.getText().isEmpty()) {
+                server.createNote(new Note(noteTitle.getText(), "empty 123 testing 123 format"));
+                clearFields();
+                mainCtrl.showOverview();
+            }else{
+                var alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.initModality(Modality.APPLICATION_MODAL);
+                alert.setContentText("Please add a note title.");
+                alert.showAndWait();
+            }
         } catch (WebApplicationException | ProcessOperationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
             alert.setContentText(e.getMessage());
             alert.showAndWait();
-            return;
         }
-        clearFields();
-        mainCtrl.showOverview();
     }
 
-    private void clearFields() {
+    public void clearFields() {
         noteTitle.clear();
     }
 

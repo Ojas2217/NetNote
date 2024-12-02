@@ -5,8 +5,10 @@ import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.Note;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Modality;
 
 /**
  * Controller class for editing the title of an existing note.
@@ -50,12 +52,21 @@ public class NewNoteTitleCtrl {
     }
 
     public void ok() {
-        newTitle(mainCtrl.getOverviewCtrl().getNote());
-        mainCtrl.showOverview();
+        if(newNoteTitle.getText().isEmpty()) {
+            var alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText("Please enter a new note title");
+            alert.showAndWait();
+        }else{
+            Note note = mainCtrl.getOverviewCtrl().getNote();
+            newTitle(note);
+            mainCtrl.showOverview();
+        }
     }
 
     /**
      * it shows the newTitle scene and changes the title of the selected note
+     *
      * @param note the note of which the title will be changed
      */
     public void newTitle(Note note) {
@@ -63,9 +74,11 @@ public class NewNoteTitleCtrl {
             mainCtrl.showNewTitle();
             if (note != null) {
                 String newTitle = newNoteTitle.getText();
-                note.setTitle(newTitle);
-                noteUtils.editNote(note);
-                clearFields();
+                if (!newTitle.equals("")) {
+                    note.setTitle(newTitle);
+                    noteUtils.editNote(note);
+                    clearFields();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,12 +91,11 @@ public class NewNoteTitleCtrl {
 
     /**
      * Handles keyboard input
-     * */
+     */
     public void keyPressed(KeyEvent e) {
         switch (e.getCode()) {
             case ENTER:
-                Note note = mainCtrl.getOverviewCtrl().getNote();
-                newTitle(note);
+                ok();
                 break;
             case ESCAPE:
                 cancel();
