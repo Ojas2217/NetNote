@@ -83,14 +83,17 @@ public class MainCtrl {
         primaryStage.setTitle("Main");
         primaryStage.setScene(overview);
         overview.setOnKeyPressed(e -> overviewCtrl.keyPressed(e));
-
         overviewCtrl.emptySearchText();
         overviewCtrl.refresh();
     }
 
+    /**
+     * shows the "add a note" scene
+     */
     public void showAdd() {
         primaryStage.setTitle("Notes: Adding Note");
         primaryStage.setScene(add);
+        addCtrl.clearFields();
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
 

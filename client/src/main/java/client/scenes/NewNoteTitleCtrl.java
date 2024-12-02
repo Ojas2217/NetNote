@@ -51,13 +51,18 @@ public class NewNoteTitleCtrl {
         mainCtrl.showOverview();
     }
 
+    /**
+     *Creates a new note with the user inputted title.
+     *Shows a message if user tries to press ok/enter without
+     *entering a note title
+     */
     public void ok() {
-        if(newNoteTitle.getText().isEmpty()) {
+        if (newNoteTitle.getText().isEmpty()) {
             var alert = new Alert(Alert.AlertType.INFORMATION);
             alert.initModality(Modality.APPLICATION_MODAL);
             alert.setContentText("Please enter a new note title");
             alert.showAndWait();
-        }else{
+        } else {
             Note note = mainCtrl.getOverviewCtrl().getNote();
             newTitle(note);
             mainCtrl.showOverview();

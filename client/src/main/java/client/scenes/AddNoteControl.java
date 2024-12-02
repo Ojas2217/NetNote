@@ -61,7 +61,7 @@ public class AddNoteControl {
                 server.createNote(new Note(noteTitle.getText(), "empty 123 testing 123 format"));
                 clearFields();
                 mainCtrl.showOverview();
-            }else{
+            } else {
                 var alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.initModality(Modality.APPLICATION_MODAL);
                 alert.setContentText("Please add a note title.");
