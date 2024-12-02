@@ -61,7 +61,7 @@ public class MainCtrl {
                            Pair<NoteOverviewCtrl, Parent> overview,
                            Pair<AddNoteControl, Parent> add,
                            Pair<SearchNoteContentCtrl, Parent> searchContent,
-                           Pair<NewNoteTitleCtrl, Parent> title){
+                           Pair<NewNoteTitleCtrl, Parent> title) {
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
