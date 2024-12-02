@@ -8,6 +8,9 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
 /**
@@ -54,6 +57,54 @@ public class Note {
 
     public String getContent() {
         return content;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    /**
+     * Search for a certain queryString inside the content of this note and return all
+     * the starting indices where this string is literally found
+     *
+     * @param queryString the string to search for inside the content of this note
+     * @return a list of Int of all the starting indices of the queryString
+     */
+    public List<Integer> contentSearchQueryString(String queryString) {
+        List<Integer> indices = new ArrayList<>();
+        if (queryString.isEmpty()) return indices;
+
+        String contentToSearch = String.valueOf(content);
+
+        int startIndex = content.indexOf(queryString);
+        int previousIndex = 0;
+        while (startIndex != -1) {
+            contentToSearch = contentToSearch.substring(startIndex);
+            indices.add(startIndex + previousIndex);
+
+            contentToSearch = contentToSearch.substring(queryString.length());
+            previousIndex = startIndex + queryString.length();
+            startIndex = contentToSearch.indexOf(queryString);
+        }
+
+        return indices;
+    }
+
+    /**
+     * Makes the text bold at the given indices as a MarkDown format
+     *
+     * @param queryString the string that was searched for
+     * @param indices the indices where the queryString occured
+     */
+    public void insertBoldIntoContent(String queryString, List<Integer> indices) {
+        StringBuilder sb = new StringBuilder(getContent());
+        int queryStringLength = queryString.length();
+        for (int j = indices.size() - 1; j >= 0; j--) {
+            int index = indices.get(j);
+            sb.insert(index + queryStringLength, "___");
+            sb.insert(index, "___");
+        }
+        System.out.println(sb);
     }
 
     @Override

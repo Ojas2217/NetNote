@@ -17,6 +17,7 @@
 package client;
 
 import client.scenes.NoteOverviewCtrl;
+import client.scenes.SearchNoteContentCtrl;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
@@ -42,5 +43,6 @@ public class MyModule implements Module {
     public void configure(Binder binder) {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
         binder.bind(NoteOverviewCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(SearchNoteContentCtrl.class).in(Scopes.SINGLETON);
     }
 }

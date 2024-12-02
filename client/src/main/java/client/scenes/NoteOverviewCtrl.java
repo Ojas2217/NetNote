@@ -1,10 +1,13 @@
 package client.scenes;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.ResourceBundle;
+
+import client.handlers.NoteSearchResult;
 
 import client.services.Markdown;
 import client.utils.NoteUtils;
@@ -123,6 +126,10 @@ public class NoteOverviewCtrl implements Initializable {
         selectedNoteContent.setDisable(true);
     }
 
+    public void emptySearchText() {
+        searchText.setText("");
+    }
+
     /**
      * Responsible for refreshing all content in the overview screen.
      */
@@ -226,8 +233,55 @@ public class NoteOverviewCtrl implements Initializable {
      */
     public void search() {
         String text = searchText.getText();
-        List<Note> filteredNotes = notes.stream().filter(x -> x.getTitle().contains(text)).toList();
-        data = FXCollections.observableList(filteredNotes);
+        if (text == null) return;
+
+        if (text.startsWith("#")) {
+            List<NoteSearchResult> foundInNotes = searchNoteContent(text.replaceFirst("#", ""));
+            if (!foundInNotes.isEmpty()) {
+                setViewableNotes(foundInNotes.stream().map(NoteSearchResult::getNote).toList());
+                mainCtrl.showSearchContent(foundInNotes);
+            }
+        } else {
+            searchAllNotes(text);
+        }
+    }
+
+    /**
+     * Search all notes for occurrences of queryString
+     *
+     * @param queryString the string to search for inside the content of each note
+     * @return a list of NoteSearchResult that contains the note and an index where the searchValue was found
+     */
+    private List<NoteSearchResult> searchNoteContent(String queryString) {
+        List<NoteSearchResult> foundInNotes = new ArrayList<>();
+        if (queryString.isEmpty()) return foundInNotes;
+
+        notes.forEach(note -> {
+            List<Integer> foundIndices = note.contentSearchQueryString(queryString);
+
+            if (!foundIndices.isEmpty()) {
+                foundIndices.forEach(i -> foundInNotes.add(new NoteSearchResult(note, i)));
+            }
+        });
+
+        return foundInNotes;
+    }
+
+    /**
+     * Filters the table with all available notes on the provided text
+     *
+     * @param text the text to search for
+     */
+    private void searchAllNotes(String text) {
+        List<Note> filteredNotes = notes
+                .stream()
+                .filter(x -> x.getTitle().contains(text))
+                .toList();
+        setViewableNotes(filteredNotes);
+    }
+
+    private void setViewableNotes(List<Note> notes) {
+        data = FXCollections.observableList(notes);
         table.setItems(data);
         displaySelectedNote();
     }
@@ -235,7 +289,6 @@ public class NoteOverviewCtrl implements Initializable {
     /**
      * Currently only has a keyboard shortcut for refreshing/searching
      * more shortcuts can be added in the future.
-     *
      * @param e
      */
     public void keyPressed(KeyEvent e) {
