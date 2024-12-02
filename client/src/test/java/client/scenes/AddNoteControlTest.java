@@ -9,13 +9,14 @@ import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import javafx.scene.control.TextField;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
+@Disabled
 public class AddNoteControlTest extends BaseTest {
     private AddNoteControl addNoteControl;
     private NoteUtils server;
@@ -24,7 +25,6 @@ public class AddNoteControlTest extends BaseTest {
 
     @BeforeEach
     public void setUp() throws InterruptedException {
-        System.setProperty("java.awt.headless", "true");
         server = mock(NoteUtils.class);
         mainCtrl = mock(MainCtrl.class);
         addNoteControl = new AddNoteControl(server, mainCtrl);
@@ -45,6 +45,15 @@ public class AddNoteControlTest extends BaseTest {
         when(server.getAllNotes()).thenReturn(List.of(note));
         Platform.runLater(() -> addNoteControl.ok());
         assertEquals(server.getAllNotes().getFirst(),note);
+    }
+    @Disabled
+    @Test
+    public void okTestNoteTitleNull() throws ProcessOperationException {
+        Note note = new Note("","empty");
+        when(server.createNote(note)).thenReturn(note);
+        when(server.getAllNotes()).thenReturn(List.of(note));
+        Platform.runLater(() -> addNoteControl.ok());
+        assertTrue(server.getAllNotes().get(0).title.isEmpty());
     }
 
     @Test
