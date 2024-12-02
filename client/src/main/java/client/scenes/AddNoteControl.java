@@ -57,7 +57,7 @@ public class AddNoteControl {
      **/
     public void ok() {
         try {
-            server.createNote(new Note(noteTitle.getText(), "empty"));
+            server.createNote(new Note(noteTitle.getText(), "empty 123 testing 123 format"));
         } catch (WebApplicationException | ProcessOperationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
