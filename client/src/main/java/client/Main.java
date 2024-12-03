@@ -21,7 +21,10 @@ import static com.google.inject.Guice.createInjector;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+
+import client.scenes.NewNoteTitleCtrl;
 import client.scenes.NoteOverviewCtrl;
+import client.scenes.SearchNoteContentCtrl;
 import com.google.inject.Injector;
 import client.scenes.AddNoteControl;
 import client.scenes.MainCtrl;
@@ -70,10 +73,12 @@ public class Main extends Application {
 
 			System.out.println("Found server, starting program");
 		}
-
 		var overview = FXML.load(NoteOverviewCtrl.class, "client", "scenes", "MainScreen.fxml");
 		var add = FXML.load(AddNoteControl.class, "client", "scenes", "AddNote.fxml");
+		var title = FXML.load(NewNoteTitleCtrl.class, "client", "scenes", "newTitle.fxml");
+		var searchContent = FXML.load(SearchNoteContentCtrl.class, "client", "scenes", "SearchNoteContent.fxml"
+		);
 		var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-		mainCtrl.initialize(primaryStage, overview, add);
+		mainCtrl.initialize(primaryStage, overview, add, searchContent, title);
 	}
 }

@@ -50,7 +50,7 @@ public class NoteService {
      * @throws ProcessOperationException if the note title or content is null or empty
      */
     public Note createNote(Note note) throws ProcessOperationException {
-        if (isNullOrEmpty(note.title) || isNullOrEmpty(note.content)) {
+        if (isNullOrEmpty(note.title)) {
             throw new ProcessOperationException(
                     "Note title or content cannot be empty",
                     HttpStatus.BAD_REQUEST.value(),
@@ -90,6 +90,23 @@ public class NoteService {
         repo.delete(optionalNote.get());
         return optionalNote.get();
     }
+
+    /**
+     * Returns if {@link Note} exists by ID.
+     *
+     * @param id the ID of the note
+     * @return true or false
+     * @throws ProcessOperationException if the ID is invalid
+     */
+    public boolean noteExistsById(Long id) throws ProcessOperationException {
+        if (id == null) {
+            throw new ProcessOperationException(
+                    "ID is null", HttpStatus.BAD_REQUEST.value(), ExceptionType.INVALID_REQUEST);
+        }
+        return repo.existsById(id);
+    }
+
+
 
     private static boolean isNullOrEmpty(String s) {
         return s == null || s.trim().isEmpty();

@@ -1,13 +1,15 @@
 package client.scenes;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.ResourceBundle;
+import client.handlers.NoteSearchResult;
+import client.services.Markdown;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
-import commons.ExceptionType;
 import commons.Note;
 import commons.NoteDTO;
 import commons.ProcessOperationException;
@@ -17,8 +19,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.web.WebView;
 import javafx.stage.Modality;
-import org.springframework.http.HttpStatus;
 import javafx.scene.input.KeyEvent;
 
 import javax.swing.*;
@@ -52,6 +54,9 @@ public class NoteOverviewCtrl implements Initializable {
     private TableColumn<NoteDTO, String> noteTitle;
     @FXML
     private TextField searchText;
+    @FXML
+    private WebView webView;
+    private Markdown markdown = new Markdown();
 
     private List<NoteDTO> notes;
     @FXML
@@ -70,7 +75,34 @@ public class NoteOverviewCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        noteTitle.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().getTitle()));
+        noteTitle.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().title));
+        table.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                selectedNoteId = -1;
+            } else {
+                selectedNoteId = newValue.id;
+                displaySelectedNote();
+            }
+        });
+
+        // NEED TO ADD DELAY
+        selectedNoteContent.textProperty().addListener((observable, oldValue, newValue) -> {
+            sendNoteContentToServer();
+        });
+
+        selectedNoteContent.textProperty().addListener((observable, old, newValue) -> {
+            markdownView(newValue);
+        });
+    }
+
+    /**
+     * Loads the rendered {@link Markdown} version of the note to the WebView part of the NoteOverview Scene.
+     *
+     * @param commonmark HTML to be printed
+     */
+    private void markdownView(String commonmark) {
+        String html = markdown.render(commonmark);
+        webView.getEngine().loadContent(html);
     }
 
     public void addNote() {
@@ -83,22 +115,30 @@ public class NoteOverviewCtrl implements Initializable {
      * @throws ProcessOperationException if there is an issue during the deletion process
      */
     public void deleteNote() throws ProcessOperationException {
-        updateSelection();
         Optional<Note> note = fetchSelectedNote();
-
-        if (getSelectedNoteId().isEmpty()) return;
-
-        if (note.isPresent()) {
+        if (note.isEmpty()) return;
+        else {
             server.deleteNote(getSelectedNoteId().getAsLong());
         }
-
+        selectedNoteTitle.setText(" ");
+        selectedNoteContent.setText(" ");
         refresh();
+        selectedNoteContent.setDisable(true);
+    }
+
+    public void emptySearchText() {
+        searchText.setText("");
     }
 
     /**
      * Responsible for refreshing all content in the overview screen.
-     * */
+     */
     public void refresh() {
+        if (table.getItems().isEmpty()) {
+            selectedNoteContent.setDisable(true);
+        } else {
+            selectedNoteContent.setDisable(false);
+        }
         sendNoteContentToServer();
         try {
             notes = server.getIdsAndTitles();
@@ -119,9 +159,8 @@ public class NoteOverviewCtrl implements Initializable {
      */
     public void updateSelection() {
         int index = table.getSelectionModel().getSelectedIndex();
-
-        if (index == -1) {                           // from what I understand, -1 is the default
-            selectedNoteId = -1;   // for when nothing is selected
+        if (index == -1) {
+            selectedNoteId = -1; // for when nothing is selected
         } else {
             selectedNoteId = table.getSelectionModel().getSelectedItem().getId();
         }
@@ -129,7 +168,7 @@ public class NoteOverviewCtrl implements Initializable {
 
     /**
      * If a note is selected, updates the overview to show the title and content.
-     * */
+     */
     public void displaySelectedNote() {
         updateSelection();
         if (getSelectedNoteId().isEmpty()) return;
@@ -146,9 +185,9 @@ public class NoteOverviewCtrl implements Initializable {
      * {@code Optional.empty()} if a note isn't selected or doesn't exist on the server.
      */
     public Optional<Note> fetchSelectedNote() {
-        if (getSelectedNoteId().isEmpty())
+        if (getSelectedNoteId().isEmpty()) {
             return Optional.empty();
-
+        }
         try {
             return Optional.of(server.getNote(getSelectedNoteId().getAsLong()));
         } catch (Exception e) {
@@ -159,24 +198,19 @@ public class NoteOverviewCtrl implements Initializable {
     /**
      * Sends {@link Note} content to the server.
      * <p>
-     *     This method verifies whether the currently selected {@link Note} exists on the server
-     *     and if yes, sends any changes back to the server. If the note is not present,
-     *     shows an error message using an {@link Alert}.
+     * This method verifies whether the currently selected {@link Note} exists on the server
+     * and if yes, sends any changes back to the server. If the note is not present,
+     * shows an error message using an {@link Alert}.
      * </p>
-     * */
+     */
     public void sendNoteContentToServer() {
         Optional<Note> note = fetchSelectedNote();
         try {
-            if (note.isEmpty())
-                throw new ProcessOperationException(
-                        "The note you're trying to edit is not on the server",
-                        HttpStatus.NOT_FOUND.value(),
-                        ExceptionType.SERVER_ERROR
-                );
-
-            updateContentBuffer();
-            note.get().content = selectedNoteContentBuffer;
-            server.editNote(note.get());
+            if (note.isPresent()) {
+                updateContentBuffer();
+                note.get().content = selectedNoteContentBuffer;
+                server.editNote(note.get());
+            }
 
         } catch (ProcessOperationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -190,24 +224,64 @@ public class NoteOverviewCtrl implements Initializable {
         selectedNoteContentBuffer = selectedNoteContent.getText();
     }
 
+    public Note getNote() {
+        return table.getSelectionModel().getSelectedItem();
+    }
+
     /**
      * If there is text in the search bar, displays notes whose title contains the text.
      */
     public void search() {
         String text = searchText.getText();
-        try {
-            if (notes == null) throw new NullPointerException();
-        } catch (NullPointerException e) {
-            System.out.println(e.getMessage());
-            String errorMessage = "Error: notes was null. Something went wrong in search()";
-            JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
-            return;
+        if (text == null) return;
+
+        if (text.startsWith("#")) {
+            List<NoteSearchResult> foundInNotes = searchNoteContent(text.replaceFirst("#", ""));
+            if (!foundInNotes.isEmpty()) {
+                setViewableNotes(foundInNotes.stream().map(NoteSearchResult::getNote).toList());
+                mainCtrl.showSearchContent(foundInNotes);
+            }
+        } else {
+            searchAllNotes(text);
         }
-        List<NoteDTO> filteredNotes = notes
+    }
+
+    /**
+     * Search all notes for occurrences of queryString
+     *
+     * @param queryString the string to search for inside the content of each note
+     * @return a list of NoteSearchResult that contains the note and an index where the searchValue was found
+     */
+    private List<NoteSearchResult> searchNoteContent(String queryString) {
+        List<NoteSearchResult> foundInNotes = new ArrayList<>();
+        if (queryString.isEmpty()) return foundInNotes;
+
+        notes.forEach(note -> {
+            List<Integer> foundIndices = note.contentSearchQueryString(queryString);
+
+            if (!foundIndices.isEmpty()) {
+                foundIndices.forEach(i -> foundInNotes.add(new NoteSearchResult(note, i)));
+            }
+        });
+
+        return foundInNotes;
+    }
+
+    /**
+     * Filters the table with all available notes on the provided text
+     *
+     * @param text the text to search for
+     */
+    private void searchAllNotes(String text) {
+        List<Note> filteredNotes = notes
                 .stream()
                 .filter(x -> x.getTitle().contains(text))
                 .toList();
-        data = FXCollections.observableList(filteredNotes);
+        setViewableNotes(filteredNotes);
+    }
+
+    private void setViewableNotes(List<Note> notes) {
+        data = FXCollections.observableList(notes);
         table.setItems(data);
         displaySelectedNote();
     }
@@ -222,9 +296,19 @@ public class NoteOverviewCtrl implements Initializable {
             case ENTER:
                 refresh();
                 break;
+            case ESCAPE:
+                searchText.requestFocus();
+                break;
+            case A:
+                addNote();
+                break;
             default:
                 break;
         }
+    }
+
+    public void title() {
+        mainCtrl.getNewCtrl().newTitle(table.getSelectionModel().getSelectedItem());
     }
 
     public void empty() {
