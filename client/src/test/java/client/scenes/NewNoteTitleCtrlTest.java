@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -29,13 +30,14 @@ public class NewNoteTitleCtrlTest extends BaseTest {
 
     @BeforeEach
     public void setUp() throws InterruptedException {
+        note = new Note("hello","world");
         server = mock(NoteUtils.class);
         mainCtrl = mock(MainCtrl.class);
         noteOverviewCtrl = mock(NoteOverviewCtrl.class);
         noteTable = mock(TableView.class);
         selectionModel = mock(TableView.TableViewSelectionModel.class);
 
-        when(noteOverviewCtrl.getNote()).thenReturn(note);
+        when(noteOverviewCtrl.fetchSelected()).thenReturn(Optional.of(note));
         when(noteTable.getSelectionModel()).thenReturn(selectionModel);
 
         newNoteTitleCtrl = new NewNoteTitleCtrl(mainCtrl, server);
@@ -68,7 +70,7 @@ public class NewNoteTitleCtrlTest extends BaseTest {
     public void keyPressedTest(){
         when(mainCtrl.getOverviewCtrl()).thenReturn(noteOverviewCtrl);
         when(noteTable.getSelectionModel()).thenReturn(selectionModel);
-        when(noteOverviewCtrl.getNote()).thenReturn(note);
+        when(noteOverviewCtrl.fetchSelected()).thenReturn(Optional.of(note));
         newNoteTitle.setText("new title");
         KeyEvent test = new KeyEvent(
                 KeyEvent.KEY_PRESSED,
