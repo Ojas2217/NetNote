@@ -1,9 +1,0 @@
-2024-12-02 15:05:44.408008+01:00 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT CHARACTER VARYING(255)": "U&'empty 123 testing 123 format\\000aempty 123 testing 123 format\\000aempty 123 t... (261)"; SQL statement:
-update note set content=?,title=? where id=? [22001-224]
-2024-12-02 16:19:22.446664+01:00 jdbc[13]: exception
-org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT CHARACTER VARYING(255)": "U&'table.setOnMousePressed(event -> {\\000a                        if (event.getB... (342)"; SQL statement:
-update note set content=?,title=? where id=? [22001-224]
-2024-12-02 16:19:25.787867+01:00 jdbc[13]: exception
-org.h2.jdbc.JdbcSQLDataException: Value too long for column "CONTENT CHARACTER VARYING(255)": "U&'table.setOnMousePressed(event -> {\\000a                        if (event.getB... (342)"; SQL statement:
-update note set content=?,title=? where id=? [22001-224]
