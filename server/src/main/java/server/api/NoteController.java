@@ -36,7 +36,6 @@ import java.util.List;
 @RequestMapping("/api/notes")
 public class NoteController {
 
-    private Note selected;
     private final NoteService service;
 
     public NoteController(NoteService service) {

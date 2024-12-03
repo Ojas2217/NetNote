@@ -34,7 +34,7 @@ class NoteControllerTest {
 
     @Test
     public void testGetByIdNegative() throws ProcessOperationException {
-        when(noteService.getNoteById(Long.valueOf(-1))).thenThrow(ProcessOperationException.class);
+        when(noteService.getNoteById((long) -1)).thenThrow(ProcessOperationException.class);
         ResponseEntity<Note> result = noteController.getById(-1);
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
     }

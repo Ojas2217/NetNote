@@ -77,7 +77,7 @@ public class NoteOverviewCtrl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         noteTitle.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().getTitle()));
-        table.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        table.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
             if (newValue == null) {
                 selectedNoteId = -1;
             } else {
@@ -87,11 +87,11 @@ public class NoteOverviewCtrl implements Initializable {
         });
 
         // NEED TO ADD DELAY
-        selectedNoteContent.textProperty().addListener((observable, oldValue, newValue) -> {
+        selectedNoteContent.textProperty().addListener((_, _, _) -> {
             sendNoteContentToServer();
         });
 
-        selectedNoteContent.textProperty().addListener((observable, old, newValue) -> {
+        selectedNoteContent.textProperty().addListener((_, _, newValue) -> {
             markdownView(newValue);
         });
     }
@@ -119,7 +119,7 @@ public class NoteOverviewCtrl implements Initializable {
         Optional<Note> note = fetchSelectedNote();
         if (note.isEmpty()) return;
         else {
-            server.deleteNote(getSelectedNoteId().getAsLong());
+            server.deleteNote(note.get().getId());
         }
         selectedNoteTitle.setText(" ");
         selectedNoteContent.setText(" ");
@@ -135,11 +135,7 @@ public class NoteOverviewCtrl implements Initializable {
      * Responsible for refreshing all content in the overview screen.
      */
     public void refresh() {
-        if (table.getItems().isEmpty()) {
-            selectedNoteContent.setDisable(true);
-        } else {
-            selectedNoteContent.setDisable(false);
-        }
+        selectedNoteContent.setDisable(table.getItems().isEmpty());
         sendNoteContentToServer();
         try {
             notes = server.getIdsAndTitles();
