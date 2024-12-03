@@ -76,7 +76,7 @@ public class AddNoteControl {
 
     /**
      * Handles keyboard input
-     * */
+     */
     public void keyPressed(KeyEvent e) {
         switch (e.getCode()) {
             case ENTER:

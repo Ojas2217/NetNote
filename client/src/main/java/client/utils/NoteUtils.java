@@ -38,7 +38,8 @@ public class NoteUtils extends ServerUtils {
     public Note getNote(long id) throws ProcessOperationException {
         try {
             return super.get("/api/notes/" + id,
-                    new GenericType<>(){});
+                    new GenericType<>() {
+                    });
         } catch (Exception e) {
             if (e instanceof ProcessOperationException)
                 throw (ProcessOperationException) e;
@@ -48,13 +49,15 @@ public class NoteUtils extends ServerUtils {
 
     /**
      * A function that gets all the notes
+     *
      * @return all the notes
      * @throws ProcessOperationException e
      */
     public List<Note> getAllNotes() throws ProcessOperationException {
         try {
             return super.get("/api/notes",
-                    new GenericType<>(){});
+                    new GenericType<>() {
+                    });
         } catch (Exception e) {
             if (e instanceof ProcessOperationException)
                 throw (ProcessOperationException) e;
@@ -64,6 +67,7 @@ public class NoteUtils extends ServerUtils {
 
     /**
      * A function that creates a note
+     *
      * @param note the note
      * @return the deleted note
      * @throws ProcessOperationException e
@@ -71,7 +75,8 @@ public class NoteUtils extends ServerUtils {
     public Note createNote(Note note) throws ProcessOperationException {
         try {
             return super.post("/api/notes/", note,
-                    new GenericType<>(){});
+                    new GenericType<>() {
+                    });
         } catch (Exception e) {
             if (e instanceof ProcessOperationException)
                 throw (ProcessOperationException) e;
@@ -81,13 +86,15 @@ public class NoteUtils extends ServerUtils {
 
     /**
      * A function that edits a note
+     *
      * @param note the note
      * @throws ProcessOperationException e
      */
     public void editNote(Note note) throws ProcessOperationException {
         try {
             super.put("/api/notes/", note,
-                    new GenericType<>(){});
+                    new GenericType<>() {
+                    });
         } catch (Exception e) {
             if (e instanceof ProcessOperationException)
                 throw (ProcessOperationException) e;
@@ -97,6 +104,7 @@ public class NoteUtils extends ServerUtils {
 
     /**
      * A function that deletes a note
+     *
      * @param id the note id
      * @return the deleted note
      * @throws ProcessOperationException e
@@ -104,7 +112,8 @@ public class NoteUtils extends ServerUtils {
     public Note deleteNote(long id) throws ProcessOperationException {
         try {
             return super.delete("/api/notes/" + id,
-                    new GenericType<>(){});
+                    new GenericType<>() {
+                    });
         } catch (Exception e) {
             if (e instanceof ProcessOperationException)
                 throw (ProcessOperationException) e;
@@ -114,12 +123,14 @@ public class NoteUtils extends ServerUtils {
 
     /**
      * A function that gets all IDs and titles of notes in {@code List<Pair<Long, String>>} format.
+     *
      * @return the deleted note
      * @throws ProcessOperationException e
      */
     public List<NoteDTO> getIdsAndTitles() throws ProcessOperationException {
         try {
-            return super.get("/api/notes", "idsAndTitles", "", new GenericType<>(){});
+            return super.get("/api/notes", "idsAndTitles", "", new GenericType<>() {
+            });
         } catch (Exception e) {
             if (e instanceof ProcessOperationException)
                 throw (ProcessOperationException) e;

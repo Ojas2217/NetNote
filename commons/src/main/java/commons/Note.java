@@ -94,7 +94,7 @@ public class Note {
      * Makes the text bold at the given indices as a MarkDown format
      *
      * @param queryString the string that was searched for
-     * @param indices the indices where the queryString occured
+     * @param indices     the indices where the queryString occured
      */
     public void insertBoldIntoContent(String queryString, List<Integer> indices) {
         StringBuilder sb = new StringBuilder(getContent());

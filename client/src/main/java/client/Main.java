@@ -47,38 +47,38 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
     private static final Injector INJECTOR = createInjector(new MyModule());
-	private static final MyFXML FXML = new MyFXML(INJECTOR);
+    private static final MyFXML FXML = new MyFXML(INJECTOR);
 
-	public static void main(String[] args) throws URISyntaxException, IOException {
-		launch();
-	}
+    public static void main(String[] args) throws URISyntaxException, IOException {
+        launch();
+    }
 
-	@Override
-	public void start(Stage primaryStage) throws Exception {
+    @Override
+    public void start(Stage primaryStage) throws Exception {
 
-		var serverUtils = INJECTOR.getInstance(ServerUtils.class);
+        var serverUtils = INJECTOR.getInstance(ServerUtils.class);
 
-		// Awaits for the server to become available instead of ending the program
-		if (!serverUtils.isServerAvailable()) //noinspection CheckStyle
+        // Awaits for the server to become available instead of ending the program
+        if (!serverUtils.isServerAvailable()) //noinspection CheckStyle
         {
-			var msg = "Server needs to be started before the client, but it does not seem to be available";
-			System.err.println(msg);
+            var msg = "Server needs to be started before the client, but it does not seem to be available";
+            System.err.println(msg);
 
-			final int SLEEP_DURATION = 500;
+            final int SLEEP_DURATION = 500;
 
-			while (!serverUtils.isServerAvailable()) {
-				System.out.println("Waiting for server...");
-				Thread.sleep(SLEEP_DURATION);
-			}
+            while (!serverUtils.isServerAvailable()) {
+                System.out.println("Waiting for server...");
+                Thread.sleep(SLEEP_DURATION);
+            }
 
-			System.out.println("Found server, starting program");
-		}
-		var overview = FXML.load(NoteOverviewCtrl.class, "client", "scenes", "MainScreen.fxml");
-		var add = FXML.load(AddNoteControl.class, "client", "scenes", "AddNote.fxml");
-		var title = FXML.load(NewNoteTitleCtrl.class, "client", "scenes", "newTitle.fxml");
-		var searchContent = FXML.load(SearchNoteContentCtrl.class, "client", "scenes", "SearchNoteContent.fxml"
-		);
-		var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-		mainCtrl.initialize(primaryStage, overview, add, searchContent, title);
-	}
+            System.out.println("Found server, starting program");
+        }
+        var overview = FXML.load(NoteOverviewCtrl.class, "client", "scenes", "MainScreen.fxml");
+        var add = FXML.load(AddNoteControl.class, "client", "scenes", "AddNote.fxml");
+        var title = FXML.load(NewNoteTitleCtrl.class, "client", "scenes", "newTitle.fxml");
+        var searchContent = FXML.load(SearchNoteContentCtrl.class, "client", "scenes", "SearchNoteContent.fxml"
+        );
+        var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
+        mainCtrl.initialize(primaryStage, overview, add, searchContent, title);
+    }
 }

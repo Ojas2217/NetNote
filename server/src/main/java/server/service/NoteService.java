@@ -13,7 +13,7 @@ import java.util.Optional;
 
 /**
  * {@link Service} class that's responsible for interacting with {@link NoteRepository}.
- * */
+ */
 @Service
 public class NoteService {
 
@@ -107,15 +107,15 @@ public class NoteService {
     }
 
 
-
     private static boolean isNullOrEmpty(String s) {
         return s == null || s.trim().isEmpty();
     }
 
     /**
      * Gets the IDs and titles of all notes in the repo.
+     *
      * @throws ProcessOperationException if query result is empty
-     * */
+     */
     public List<NoteDTO> getIdsAndTitles() throws ProcessOperationException {
         List<Object[]> result = repo.findIdAndTitle();
         if (result.isEmpty()) {

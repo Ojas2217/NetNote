@@ -38,7 +38,7 @@ public class SearchNoteContentCtrl {
      */
     public void init() {
         tableViewResult.getSelectionModel().selectedIndexProperty()
-                .addListener((obs, oldSelection, newSelectionIndex) -> {
+                .addListener((_, _, newSelectionIndex) -> {
                     if (newSelectionIndex != null) {
                         int newIndex = (Integer) newSelectionIndex;
                         if (newIndex != -1) handleRowSelection(newIndex);

@@ -2,7 +2,7 @@ package commons;
 
 /**
  * Note data transfer object for transferring the ID and title.
- * */
+ */
 public class NoteDTO {
     private Long id;
     private String title;

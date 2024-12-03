@@ -17,7 +17,9 @@
 package client.utils;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+
 import java.net.ConnectException;
+
 import commons.ExceptionType;
 import commons.ProcessOperationException;
 import jakarta.ws.rs.core.Response;
@@ -55,64 +57,64 @@ import org.springframework.http.HttpStatus;
  */
 public class ServerUtils {
 
-	private static final String SERVER = "http://localhost:8080/";
+    private static final String SERVER = "http://localhost:8080/";
 
-	public ServerUtils() {
-	}
+    public ServerUtils() {
+    }
 
-	/**
-	 * Returns whether the server is available.
-	 * */
-	public boolean isServerAvailable() {
-		try {
-			ClientBuilder.newClient(new ClientConfig()) //
-					.target(SERVER) //
-					.request(APPLICATION_JSON) //
-					.get();
-		} catch (ProcessingException e) {
-			if (e.getCause() instanceof ConnectException) {
-				return false;
-			}
-		}
-		return true;
-	}
+    /**
+     * Returns whether the server is available.
+     */
+    public boolean isServerAvailable() {
+        try {
+            ClientBuilder.newClient(new ClientConfig()) //
+                    .target(SERVER) //
+                    .request(APPLICATION_JSON) //
+                    .get();
+        } catch (ProcessingException e) {
+            if (e.getCause() instanceof ConnectException) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	/**
-	 * GET method
-	 *
-	 * @param endpoint the path to the specified item
-	 * @param type the type
-	 * @return the entity
-	 * @param <T> the type of the entity
-	 * @throws ProcessOperationException if the operation fails
-	 */
-	protected <T> T get(String endpoint, GenericType<T> type) throws ProcessOperationException {
-		Response response = ClientBuilder.newClient(new ClientConfig())
-				.target(this.SERVER).path(endpoint)
-				.request(APPLICATION_JSON)
-				.accept(APPLICATION_JSON)
-				.get();
+    /**
+     * GET method
+     *
+     * @param endpoint the path to the specified item
+     * @param type     the type
+     * @param <T>      the type of the entity
+     * @return the entity
+     * @throws ProcessOperationException if the operation fails
+     */
+    protected <T> T get(String endpoint, GenericType<T> type) throws ProcessOperationException {
+        Response response = ClientBuilder.newClient(new ClientConfig())
+                .target(this.SERVER).path(endpoint)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get();
 
-		if (response.getStatus() == HttpStatus.OK.value() ||
-			response.getStatus() == HttpStatus.CREATED.value() ||
-			response.getStatus() == HttpStatus.NO_CONTENT.value())
-			return response.readEntity(type);
+        if (response.getStatus() == HttpStatus.OK.value() ||
+                response.getStatus() == HttpStatus.CREATED.value() ||
+                response.getStatus() == HttpStatus.NO_CONTENT.value())
+            return response.readEntity(type);
 
-		throw new ProcessOperationException("Operation",
-				response.getStatus(), ExceptionType.INVALID_CREDENTIALS);
-	}
+        throw new ProcessOperationException("Operation",
+                response.getStatus(), ExceptionType.INVALID_CREDENTIALS);
+    }
 
     /**
      * GET method with one parameter
      *
      * @param endpoint the path to the specified item
-     * @param type the type
+     * @param type     the type
+     * @param <T>      the type of the entity
      * @return the entity
-     * @param <T> the type of the entity
      * @throws ProcessOperationException if the operation fails
      */
     protected <T> T get(String endpoint, String param, String value, GenericType<T> type)
-			throws ProcessOperationException {
+            throws ProcessOperationException {
         Response response = ClientBuilder.newClient(new ClientConfig())
                 .target(this.SERVER).path(endpoint)
                 .queryParam(param, value)
@@ -129,69 +131,69 @@ public class ServerUtils {
                 response.getStatus(), ExceptionType.INVALID_CREDENTIALS);
     }
 
-	/**
-	 * DELETE method
-	 *
-	 * @param endpoint the path to the specified item
-	 * @param type the type
-	 * @return the deleted entity
-	 * @param <T> the type of the entity
-	 * @throws ProcessOperationException if the operation fails
-	 */
-	protected <T> T delete(String endpoint, GenericType<T> type) throws ProcessOperationException {
-		Response response = ClientBuilder.newClient(new ClientConfig())
-				.target(this.SERVER).path(endpoint)
-				.request(APPLICATION_JSON)
-				.accept(APPLICATION_JSON)
-				.delete();
-		if (response.getStatus() == HttpStatus.OK.value() || response.getStatus() == HttpStatus.CREATED.value())
-			return response.readEntity(type);
-		throw new ProcessOperationException("Operation",
-				response.getStatus(), ExceptionType.INVALID_CREDENTIALS);
-	}
+    /**
+     * DELETE method
+     *
+     * @param endpoint the path to the specified item
+     * @param type     the type
+     * @param <T>      the type of the entity
+     * @return the deleted entity
+     * @throws ProcessOperationException if the operation fails
+     */
+    protected <T> T delete(String endpoint, GenericType<T> type) throws ProcessOperationException {
+        Response response = ClientBuilder.newClient(new ClientConfig())
+                .target(this.SERVER).path(endpoint)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .delete();
+        if (response.getStatus() == HttpStatus.OK.value() || response.getStatus() == HttpStatus.CREATED.value())
+            return response.readEntity(type);
+        throw new ProcessOperationException("Operation",
+                response.getStatus(), ExceptionType.INVALID_CREDENTIALS);
+    }
 
-	/**
-	 * PUT method
-	 *
-	 * @param endpoint the path to the specified item
-	 * @param body the object
-	 * @param type the type
-	 * @return the entity
-	 * @param <T> the type of the entity
-	 * @throws ProcessOperationException if the operation fails
-	 */
-	protected <T> T put(String endpoint, T body, GenericType<T> type) throws ProcessOperationException {
-		Response response = ClientBuilder.newClient(new ClientConfig())
-				.target(this.SERVER).path(endpoint)
-				.request(APPLICATION_JSON)
-				.accept(APPLICATION_JSON)
-				.put(Entity.entity(body, APPLICATION_JSON));
-		if (response.getStatus() == HttpStatus.OK.value() || response.getStatus() == HttpStatus.CREATED.value())
-			return response.readEntity(type);
-		throw new ProcessOperationException("Operation",
-				response.getStatus(), ExceptionType.INVALID_CREDENTIALS);
-	}
+    /**
+     * PUT method
+     *
+     * @param endpoint the path to the specified item
+     * @param body     the object
+     * @param type     the type
+     * @param <T>      the type of the entity
+     * @return the entity
+     * @throws ProcessOperationException if the operation fails
+     */
+    protected <T> T put(String endpoint, T body, GenericType<T> type) throws ProcessOperationException {
+        Response response = ClientBuilder.newClient(new ClientConfig())
+                .target(this.SERVER).path(endpoint)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(body, APPLICATION_JSON));
+        if (response.getStatus() == HttpStatus.OK.value() || response.getStatus() == HttpStatus.CREATED.value())
+            return response.readEntity(type);
+        throw new ProcessOperationException("Operation",
+                response.getStatus(), ExceptionType.INVALID_CREDENTIALS);
+    }
 
-	/**
-	 * POST method
-	 *
-	 * @param endpoint the endpoint
-	 * @param body the body
-	 * @param type the type
-	 * @return the entity or object
-	 * @param <T> the type
-	 * @throws ProcessOperationException if the operation fails
-	 */
-	protected <T> T post(String endpoint, T body, GenericType<T> type)
-			throws ProcessOperationException {
-		Response response = ClientBuilder.newClient(new ClientConfig()) //
-				.target(this.SERVER).path(endpoint)
-				.request(APPLICATION_JSON)
-				.accept(APPLICATION_JSON)
-				.post(Entity.entity(body, APPLICATION_JSON));
-		if (response.getStatus() == HttpStatus.OK.value() || response.getStatus() == HttpStatus.CREATED.value())
-			return response.readEntity(type);
-		throw new ProcessOperationException("Operation",
-				response.getStatus(), ExceptionType.INVALID_CREDENTIALS);
-	}
+    /**
+     * POST method
+     *
+     * @param endpoint the endpoint
+     * @param body     the body
+     * @param type     the type
+     * @param <T>      the type
+     * @return the entity or object
+     * @throws ProcessOperationException if the operation fails
+     */
+    protected <T> T post(String endpoint, T body, GenericType<T> type)
+            throws ProcessOperationException {
+        Response response = ClientBuilder.newClient(new ClientConfig()) //
+                .target(this.SERVER).path(endpoint)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(body, APPLICATION_JSON));
+        if (response.getStatus() == HttpStatus.OK.value() || response.getStatus() == HttpStatus.CREATED.value())
+            return response.readEntity(type);
+        throw new ProcessOperationException("Operation",
+                response.getStatus(), ExceptionType.INVALID_CREDENTIALS);
+    }
 }

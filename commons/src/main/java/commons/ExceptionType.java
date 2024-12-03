@@ -22,6 +22,7 @@ public enum ExceptionType {
 
     /**
      * Constructor
+     *
      * @param value - value
      */
     ExceptionType(String value) {
@@ -29,7 +30,6 @@ public enum ExceptionType {
     }
 
     /**
-     *
      * @return the value of the ExceptionType
      */
     public String getValue() {
@@ -38,6 +38,7 @@ public enum ExceptionType {
 
     /**
      * To String method
+     *
      * @return the value of the ExceptionType
      */
     @Override

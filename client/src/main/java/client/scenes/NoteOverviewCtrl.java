@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.ResourceBundle;
+
 import client.handlers.NoteSearchResult;
 import client.services.Markdown;
 import client.utils.NoteUtils;
@@ -293,6 +294,7 @@ public class NoteOverviewCtrl implements Initializable {
     /**
      * Currently only has a keyboard shortcut for refreshing/searching
      * more shortcuts can be added in the future.
+     *
      * @param e Pressed key
      */
     public void keyPressed(KeyEvent e) {
@@ -313,7 +315,7 @@ public class NoteOverviewCtrl implements Initializable {
 
     /**
      * Allows user to change the title if note is selected and exists on the server.
-     * */
+     */
     public void title() {
         Optional<Note> note = fetchSelectedNote();
         if (note.isEmpty()) return;
