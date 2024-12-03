@@ -110,7 +110,7 @@ public class MainCtrl {
 
     public void showOverview(NoteSearchResult searchResult) {
         showOverview();
-        overviewCtrl.displaySelectedNote(searchResult);
+        overviewCtrl.show(searchResult);
     }
 
     /**

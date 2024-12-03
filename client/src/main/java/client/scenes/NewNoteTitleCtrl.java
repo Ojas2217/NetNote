@@ -10,6 +10,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 
+import java.util.Optional;
+
 /**
  * Controller class for editing the title of an existing note.
  * <p>
@@ -56,9 +58,9 @@ public class NewNoteTitleCtrl {
     }
 
     /**
-     *Creates a new note with the user inputted title.
-     *Shows a message if user tries to press ok/enter without
-     *entering a note title
+     * Creates a new note with the user inputted title.
+     * Shows a message if user tries to press ok/enter without
+     * entering a note title
      */
     public void ok() {
         if (newNoteTitle.getText().isEmpty()) {
@@ -66,11 +68,21 @@ public class NewNoteTitleCtrl {
             alert.initModality(Modality.APPLICATION_MODAL);
             alert.setContentText("Please enter a new note title");
             alert.showAndWait();
-        } else {
-            Note note = mainCtrl.getOverviewCtrl().getNote();
-            newTitle(note);
-            mainCtrl.showOverview();
+            return;
         }
+
+        // Fetch the selected Note if it exists on the server
+        Optional<Note> note = mainCtrl.getOverviewCtrl().fetchSelected();
+        if (note.isEmpty()) {
+            var alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.initModality(Modality.APPLICATION_MODAL);                     // There needs to be an alert class!!
+            alert.setContentText("The note doesn't exist on the server");
+            alert.showAndWait();
+            return;
+        }
+
+        newTitle(note.get());
+        mainCtrl.showOverview();
     }
 
     /**
@@ -83,7 +95,7 @@ public class NewNoteTitleCtrl {
             mainCtrl.showNewTitle();
             if (note != null) {
                 String newTitle = newNoteTitle.getText();
-                if (!newTitle.equals("")) {
+                if (!newTitle.isEmpty()) {
                     note.setTitle(newTitle);
                     noteUtils.editNote(note);
                     clearFields();

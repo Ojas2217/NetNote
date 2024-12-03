@@ -91,7 +91,7 @@ public class NoteOverviewCtrl implements Initializable {
                 selectedNoteId = -1;
             } else {
                 selectedNoteId = newValue.getId();
-                displaySelectedNote();
+                showSelectedNote();
             }
         });
 
@@ -125,7 +125,7 @@ public class NoteOverviewCtrl implements Initializable {
      * @throws ProcessOperationException if there is an issue during the deletion process
      */
     public void deleteNote() throws ProcessOperationException {
-        Optional<Note> note = fetchSelectedNote();
+        Optional<Note> note = fetchSelected();
         if (note.isEmpty()) return;
         else {
             String message = "Are you sure you want to delete this note?";
@@ -177,8 +177,8 @@ public class NoteOverviewCtrl implements Initializable {
      * </p>
      */
     public void updateSelection() {
-        int index = table.getSelectionModel().getSelectedIndex();
-        if (index == -1) {
+        int indexInTable = table.getSelectionModel().getSelectedIndex();
+        if (indexInTable == -1) {
             selectedNoteId = -1; // for when nothing is selected
         } else {
             selectedNoteId = table.getSelectionModel().getSelectedItem().getId();
@@ -186,26 +186,26 @@ public class NoteOverviewCtrl implements Initializable {
     }
 
     /**
-     * If a note is selected, updates the overview to show the title and content.
-     */
-    public void displaySelectedNote() {
-        updateSelection();
-        if (getSelectedNoteId().isEmpty()) return;
-
-        Optional<Note> note = fetchSelectedNote();
-        if (note.isEmpty()) return;
-
-        displaySelectedNote(note.get());
-    }
-
-    /**
      * Displays the provided note by filling the title and content in the overview
      *
      * @param note the note to display
      */
-    public void displaySelectedNote(Note note) {
+    public void show(Note note) {
         selectedNoteTitle.setText(note.getTitle());
         selectedNoteContent.setText(note.getContent());
+    }
+
+    /**
+     * If a note is selected, shows the title and content in the overview.
+     */
+    public void showSelectedNote() {
+        updateSelection();
+        if (getSelectedNoteId().isEmpty()) return;
+
+        Optional<Note> note = fetchSelected();
+        if (note.isEmpty()) return;
+
+        show(note.get());
     }
 
     /**
@@ -213,22 +213,58 @@ public class NoteOverviewCtrl implements Initializable {
      *
      * @param searchResult the searchResult to display
      */
-    public void displaySelectedNote(NoteSearchResult searchResult) {
-        Note note = searchResult.getNote();
+    public void show(NoteSearchResult searchResult) {
+        NoteDTO noteDTO = searchResult.getNoteDTO();
 
-        this.selectedNoteId = note.getId();
-        displaySelectedNote(note);
+        Optional<Note> note = fetch(noteDTO);
+        if (note.isEmpty()) return;
 
+        show(note.get());
+        select(noteDTO);
+
+        // This should be moved to a service class
         int startIndex = searchResult.getStartIndex();
         int endIndex = searchResult.getEndIndex();
         selectedNoteContent.selectRange(startIndex, endIndex);
     }
 
     /**
+     * Select a {@link Note} in the table by its NoteDTO
+     */
+    public void select(NoteDTO note) {
+        select(note.getId());
+    }
+
+    /**
+     * Select a {@link Note} in the table by its ID
+     */
+    public void select(long id) {
+        List<Long> ids = table.getItems().stream().map(NoteDTO::getId).toList();
+        if (!ids.contains(id)) return;
+
+        // Select Note if Note of that ID exists
+        table.getSelectionModel().select(ids.indexOf(id));
+    }
+
+    /**
+     * Fetches the {@link Note} corresponding to the {@link NoteDTO}
+     *
+     * @return {@code Optional<Note>} if note is on the server.
+     * {@code Optional.empty()} if note isn't on the server.
+     */
+    public Optional<Note> fetch(NoteDTO note) {
+        try {
+            return Optional.of(server.getNote(note.getId()));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    /**
      * @return {@code Optional<Note>} with the {@code Note} if one is selected.
      * {@code Optional.empty()} if a note isn't selected or doesn't exist on the server.
      */
-    public Optional<Note> fetchSelectedNote() {
+    public Optional<Note> fetchSelected() {
         if (getSelectedNoteId().isEmpty()) {
             return Optional.empty();
         }
@@ -248,7 +284,7 @@ public class NoteOverviewCtrl implements Initializable {
      * </p>
      */
     public void sendNoteContentToServer() {
-        Optional<Note> note = fetchSelectedNote();
+        Optional<Note> note = fetchSelected();
         try {
             if (note.isPresent()) {
                 updateContentBuffer();
@@ -326,10 +362,13 @@ public class NoteOverviewCtrl implements Initializable {
         setViewableNotes(filteredNotes);
     }
 
+    /**
+     * Lists supplied {@link List} of {@link NoteDTO} in the {@link TableView}.
+     */
     private void setViewableNotes(List<NoteDTO> notes) {
         data = FXCollections.observableList(notes);
         table.setItems(data);
-        displaySelectedNote();
+        showSelectedNote();
     }
 
     public void showContextMenu() {
@@ -346,7 +385,7 @@ public class NoteOverviewCtrl implements Initializable {
      * RIGHT MOUSE CLICK: shows a menu which allows user to delete/refresh/edit a note
      * currently only works when a user right-clicks on the table and not the individual cells.
      *
-     * @param e
+     * @param e Pressed key
      */
     public void keyPressed(KeyEvent e) {
         switch (e.getCode()) {
@@ -379,8 +418,8 @@ public class NoteOverviewCtrl implements Initializable {
     /**
      * Allows user to change the title if note is selected and exists on the server.
      */
-    public void title() {
-        Optional<Note> note = fetchSelectedNote();
+    public void setTitle() {
+        Optional<Note> note = fetchSelected();
         if (note.isEmpty()) return;
 
         try {
