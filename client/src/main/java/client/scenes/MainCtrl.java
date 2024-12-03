@@ -18,6 +18,9 @@
 package client.scenes;
 
 import client.handlers.NoteSearchResult;
+import client.handlers.SceneInfo;
+import javafx.application.Platform;
+import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -41,14 +44,16 @@ import java.util.List;
 public class MainCtrl {
 
     private Stage primaryStage;
+    private Stage searchContentStage;
+
     private NoteOverviewCtrl overviewCtrl;
-    private Scene overview;
     private AddNoteControl addCtrl;
     private NewNoteTitleCtrl newCtrl;
+    private SearchNoteContentCtrl searchNoteContentCtrl;
+
+    private Scene overview;
     private Scene add;
     private Scene title;
-    private SearchNoteContentCtrl searchNoteContentCtrl;
-    private Scene searchContentScene;
 
     /**
      * Initializes the primary stage and sets up the scenes and controllers for the application.
@@ -69,11 +74,27 @@ public class MainCtrl {
         this.newCtrl = title.getKey();
         this.add = new Scene(add.getValue());
         this.title = new Scene(title.getValue());
-        this.searchNoteContentCtrl = searchContent.getKey();
-        this.searchContentScene = new Scene(searchContent.getValue());
 
         showOverview();
         primaryStage.show();
+
+        initializeSearchContentStage(searchContent);
+    }
+
+    /**
+     * Create an additional stage that handles the searchContent functionality
+     * This class will always be shown above the mainScene
+     *
+     * @param searchContent the controller for the searchContentScene
+     */
+    private void initializeSearchContentStage(Pair<SearchNoteContentCtrl, Parent> searchContent) {
+        this.searchNoteContentCtrl = searchContent.getKey();
+        Scene searchContentScene = new Scene(searchContent.getValue());
+
+        this.searchContentStage = new Stage();
+        searchContentStage.setTitle("SearchContent");
+        searchContentStage.setScene(searchContentScene);
+        searchContentStage.setAlwaysOnTop(true);
     }
 
     /**
@@ -85,6 +106,11 @@ public class MainCtrl {
         overview.setOnKeyPressed(e -> overviewCtrl.keyPressed(e));
         overviewCtrl.emptySearchText();
         overviewCtrl.refresh();
+    }
+
+    public void showOverview(NoteSearchResult searchResult) {
+        showOverview();
+        overviewCtrl.displaySelectedNote(searchResult);
     }
 
     /**
@@ -120,9 +146,42 @@ public class MainCtrl {
      * @param searchResult the list of all notes and their indices where a certain SearchValue was found
      */
     public void showSearchContent(List<NoteSearchResult> searchResult) {
-        primaryStage.setTitle("Notes: Content search result");
-        primaryStage.setScene(searchContentScene);
+        SceneInfo searchContentSceneInfo = getSceneInfo(searchContentStage);
+        if (searchResult.isEmpty()) {
+            searchContentStage.hide();
+            return;
+        }
+
+        applySceneInfo(searchContentStage, searchContentSceneInfo);
+        searchContentStage.show();
+        Platform.runLater(() -> primaryStage.requestFocus());
+
         searchNoteContentCtrl.init();
         searchNoteContentCtrl.setSearchResult(searchResult);
+    }
+
+    /**
+     * Get the size and position of a scene
+     *
+     * @param stage the stage that the scene is associated with
+     * @return a SceneInfo that contains the size and position of the provided stage
+     */
+    public SceneInfo getSceneInfo(Stage stage) {
+        Point2D size = new Point2D(stage.getWidth(), stage.getHeight());
+        Point2D pos = new Point2D(stage.getX(), stage.getY());
+        return new SceneInfo(size, pos);
+    }
+
+    /**
+     * Applies the provided sceneInfo to the provided stage
+     *
+     * @param stage the stage to apply the size and position to
+     * @param sceneInfo the size and position to apply
+     */
+    public void applySceneInfo(Stage stage, SceneInfo sceneInfo) {
+        stage.setWidth(sceneInfo.getSize().getX());
+        stage.setHeight(sceneInfo.getSize().getY());
+        stage.setX(sceneInfo.getPos().getX());
+        stage.setY(sceneInfo.getPos().getY());
     }
 }
