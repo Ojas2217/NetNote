@@ -28,6 +28,8 @@ import javafx.scene.input.KeyEvent;
 
 import javax.swing.*;
 
+import static java.util.Objects.isNull;
+
 /**
  * Controller for the Note Overview view.
  * <p>
@@ -86,18 +88,19 @@ public class NoteOverviewCtrl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         noteTitle.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().getTitle()));
-        table.getSelectionModel().selectedItemProperty().addListener((_, _, newValue) -> {
-            if (newValue == null) {
-                selectedNoteId = -1;
-            } else {
-                selectedNoteId = newValue.getId();
-                showSelectedNote();
-            }
-        });
+        table.getSelectionModel().selectedItemProperty()
+                .addListener((_, _, newValue) -> {
+                    // null check needed so that Mouse Up doesn't set it to default.
+                    if (isNull(newValue)) return;
+
+                    sendSelectedNoteContentToServer();
+                    updateSelection();
+                    showSelectedNote();
+                });
 
         // NEED TO ADD DELAY
         selectedNoteContent.textProperty().addListener((_, _, _) -> {
-            sendNoteContentToServer();
+            sendSelectedNoteContentToServer();
         });
 
         selectedNoteContent.textProperty().addListener((_, _, newValue) -> {
@@ -127,26 +130,33 @@ public class NoteOverviewCtrl implements Initializable {
     public void deleteNote() throws ProcessOperationException {
         Optional<Note> note = fetchSelected();
         if (note.isEmpty()) return;
-        else {
-            String message = "Are you sure you want to delete this note?";
-            String title = "Confirm deletion";
-            int choice = JOptionPane.showConfirmDialog(
-                    null,
-                    message,
-                    title,
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE
-            );
-            if (choice == JOptionPane.YES_OPTION) {
-                server.deleteNote(note.get().getId());
-                selectedNoteTitle.setText(" ");
-                selectedNoteContent.setText(" ");
-                refresh();
-                selectedNoteContent.setDisable(true);
-            } else {
-                refresh();
-            }
+
+        String message = "Are you sure you want to delete this note?";
+        String title = "Confirm deletion";
+        int choice = JOptionPane.showConfirmDialog(
+                null,
+                message,
+                title,
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (choice == JOptionPane.YES_OPTION) {
+            server.deleteNote(note.get().getId());
+            clear();
+            enableContent(false);
         }
+
+        refresh();
+    }
+
+    private void enableContent(boolean b) {
+        selectedNoteContent.setDisable(b);
+    }
+
+    private void clear() {
+        selectedNoteTitle.setText(null);
+        selectedNoteContent.setText(null);
     }
 
     public void emptySearchText() {
@@ -157,8 +167,19 @@ public class NoteOverviewCtrl implements Initializable {
      * Responsible for refreshing all content in the overview screen.
      */
     public void refresh() {
-        selectedNoteContent.setDisable(table.getItems().isEmpty());
-        sendNoteContentToServer();
+        enableContent(fetchSelected().isEmpty());
+
+        sendSelectedNoteContentToServer();
+        fetchNotes();
+
+        if (wantsToSearch()) search();
+        setViewableNotes(notes);
+    }
+
+    /**
+     * Fetches all notes from the server and stores them locally.
+     */
+    public void fetchNotes() {
         try {
             notes = server.getIdsAndTitles();
         } catch (Exception e) {
@@ -166,7 +187,6 @@ public class NoteOverviewCtrl implements Initializable {
             String errorMessage = "Error retrieving data from the server, unable to refresh notes";
             JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
         }
-        search();
     }
 
     /**
@@ -200,7 +220,12 @@ public class NoteOverviewCtrl implements Initializable {
      */
     public void showSelectedNote() {
         updateSelection();
-        if (getSelectedNoteId().isEmpty()) return;
+        enableContent(getSelectedNoteId().isEmpty());
+
+        if (getSelectedNoteId().isEmpty()) {
+            clear();
+            return;
+        }
 
         Optional<Note> note = fetchSelected();
         if (note.isEmpty()) return;
@@ -247,6 +272,13 @@ public class NoteOverviewCtrl implements Initializable {
     }
 
     /**
+     * Select a {@link Note} directly by its index in the table
+     */
+    public void select(int index) {
+        table.getSelectionModel().select(index);
+    }
+
+    /**
      * Fetches the {@link Note} corresponding to the {@link NoteDTO}
      *
      * @return {@code Optional<Note>} if note is on the server.
@@ -283,7 +315,7 @@ public class NoteOverviewCtrl implements Initializable {
      * shows an error message using an {@link Alert}.
      * </p>
      */
-    public void sendNoteContentToServer() {
+    public void sendSelectedNoteContentToServer() {
         Optional<Note> note = fetchSelected();
         try {
             if (note.isPresent()) {
@@ -304,12 +336,15 @@ public class NoteOverviewCtrl implements Initializable {
         selectedNoteContentBuffer = selectedNoteContent.getText();
     }
 
+    public boolean wantsToSearch() {
+        return !searchText.getText().isEmpty();
+    }
+
     /**
      * If there is text in the search bar, displays notes whose title contains the text.
      */
     public void search() {
         String text = searchText.getText();
-        if (text == null) return;
 
         if (text.startsWith("#")) {
             List<NoteSearchResult> foundInNotes = searchNoteContent(text.replaceFirst("#", ""));
@@ -368,7 +403,6 @@ public class NoteOverviewCtrl implements Initializable {
     private void setViewableNotes(List<NoteDTO> notes) {
         data = FXCollections.observableList(notes);
         table.setItems(data);
-        showSelectedNote();
     }
 
     public void showContextMenu() {
