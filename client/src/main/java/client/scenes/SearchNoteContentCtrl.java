@@ -64,6 +64,6 @@ public class SearchNoteContentCtrl {
 
     private void handleRowSelection(int selectionIndex) {
         NoteSearchResult selectedNote = searchResult.get(selectionIndex);
-        mainCtrl.showOverview();
+        mainCtrl.showOverview(selectedNote);
     }
 }
