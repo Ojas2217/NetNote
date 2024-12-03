@@ -10,8 +10,9 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<version.junit>5.10.1</version.junit>
-		<version.mockito>5.8.0</version.mockito>
+		<version.junit>5.11.2</version.junit>
+		<version.mockito>5.14.2</version.mockito>
+		<version.bytebuddy>1.15.4</version.bytebuddy>
 		<version.jersey>3.1.9</version.jersey>
 		<version.jfx>23.0.1</version.jfx>
 	</properties>
@@ -85,7 +86,18 @@
 			<version>${version.mockito}</version>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>${version.mockito}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.bytebuddy</groupId>
+			<artifactId>byte-buddy</artifactId>
+			<version>${version.bytebuddy}</version>
+		</dependency>
+		<dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>6.1.14</version>
@@ -98,7 +110,13 @@
 			<artifactId>flexmark-all</artifactId>
 			<version>0.64.8</version>
 		</dependency>
-    </dependencies>
+		<dependency>
+			<groupId>csep</groupId>
+			<artifactId>server</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>

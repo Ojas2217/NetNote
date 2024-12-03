@@ -7,6 +7,7 @@ import commons.ProcessOperationException;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
@@ -39,16 +40,27 @@ public class AddNoteControl {
     private final MainCtrl mainCtrl;
     @FXML
     private TextField noteTitle;
+    @FXML
+    private Button cancel;
 
     @Inject
     public AddNoteControl(NoteUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
+
     }
 
     public void cancel() {
         clearFields();
         mainCtrl.showOverview();
+    }
+
+    public void setNoteTitle(TextField noteTitle) {
+        this.noteTitle = noteTitle;
+    }
+
+    public TextField getNoteTitle() {
+        return noteTitle;
     }
 
     /**
@@ -57,19 +69,27 @@ public class AddNoteControl {
      **/
     public void ok() {
         try {
-            server.createNote(new Note(noteTitle.getText(), "empty 123 testing 123 format"));
+            if (!noteTitle.getText().isEmpty()) {
+                server.createNote(new Note(noteTitle.getText(), "empty 123 testing 123 format"));
+                clearFields();
+                noteTitle.setFocusTraversable(false);
+                cancel.requestFocus();
+                mainCtrl.showOverview();
+            } else {
+                var alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.initModality(Modality.APPLICATION_MODAL);
+                alert.setContentText("Please add a note title.");
+                alert.showAndWait();
+            }
         } catch (WebApplicationException | ProcessOperationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
             alert.setContentText(e.getMessage());
             alert.showAndWait();
-            return;
         }
-        clearFields();
-        mainCtrl.showOverview();
     }
 
-    private void clearFields() {
+    public void clearFields() {
         noteTitle.clear();
     }
 
