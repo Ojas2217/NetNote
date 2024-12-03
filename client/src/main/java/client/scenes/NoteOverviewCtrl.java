@@ -56,7 +56,7 @@ public class NoteOverviewCtrl implements Initializable {
     private TextField searchText;
     @FXML
     private WebView webView;
-    private Markdown markdown = new Markdown();
+    private final Markdown markdown = new Markdown();
 
     private List<NoteDTO> notes;
     @FXML
@@ -75,12 +75,12 @@ public class NoteOverviewCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        noteTitle.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().title));
+        noteTitle.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().getTitle()));
         table.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
                 selectedNoteId = -1;
             } else {
-                selectedNoteId = newValue.id;
+                selectedNoteId = newValue.getId();
                 displaySelectedNote();
             }
         });
@@ -224,10 +224,6 @@ public class NoteOverviewCtrl implements Initializable {
         selectedNoteContentBuffer = selectedNoteContent.getText();
     }
 
-    public Note getNote() {
-        return table.getSelectionModel().getSelectedItem();
-    }
-
     /**
      * If there is text in the search bar, displays notes whose title contains the text.
      */
@@ -238,7 +234,7 @@ public class NoteOverviewCtrl implements Initializable {
         if (text.startsWith("#")) {
             List<NoteSearchResult> foundInNotes = searchNoteContent(text.replaceFirst("#", ""));
             if (!foundInNotes.isEmpty()) {
-                setViewableNotes(foundInNotes.stream().map(NoteSearchResult::getNote).toList());
+                setViewableNotes(foundInNotes.stream().map(NoteSearchResult::getNoteDTO).toList());
                 mainCtrl.showSearchContent(foundInNotes);
             }
         } else {
@@ -256,11 +252,19 @@ public class NoteOverviewCtrl implements Initializable {
         List<NoteSearchResult> foundInNotes = new ArrayList<>();
         if (queryString.isEmpty()) return foundInNotes;
 
-        notes.forEach(note -> {
-            List<Integer> foundIndices = note.contentSearchQueryString(queryString);
-
-            if (!foundIndices.isEmpty()) {
-                foundIndices.forEach(i -> foundInNotes.add(new NoteSearchResult(note, i)));
+        notes.forEach(n -> {
+            try {
+                Note note = server.getNote(n.getId());
+                List<Integer> foundIndices = note.contentSearchQueryString(queryString);
+                if (!foundIndices.isEmpty()) {
+                    // Indexes should be recalculated when a user clicks on the note
+                    // since the note gets updated and could change!!!
+                    foundIndices.forEach(i -> foundInNotes.add(new NoteSearchResult(n, i)));
+                }
+            } catch (ProcessOperationException e) {
+                System.out.println(e.getMessage());
+                String errorMessage = "Error retrieving data from the server, unable to get note " + n.getTitle();
+                JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
             }
         });
 
@@ -273,14 +277,14 @@ public class NoteOverviewCtrl implements Initializable {
      * @param text the text to search for
      */
     private void searchAllNotes(String text) {
-        List<Note> filteredNotes = notes
+        List<NoteDTO> filteredNotes = notes
                 .stream()
                 .filter(x -> x.getTitle().contains(text))
                 .toList();
         setViewableNotes(filteredNotes);
     }
 
-    private void setViewableNotes(List<Note> notes) {
+    private void setViewableNotes(List<NoteDTO> notes) {
         data = FXCollections.observableList(notes);
         table.setItems(data);
         displaySelectedNote();
@@ -289,7 +293,7 @@ public class NoteOverviewCtrl implements Initializable {
     /**
      * Currently only has a keyboard shortcut for refreshing/searching
      * more shortcuts can be added in the future.
-     * @param e
+     * @param e Pressed key
      */
     public void keyPressed(KeyEvent e) {
         switch (e.getCode()) {
@@ -307,8 +311,22 @@ public class NoteOverviewCtrl implements Initializable {
         }
     }
 
+    /**
+     * Allows user to change the title if note is selected and exists on the server.
+     * */
     public void title() {
-        mainCtrl.getNewCtrl().newTitle(table.getSelectionModel().getSelectedItem());
+        Optional<Note> note = fetchSelectedNote();
+        if (note.isEmpty()) return;
+
+        try {
+            mainCtrl.getNewCtrl().newTitle(
+                    server.getNote(note.get().getId())
+            );
+        } catch (ProcessOperationException e) {
+            System.out.println(e.getMessage());
+            String errorMessage = "Error retrieving data from the server, unable to fetch note selected note.";
+            JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     public void empty() {

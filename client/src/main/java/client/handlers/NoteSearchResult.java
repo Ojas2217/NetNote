@@ -1,6 +1,6 @@
 package client.handlers;
 
-import commons.Note;
+import commons.NoteDTO;
 
 /**
  * Controller class for handling the SearchContent result
@@ -11,15 +11,15 @@ import commons.Note;
  * </p>
  */
 public class NoteSearchResult {
-    private final Note note;
+    private final NoteDTO note;
     private final int startIndex;
 
-    public NoteSearchResult(Note note, int startIndexResult) {
+    public NoteSearchResult(NoteDTO note, int startIndexResult) {
         this.note = note;
         this.startIndex = startIndexResult;
     }
 
-    public Note getNote() {
+    public NoteDTO getNoteDTO() {
         return note;
     }
 }

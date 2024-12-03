@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 
+import java.util.Optional;
+
 /**
  * Controller class for editing the title of an existing note.
  * <p>
@@ -49,13 +51,20 @@ public class NewNoteTitleCtrl {
         mainCtrl.showOverview();
     }
 
+    /**
+     * Changes title only when note is selected.
+     */
     public void ok() {
-        newTitle(mainCtrl.getOverviewCtrl().getNote());
-        mainCtrl.showOverview();
+        Optional<Note> note = mainCtrl.getOverviewCtrl().fetchSelectedNote();
+        if (note.isPresent()) {
+            newTitle(note.get());
+            mainCtrl.showOverview();
+        }
     }
 
     /**
      * it shows the newTitle scene and changes the title of the selected note
+     *
      * @param note the note of which the title will be changed
      */
     public void newTitle(Note note) {
@@ -78,12 +87,12 @@ public class NewNoteTitleCtrl {
 
     /**
      * Handles keyboard input
-     * */
+     */
     public void keyPressed(KeyEvent e) {
         switch (e.getCode()) {
             case ENTER:
-                Note note = mainCtrl.getOverviewCtrl().getNote();
-                newTitle(note);
+                Optional<Note> note = mainCtrl.getOverviewCtrl().fetchSelectedNote();
+                note.ifPresent(this::newTitle);
                 break;
             case ESCAPE:
                 cancel();
