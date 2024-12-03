@@ -176,8 +176,33 @@ public class NoteOverviewCtrl implements Initializable {
         Optional<Note> note = fetchSelectedNote();
         if (note.isEmpty()) return;
 
-        selectedNoteTitle.setText(note.get().title);
-        selectedNoteContent.setText(note.get().content);
+        displaySelectedNote(note.get());
+    }
+
+    /**
+     * Displays the provided note by filling the title and content in the overview
+     *
+     * @param note the note to display
+     */
+    public void displaySelectedNote(Note note) {
+        selectedNoteTitle.setText(note.getTitle());
+        selectedNoteContent.setText(note.getContent());
+    }
+
+    /**
+     * Displays the provided searchResult by selecting its note and text position
+     *
+     * @param searchResult the searchResult to display
+     */
+    public void displaySelectedNote(NoteSearchResult searchResult) {
+        Note note = searchResult.getNote();
+
+        this.selectedNoteId = note.getId();
+        displaySelectedNote(note);
+
+        int startIndex = searchResult.getStartIndex();
+        int endIndex = searchResult.getEndIndex();
+        selectedNoteContent.selectRange(startIndex, endIndex);
     }
 
     /**
@@ -237,10 +262,8 @@ public class NoteOverviewCtrl implements Initializable {
 
         if (text.startsWith("#")) {
             List<NoteSearchResult> foundInNotes = searchNoteContent(text.replaceFirst("#", ""));
-            if (!foundInNotes.isEmpty()) {
-                setViewableNotes(foundInNotes.stream().map(NoteSearchResult::getNote).toList());
-                mainCtrl.showSearchContent(foundInNotes);
-            }
+            setViewableNotes(foundInNotes.stream().map(NoteSearchResult::getNote).distinct().toList());
+            mainCtrl.showSearchContent(foundInNotes);
         } else {
             searchAllNotes(text);
         }
@@ -260,7 +283,7 @@ public class NoteOverviewCtrl implements Initializable {
             List<Integer> foundIndices = note.contentSearchQueryString(queryString);
 
             if (!foundIndices.isEmpty()) {
-                foundIndices.forEach(i -> foundInNotes.add(new NoteSearchResult(note, i)));
+                foundIndices.forEach(i -> foundInNotes.add(new NoteSearchResult(note, i, queryString.length())));
             }
         });
 
