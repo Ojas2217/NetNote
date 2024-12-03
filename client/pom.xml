@@ -110,7 +110,13 @@
 			<artifactId>flexmark-all</artifactId>
 			<version>0.64.8</version>
 		</dependency>
-    </dependencies>
+		<dependency>
+			<groupId>csep</groupId>
+			<artifactId>server</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>

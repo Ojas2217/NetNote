@@ -6,9 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.ResourceBundle;
-
+import javafx.scene.input.MouseButton;
 import client.handlers.NoteSearchResult;
-
 import client.services.Markdown;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
@@ -20,6 +19,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.scene.input.KeyEvent;
@@ -64,8 +64,15 @@ public class NoteOverviewCtrl implements Initializable {
     private Label selectedNoteTitle;
     @FXML
     private TextArea selectedNoteContent;
+    @FXML
+    private ContextMenu contextMenu;
+    @FXML
+    private MenuItem changeTitle;
+    @FXML
+    private MenuItem refreshNote;
+    @FXML
+    private MenuItem deleteNote;
     private String selectedNoteContentBuffer;
-
     private long selectedNoteId;
 
     @Inject
@@ -118,12 +125,25 @@ public class NoteOverviewCtrl implements Initializable {
         Optional<Note> note = fetchSelectedNote();
         if (note.isEmpty()) return;
         else {
-            server.deleteNote(getSelectedNoteId().getAsLong());
+            String message = "Are you sure you want to delete this note?";
+            String title = "Confirm deletion";
+            int choice = JOptionPane.showConfirmDialog(
+                    null,
+                    message,
+                    title,
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
+            if (choice == JOptionPane.YES_OPTION) {
+                server.deleteNote(getSelectedNoteId().getAsLong());
+                selectedNoteTitle.setText(" ");
+                selectedNoteContent.setText(" ");
+                refresh();
+                selectedNoteContent.setDisable(true);
+            } else {
+                refresh();
+            }
         }
-        selectedNoteTitle.setText(" ");
-        selectedNoteContent.setText(" ");
-        refresh();
-        selectedNoteContent.setDisable(true);
     }
 
     public void emptySearchText() {
@@ -286,9 +306,18 @@ public class NoteOverviewCtrl implements Initializable {
         displaySelectedNote();
     }
 
+    public void showContextMenu() {
+        contextMenu.getItems();
+    }
+
     /**
-     * Currently only has a keyboard shortcut for refreshing/searching
-     * more shortcuts can be added in the future.
+     * ENTER:- refresh
+     * ESCAPE:- sets focus on to the search bar
+     * A:- Shows the window to add a note.
+     * Other shortcuts:
+     * CTRL+T: edits title of a selected note
+     * RIGHT MOUSE CLICK: shows a menu which allows user to delete/refresh/edit a note
+     * currently only works when a user right-clicks on the table and not the individual cells.
      * @param e
      */
     public void keyPressed(KeyEvent e) {
@@ -303,12 +332,30 @@ public class NoteOverviewCtrl implements Initializable {
                 addNote();
                 break;
             default:
-                break;
+                if (table.getSelectionModel().getSelectedItem() != null) {
+                    table.setOnMousePressed(event -> {
+                        if (event.getButton() == MouseButton.SECONDARY) {
+                            showContextMenu();
+                        }
+                    });
+                }
+                if (e.getCode() == KeyCode.T && e.isControlDown()) {
+                    setTitle();
+                    break;
+                } else {
+                    break;
+                }
         }
     }
 
-    public void title() {
-        mainCtrl.getNewCtrl().newTitle(table.getSelectionModel().getSelectedItem());
+    /**
+     * Sets the title of the selected note.
+     */
+    public void setTitle() {
+        Note note = table.getSelectionModel().getSelectedItem();
+        if (note != null) {
+            mainCtrl.getNewCtrl().newTitle(table.getSelectionModel().getSelectedItem());
+        }
     }
 
     public void empty() {
