@@ -94,6 +94,7 @@ public class MainCtrl {
         primaryStage.setTitle("Notes: Adding Note");
         primaryStage.setScene(add);
         addCtrl.clearFields();
+        addCtrl.getNoteTitle().setFocusTraversable(Boolean.FALSE);
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
 
