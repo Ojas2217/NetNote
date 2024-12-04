@@ -37,12 +37,13 @@ public class SearchNoteContentCtrl {
      * Initializes the tableViewResult so it has an eventHandler whenever a SearchValueResult is selected
      */
     public void init() {
-        tableViewResult.getSelectionModel().selectedIndexProperty().addListener((obs, oldSelection, newSelectionIndex) -> {
-            if (newSelectionIndex != null) {
-                int newIndex = (Integer) newSelectionIndex;
-                if (newIndex != -1) handleRowSelection(newIndex);
-            }
-        });
+        tableViewResult.getSelectionModel().selectedIndexProperty()
+                .addListener((_, _, newSelectionIndex) -> {
+                    if (newSelectionIndex != null) {
+                        int newIndex = (Integer) newSelectionIndex;
+                        if (newIndex != -1) handleRowSelection(newIndex);
+                    }
+                });
     }
 
     /**
@@ -54,7 +55,7 @@ public class SearchNoteContentCtrl {
         this.searchResult = searchResults;
 
         titleColumn.setCellValueFactory(cellData ->
-                new ReadOnlyStringWrapper(cellData.getValue().getNote().getTitle()));
+                new ReadOnlyStringWrapper(cellData.getValue().getNotePreview().getTitle()));
         indexColumn.setCellValueFactory(new PropertyValueFactory<>("startIndex"));
 
         ObservableList<NoteSearchResult> data = FXCollections.observableArrayList(searchResults);

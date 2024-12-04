@@ -2,6 +2,7 @@ package server.api;
 
 import commons.ExceptionType;
 import commons.Note;
+import commons.NotePreview;
 import commons.ProcessOperationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,6 @@ import java.util.List;
 @RequestMapping("/api/notes")
 public class NoteController {
 
-    private Note selected;
     private final NoteService service;
 
     public NoteController(NoteService service) {
@@ -98,15 +98,27 @@ public class NoteController {
      *
      * @param id the ID of the Note to be deleted
      * @return a ResponseEntity containing the deleted Note if successful,
-     *         a bad request response if the ID is invalid, or a forbidden response if an error occurs
+     * a bad request response if the ID is invalid, or a forbidden response if an error occurs
      */
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Note> deleteNoteById(@PathVariable Long id) {
         try {
             if (id == null)
                 throw new ProcessOperationException("Note ID is NULL", HttpStatus.BAD_REQUEST.value(),
-                    ExceptionType.INVALID_CREDENTIALS);
+                        ExceptionType.INVALID_CREDENTIALS);
             return ResponseEntity.ok(service.deleteNoteById(id));
+        } catch (ProcessOperationException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    /**
+     * Gets IDs and titles stored in the repo.
+     */
+    @GetMapping(params = "idsAndTitles")
+    public ResponseEntity<List<NotePreview>> getIdsAndTitles() {
+        try {
+            return ResponseEntity.ok(service.getIdsAndTitles());
         } catch (ProcessOperationException e) {
             return ResponseEntity.badRequest().build();
         }
