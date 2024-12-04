@@ -3,15 +3,15 @@ package commons;
 /**
  * Note data transfer object for transferring the ID and title.
  */
-public class NoteDTO {
+public class NotePreview {
     private Long id;
     private String title;
 
-    public NoteDTO() {
+    public NotePreview() {
         // for object mapper.
     }
 
-    public NoteDTO(Long id, String title) {
+    public NotePreview(Long id, String title) {
         this.id = id;
         this.title = title;
     }
@@ -24,7 +24,7 @@ public class NoteDTO {
         return title;
     }
 
-    public static NoteDTO of(Long id, String title) {
-        return new NoteDTO(id, title);
+    public static NotePreview of(Long id, String title) {
+        return new NotePreview(id, title);
     }
 }

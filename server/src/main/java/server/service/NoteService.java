@@ -2,7 +2,7 @@ package server.service;
 
 import commons.ExceptionType;
 import commons.Note;
-import commons.NoteDTO;
+import commons.NotePreview;
 import commons.ProcessOperationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -116,7 +116,7 @@ public class NoteService {
      *
      * @throws ProcessOperationException if query result is empty
      */
-    public List<NoteDTO> getIdsAndTitles() throws ProcessOperationException {
+    public List<NotePreview> getIdsAndTitles() throws ProcessOperationException {
         List<Object[]> result = repo.findIdAndTitle();
         if (result.isEmpty()) {
             throw new ProcessOperationException(
@@ -124,7 +124,7 @@ public class NoteService {
             );
         }
         return result.stream()
-                .map(e -> NoteDTO.of((Long) e[0], (String) e[1]))
+                .map(e -> NotePreview.of((Long) e[0], (String) e[1]))
                 .toList();
     }
 }

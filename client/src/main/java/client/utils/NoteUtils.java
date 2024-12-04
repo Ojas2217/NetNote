@@ -1,7 +1,7 @@
 package client.utils;
 
 import commons.Note;
-import commons.NoteDTO;
+import commons.NotePreview;
 import commons.ProcessOperationException;
 import jakarta.ws.rs.core.GenericType;
 
@@ -127,7 +127,7 @@ public class NoteUtils extends ServerUtils {
      * @return the deleted note
      * @throws ProcessOperationException e
      */
-    public List<NoteDTO> getIdsAndTitles() throws ProcessOperationException {
+    public List<NotePreview> getIdsAndTitles() throws ProcessOperationException {
         try {
             return super.get("/api/notes", "idsAndTitles", "", new GenericType<>() {
             });

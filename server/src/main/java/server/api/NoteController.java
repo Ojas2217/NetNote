@@ -2,7 +2,7 @@ package server.api;
 
 import commons.ExceptionType;
 import commons.Note;
-import commons.NoteDTO;
+import commons.NotePreview;
 import commons.ProcessOperationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -116,7 +116,7 @@ public class NoteController {
      * Gets IDs and titles stored in the repo.
      */
     @GetMapping(params = "idsAndTitles")
-    public ResponseEntity<List<NoteDTO>> getIdsAndTitles() {
+    public ResponseEntity<List<NotePreview>> getIdsAndTitles() {
         try {
             return ResponseEntity.ok(service.getIdsAndTitles());
         } catch (ProcessOperationException e) {

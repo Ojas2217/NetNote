@@ -55,7 +55,7 @@ public class SearchNoteContentCtrl {
         this.searchResult = searchResults;
 
         titleColumn.setCellValueFactory(cellData ->
-                new ReadOnlyStringWrapper(cellData.getValue().getNoteDTO().getTitle()));
+                new ReadOnlyStringWrapper(cellData.getValue().getNotePreview().getTitle()));
         indexColumn.setCellValueFactory(new PropertyValueFactory<>("startIndex"));
 
         ObservableList<NoteSearchResult> data = FXCollections.observableArrayList(searchResults);

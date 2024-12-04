@@ -13,7 +13,7 @@ import client.services.Markdown;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.Note;
-import commons.NoteDTO;
+import commons.NotePreview;
 import commons.ProcessOperationException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -52,18 +52,18 @@ import static java.util.Objects.isNull;
 public class NoteOverviewCtrl implements Initializable {
     private final NoteUtils server;
     private final MainCtrl mainCtrl;
-    private ObservableList<NoteDTO> data;
+    private ObservableList<NotePreview> data;
     @FXML
-    private TableView<NoteDTO> table;
+    private TableView<NotePreview> table;
     @FXML
-    private TableColumn<NoteDTO, String> noteTitle;
+    private TableColumn<NotePreview, String> noteTitle;
     @FXML
     private TextField searchText;
     @FXML
     private WebView webView;
     private final Markdown markdown = new Markdown();
 
-    private List<NoteDTO> notes;
+    private List<NotePreview> notes;
     @FXML
     private Label selectedNoteTitle;
     @FXML
@@ -239,13 +239,13 @@ public class NoteOverviewCtrl implements Initializable {
      * @param searchResult the searchResult to display
      */
     public void show(NoteSearchResult searchResult) {
-        NoteDTO noteDTO = searchResult.getNoteDTO();
+        NotePreview notePreview = searchResult.getNotePreview();
 
-        Optional<Note> note = fetch(noteDTO);
+        Optional<Note> note = fetch(notePreview);
         if (note.isEmpty()) return;
 
         show(note.get());
-        select(noteDTO);
+        select(notePreview);
 
         // This should be moved to a service class
         int startIndex = searchResult.getStartIndex();
@@ -254,9 +254,9 @@ public class NoteOverviewCtrl implements Initializable {
     }
 
     /**
-     * Select a {@link Note} in the table by its NoteDTO
+     * Select a {@link Note} in the table by its NotePreview
      */
-    public void select(NoteDTO note) {
+    public void select(NotePreview note) {
         select(note.getId());
     }
 
@@ -264,7 +264,7 @@ public class NoteOverviewCtrl implements Initializable {
      * Select a {@link Note} in the table by its ID
      */
     public void select(long id) {
-        List<Long> ids = table.getItems().stream().map(NoteDTO::getId).toList();
+        List<Long> ids = table.getItems().stream().map(NotePreview::getId).toList();
         if (!ids.contains(id)) return;
 
         // Select Note if Note of that ID exists
@@ -279,12 +279,12 @@ public class NoteOverviewCtrl implements Initializable {
     }
 
     /**
-     * Fetches the {@link Note} corresponding to the {@link NoteDTO}
+     * Fetches the {@link Note} corresponding to the {@link NotePreview}
      *
      * @return {@code Optional<Note>} if note is on the server.
      * {@code Optional.empty()} if note isn't on the server.
      */
-    public Optional<Note> fetch(NoteDTO note) {
+    public Optional<Note> fetch(NotePreview note) {
         try {
             return Optional.of(server.getNote(note.getId()));
         } catch (Exception e) {
@@ -348,7 +348,7 @@ public class NoteOverviewCtrl implements Initializable {
 
         if (text.startsWith("#")) {
             List<NoteSearchResult> foundInNotes = searchNoteContent(text.replaceFirst("#", ""));
-            setViewableNotes(foundInNotes.stream().map(NoteSearchResult::getNoteDTO).distinct().toList());
+            setViewableNotes(foundInNotes.stream().map(NoteSearchResult::getNotePreview).distinct().toList());
             mainCtrl.showSearchContent(foundInNotes);
         } else {
             searchAllNotes(text);
@@ -390,7 +390,7 @@ public class NoteOverviewCtrl implements Initializable {
      * @param text the text to search for
      */
     private void searchAllNotes(String text) {
-        List<NoteDTO> filteredNotes = notes
+        List<NotePreview> filteredNotes = notes
                 .stream()
                 .filter(x -> x.getTitle().contains(text))
                 .toList();
@@ -398,9 +398,9 @@ public class NoteOverviewCtrl implements Initializable {
     }
 
     /**
-     * Lists supplied {@link List} of {@link NoteDTO} in the {@link TableView}.
+     * Lists supplied {@link List} of {@link NotePreview} in the {@link TableView}.
      */
-    private void setViewableNotes(List<NoteDTO> notes) {
+    private void setViewableNotes(List<NotePreview> notes) {
         data = FXCollections.observableList(notes);
         table.setItems(data);
     }
