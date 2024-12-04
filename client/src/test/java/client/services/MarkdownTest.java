@@ -3,6 +3,7 @@ package client.services;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.data.MutableDataSet;
+import commons.MarkdownRenderException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,10 +28,7 @@ class MarkdownTest {
         Parser parser = Parser.builder(options).build();
         HtmlRenderer renderer = HtmlRenderer.builder(options).build();
         Markdown markdown = new Markdown(renderer, parser);
-
-        String result = markdown.render("");
-        String expected = "";
-        assertEquals(expected, result);
+        assertEquals("<p>Invalid markdown syntax please try again</p>"+"\n", markdown.render(""));
     }
 
     @Test
@@ -51,9 +49,7 @@ class MarkdownTest {
         Parser parser = Parser.builder(options).build();
         HtmlRenderer renderer = HtmlRenderer.builder(options).build();
         Markdown markdown = new Markdown(renderer, parser);
-
-        String result = markdown.render(null);
-        assertEquals("", result);
+        assertEquals("<p>Invalid markdown syntax please try again</p>"+"\n", markdown.render(null));
     }
 
     @Test

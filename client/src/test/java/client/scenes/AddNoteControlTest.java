@@ -46,7 +46,7 @@ public class AddNoteControlTest extends BaseTest {
         Platform.runLater(() -> addNoteControl.ok());
         assertEquals(server.getAllNotes().getFirst(),note);
     }
-    @Disabled
+
     @Test
     public void okTestNoteTitleNull() throws ProcessOperationException {
         Note note = new Note("","empty");
