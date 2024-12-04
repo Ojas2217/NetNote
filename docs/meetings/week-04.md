@@ -30,6 +30,7 @@
         - Time Tracking
     - **Creating big goals (Milestones)** (5 min)
     - **Discuss implementation of tests** (5 min)
+    - **Discuss the usage of web sockets** (5 min)
     - **Discuss/Create issues for next week** (10 min)
     - **Decide the chair and minute-taker for the next meeting** (1 min)
 9. **Summarize Action Points**: Who, what, when? (2 min)
