@@ -2,6 +2,7 @@ package server.service;
 
 import commons.ExceptionType;
 import commons.Note;
+import commons.NotePreview;
 import commons.ProcessOperationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import java.util.Optional;
 
 /**
  * {@link Service} class that's responsible for interacting with {@link NoteRepository}.
- * */
+ */
 @Service
 public class NoteService {
 
@@ -106,8 +107,24 @@ public class NoteService {
     }
 
 
-
     private static boolean isNullOrEmpty(String s) {
         return s == null || s.trim().isEmpty();
+    }
+
+    /**
+     * Gets the IDs and titles of all notes in the repo.
+     *
+     * @throws ProcessOperationException if query result is empty
+     */
+    public List<NotePreview> getIdsAndTitles() throws ProcessOperationException {
+        List<Object[]> result = repo.findIdAndTitle();
+        if (result.isEmpty()) {
+            throw new ProcessOperationException(
+                    "No notes found", HttpStatus.NOT_FOUND.value(), ExceptionType.INVALID_REQUEST
+            );
+        }
+        return result.stream()
+                .map(e -> NotePreview.of((Long) e[0], (String) e[1]))
+                .toList();
     }
 }

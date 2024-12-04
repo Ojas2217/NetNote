@@ -7,7 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import server.service.NoteService;
+
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -32,7 +34,7 @@ class NoteControllerTest {
 
     @Test
     public void testGetByIdNegative() throws ProcessOperationException {
-        when(noteService.getNoteById(Long.valueOf(-1))).thenThrow(ProcessOperationException.class);
+        when(noteService.getNoteById((long) -1)).thenThrow(ProcessOperationException.class);
         ResponseEntity<Note> result = noteController.getById(-1);
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
     }

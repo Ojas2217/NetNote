@@ -59,8 +59,8 @@ public class MainCtrl {
      * Initializes the primary stage and sets up the scenes and controllers for the application.
      *
      * @param primaryStage the main application stage
-     * @param overview a pair containing the controller and root node for the note overview scene
-     * @param add a pair containing the controller and root node for the add note scene
+     * @param overview     a pair containing the controller and root node for the note overview scene
+     * @param add          a pair containing the controller and root node for the add note scene
      */
     public void initialize(Stage primaryStage,
                            Pair<NoteOverviewCtrl, Parent> overview,
@@ -110,7 +110,7 @@ public class MainCtrl {
 
     public void showOverview(NoteSearchResult searchResult) {
         showOverview();
-        overviewCtrl.displaySelectedNote(searchResult);
+        overviewCtrl.show(searchResult);
     }
 
     /**
