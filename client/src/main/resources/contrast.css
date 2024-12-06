@@ -1,0 +1,102 @@
+/* General settings for dark theme */
+.root {
+    -fx-background-color: #2e2e2e; /* Dark background */
+    -fx-text-fill: #ffffff; /* White text */
+}
+
+/* MenuBar styling */
+.menu-bar {
+    -fx-background-color: #3c3c3c; /* Slightly lighter dark background */
+    -fx-text-fill: #ffffff;
+}
+
+.menu {
+    -fx-text-fill: #ffffff;
+}
+
+.menu-item {
+    -fx-text-fill: #ffffff;
+}
+
+/* Button styling */
+.button {
+    -fx-background-color: #444444; /* Dark gray for buttons */
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #555555; /* Subtle border */
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.button:hover {
+    -fx-background-color: #555555; /* Slightly lighter on hover */
+}
+
+/* TextField styling */
+.text-field {
+    -fx-background-color: #3c3c3c;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #555555;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+/* TextArea styling */
+.text-area {
+    -fx-background-color: #3c3c3c;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #555555;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+/* Label styling */
+.label {
+    -fx-text-fill: #ffffff;
+}
+
+/* TableView styling */
+.table-view {
+    -fx-background-color: #3c3c3c;
+    -fx-text-fill: #ffffff;
+}
+
+.table-view .column-header {
+    -fx-background-color: #444444;
+    -fx-text-fill: #ffffff;
+}
+
+.table-view .cell {
+    -fx-background-color: #3c3c3c;
+    -fx-text-fill: #ffffff;
+}
+
+/* WebView styling (assumes content uses default styles) */
+.web-view {
+    -fx-background-color: #2e2e2e;
+}
+
+/* SplitPane divider styling */
+.split-pane .divider {
+    -fx-background-color: #444444;
+}
+
+/* AnchorPane and VBox styling */
+.anchor-pane, .v-box, .h-box {
+    -fx-background-color: #2e2e2e;
+}
+
+/* ContextMenu styling */
+.context-menu {
+    -fx-background-color: #3c3c3c;
+    -fx-text-fill: #ffffff;
+}
+
+.context-menu .menu-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+}
+
+.context-menu .menu-item:hover {
+    -fx-background-color: #555555;
+}

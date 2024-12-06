@@ -476,4 +476,8 @@ public class NoteOverviewCtrl implements Initializable {
         if (selectedNoteId < 0) return OptionalLong.empty();
         return OptionalLong.of(selectedNoteId);
     }
+
+    public List<NotePreview> getNotes() {
+        return notes;
+    }
 }
