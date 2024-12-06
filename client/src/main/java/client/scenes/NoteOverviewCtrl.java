@@ -183,7 +183,7 @@ public class NoteOverviewCtrl implements Initializable {
         try {
             notes = server.getIdsAndTitles();
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
             String errorMessage = "Error retrieving data from the server, unable to refresh notes";
             JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
         }
