@@ -117,10 +117,6 @@ public class NoteController {
      */
     @GetMapping(params = "idsAndTitles")
     public ResponseEntity<List<NotePreview>> getIdsAndTitles() {
-        try {
-            return ResponseEntity.ok(service.getIdsAndTitles());
-        } catch (ProcessOperationException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok(service.getIdsAndTitles());
     }
 }
