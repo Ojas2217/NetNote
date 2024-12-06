@@ -22,6 +22,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.scene.input.KeyEvent;
@@ -105,6 +106,12 @@ public class NoteOverviewCtrl implements Initializable {
 
         selectedNoteContent.textProperty().addListener((_, _, newValue) -> {
             markdownView(newValue);
+        });
+
+        table.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.SECONDARY) {
+                showContextMenu(event);
+            }
         });
     }
 
@@ -405,8 +412,8 @@ public class NoteOverviewCtrl implements Initializable {
         table.setItems(data);
     }
 
-    public void showContextMenu() {
-        contextMenu.getItems();
+    public void showContextMenu(MouseEvent mouseEvent) {
+        contextMenu.show(table, mouseEvent.getScreenX(), mouseEvent.getScreenY());
     }
 
     /**
@@ -433,13 +440,6 @@ public class NoteOverviewCtrl implements Initializable {
                 addNote();
                 break;
             default:
-                if (table.getSelectionModel().getSelectedItem() != null) {
-                    table.setOnMousePressed(event -> {
-                        if (event.getButton() == MouseButton.SECONDARY) {
-                            showContextMenu();
-                        }
-                    });
-                }
                 if (e.getCode() == KeyCode.T && e.isControlDown()) {
                     setTitle();
                     break;
