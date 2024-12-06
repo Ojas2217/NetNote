@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.Note;
+import commons.NotePreview;
 import commons.ProcessOperationException;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
@@ -11,6 +12,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
+
+import java.util.List;
 
 /**
  * Controller class for adding a new note.
@@ -70,11 +73,18 @@ public class AddNoteControl {
     public void ok() {
         try {
             if (!noteTitle.getText().isEmpty()) {
-                server.createNote(new Note(noteTitle.getText(), "empty 123 testing 123 format"));
-                clearFields();
-                noteTitle.setFocusTraversable(false);
-                cancel.requestFocus();
-                mainCtrl.showOverview();
+                if (isUnique(noteTitle)) {
+                    server.createNote(new Note(noteTitle.getText(), "empty 123 testing 123 format"));
+                    clearFields();
+                    noteTitle.setFocusTraversable(false);
+                    cancel.requestFocus();
+                    mainCtrl.showOverview();
+                } else {
+                    var alert = new Alert(Alert.AlertType.ERROR);
+                    alert.initModality(Modality.APPLICATION_MODAL);
+                    alert.setContentText("Note with this title already exists");
+                    alert.showAndWait();
+                }
             } else {
                 var alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.initModality(Modality.APPLICATION_MODAL);
@@ -93,10 +103,22 @@ public class AddNoteControl {
         noteTitle.clear();
     }
 
-
+    public boolean isUnique(TextField noteTitle) {
+        List<NotePreview> Notes = mainCtrl.getOverviewCtrl().getNotes();
+        if (Notes == null) {
+            return true;
+        }
+        for (NotePreview note:Notes) {
+            if (note.getTitle().equals(noteTitle.getText())) {
+                return false;
+            }
+        }
+        return true;
+    }
     /**
      * Handles keyboard input
      */
+
     public void keyPressed(KeyEvent e) {
         switch (e.getCode()) {
             case ENTER:
