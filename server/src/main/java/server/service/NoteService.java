@@ -52,7 +52,7 @@ public class NoteService {
     public Note createNote(Note note) throws ProcessOperationException {
         if (isNullOrEmpty(note.title)) {
             throw new ProcessOperationException(
-                    "Note title or content cannot be empty",
+                    "Note title cannot be empty",
                     HttpStatus.BAD_REQUEST.value(),
                     ExceptionType.INVALID_REQUEST);
         }
@@ -116,13 +116,8 @@ public class NoteService {
      *
      * @throws ProcessOperationException if query result is empty
      */
-    public List<NotePreview> getIdsAndTitles() throws ProcessOperationException {
+    public List<NotePreview> getIdsAndTitles() {
         List<Object[]> result = repo.findIdAndTitle();
-        if (result.isEmpty()) {
-            throw new ProcessOperationException(
-                    "No notes found", HttpStatus.NOT_FOUND.value(), ExceptionType.INVALID_REQUEST
-            );
-        }
         return result.stream()
                 .map(e -> NotePreview.of((Long) e[0], (String) e[1]))
                 .toList();
