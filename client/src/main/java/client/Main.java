@@ -19,9 +19,11 @@ package client;
 
 import static com.google.inject.Guice.createInjector;
 
+import client.handlers.ExceptionHandler;
 import client.scenes.NewNoteTitleCtrl;
 import client.scenes.NoteOverviewCtrl;
 import client.scenes.SearchNoteContentCtrl;
+import client.utils.AlertUtils;
 import com.google.inject.Injector;
 import client.scenes.AddNoteControl;
 import client.scenes.MainCtrl;
@@ -45,6 +47,9 @@ import javafx.stage.Stage;
 public class Main extends Application {
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
+    private static final ExceptionHandler exceptionHandler =
+            new ExceptionHandler(new AlertUtils());
+
 
     public static void main(String[] args) {
         launch();
@@ -52,6 +57,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        Thread.setDefaultUncaughtExceptionHandler((_, throwable) -> {
+            exceptionHandler.handle(throwable, "An Unhandled Exception Occurred!");
+        });
 
         var serverUtils = INJECTOR.getInstance(ServerUtils.class);
 
