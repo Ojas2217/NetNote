@@ -116,7 +116,7 @@ public class NoteService {
      *
      * @throws ProcessOperationException if query result is empty
      */
-    public List<NotePreview> getIdsAndTitles() throws ProcessOperationException {
+    public List<NotePreview> getIdsAndTitles() {
         List<Object[]> result = repo.findIdAndTitle();
         return result.stream()
                 .map(e -> NotePreview.of((Long) e[0], (String) e[1]))
