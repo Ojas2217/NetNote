@@ -118,11 +118,6 @@ public class NoteService {
      */
     public List<NotePreview> getIdsAndTitles() throws ProcessOperationException {
         List<Object[]> result = repo.findIdAndTitle();
-        if (result.isEmpty()) {
-            throw new ProcessOperationException(
-                    "No notes found", HttpStatus.NOT_FOUND.value(), ExceptionType.INVALID_REQUEST
-            );
-        }
         return result.stream()
                 .map(e -> NotePreview.of((Long) e[0], (String) e[1]))
                 .toList();
