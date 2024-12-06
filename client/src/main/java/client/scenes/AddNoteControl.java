@@ -70,7 +70,7 @@ public class AddNoteControl {
     public void ok() {
         try {
             if (!noteTitle.getText().isEmpty()) {
-                server.createNote(new Note(noteTitle.getText(), "empty 123 testing 123 format"));
+                server.createNote(new Note(noteTitle.getText(), ""));
                 clearFields();
                 noteTitle.setFocusTraversable(false);
                 cancel.requestFocus();
