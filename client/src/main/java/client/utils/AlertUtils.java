@@ -4,7 +4,7 @@ import javafx.scene.control.Alert;
 
 /**
  * Utility class for showing alerts
- * */
+ */
 public class AlertUtils {
 
     public void showInfo(String title, String header, String content) {
