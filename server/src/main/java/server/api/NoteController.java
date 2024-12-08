@@ -6,6 +6,8 @@ import commons.NotePreview;
 import commons.ProcessOperationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import server.database.NoteRepository;
 import server.service.NoteService;
@@ -118,5 +120,45 @@ public class NoteController {
     @GetMapping(params = "idsAndTitles")
     public ResponseEntity<List<NotePreview>> getIdsAndTitles() {
         return ResponseEntity.ok(service.getIdsAndTitles());
+    }
+
+    /**
+     * Adds a note via ws
+     * @param note the note that needs to be added
+     * @return the added note
+     */
+    @MessageMapping("/add")
+    @SendTo("/topic/add")
+    public Note addMessage(Note note) {
+        return add(note).getBody();
+    }
+
+    /**
+     * Deletes a note via ws
+     * @param id the id of the note that needs to be deleted
+     * @return the deleted note
+     */
+    @MessageMapping("/delete")
+    @SendTo("/topic/delete")
+    public Note deleteMessage(Long id) {
+        System.out.println("\n\n\n\n\n delete \n\n\n\n\n\n");
+        return deleteNoteById(id).getBody();
+    }
+
+    /**
+     * Updates a note via ws
+     * @param note the note that needs to be added
+     * @return the added note
+     */
+    @MessageMapping("/update")
+    @SendTo("/topic/update")
+    public Note updateMessage(Note note) {
+        return update(note).getBody();
+    }
+
+    @MessageMapping("/title")
+    @SendTo("/topic/title")
+    public Note titleMessage(Note note) {
+        return update(note).getBody();
     }
 }
