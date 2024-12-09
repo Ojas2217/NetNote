@@ -24,7 +24,6 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.web.WebView;
-import javafx.stage.Modality;
 import javafx.scene.input.KeyEvent;
 
 import javax.swing.*;
@@ -116,6 +115,30 @@ public class NoteOverviewCtrl implements Initializable {
                 showContextMenu(event);
             }
         });
+
+        server.registerForMessages("/topic/add", q -> {
+            data.add(new NotePreview(q.id, q.title));
+        });
+        server.registerForMessages("/topic/title", q -> {
+            NotePreview theNote = data.stream().filter(n -> n.getId() == q.id).toList().get(0);
+            int indexData = data.indexOf(theNote);
+            int indexList = notes.indexOf(theNote);
+            NotePreview newNote = new NotePreview(q.id,  q.title);
+            data.set(indexData, newNote);
+            notes.set(indexList, newNote);
+
+            if (selectedNoteTitle.equals(theNote.getTitle())) selectedNoteTitle.setText(q.title);
+        });
+        server.registerForMessages("/topic/delete", q -> {
+            NotePreview theNote = data.stream().filter(n -> n.getId() == q.id).toList().get(0);
+            int indexData = data.indexOf(theNote);
+            int indexList = notes.indexOf(theNote);
+            data.remove(indexData);
+            notes.remove(indexList);
+        });
+        server.registerForMessages("/topic/update", q -> {
+            if (selectedNoteId == q.id) selectedNoteContent.setText(q.content);
+        });
     }
 
     public void log(String logString) {
@@ -157,14 +180,11 @@ public class NoteOverviewCtrl implements Initializable {
         );
 
         if (choice == JOptionPane.YES_OPTION) {
-            Note selectedNote = note.get();
-            server.deleteNote(selectedNote.getId());
+            server.send("/app/delete", note.get().getId());
             clear();
             enableContent(false);
             mainCtrl.logRegular("Deleted note '" + selectedNote.getTitle() + "'");
         }
-
-        refresh();
     }
 
     private void enableContent(boolean b) {
@@ -334,18 +354,10 @@ public class NoteOverviewCtrl implements Initializable {
      */
     public void sendSelectedNoteContentToServer() {
         Optional<Note> note = fetchSelected();
-        try {
-            if (note.isPresent()) {
-                updateContentBuffer();
-                note.get().content = selectedNoteContentBuffer;
-                server.editNote(note.get());
-            }
-
-        } catch (ProcessOperationException e) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
+        if (note.isPresent()) {
+            updateContentBuffer();
+            note.get().content = selectedNoteContentBuffer;
+            server.send("/app/update", note.get());
         }
     }
 

@@ -4,8 +4,14 @@ import commons.Note;
 import commons.NotePreview;
 import commons.ProcessOperationException;
 import jakarta.ws.rs.core.GenericType;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.*;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 
+import java.lang.reflect.Type;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Utility class for interacting with the note-related API endpoints.
@@ -136,5 +142,51 @@ public class NoteUtils extends ServerUtils {
                 throw (ProcessOperationException) e;
             throw e;
         }
+    }
+
+    private StompSession session = connect("ws://localhost:8080/websocket");
+
+    /**
+     * This method connects to the websocket server
+     * @param url the url to the websocket
+     * @return a session
+     */
+    private StompSession connect(String url) {
+        var client = new StandardWebSocketClient();
+        var stomp = new WebSocketStompClient(client);
+        stomp.setMessageConverter(new MappingJackson2MessageConverter());
+        try {
+            return stomp.connect(url, new StompSessionHandlerAdapter() {}).get();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * with this you can register for a change in the database
+     * @param dest the destination to the websocket function
+     * @param consumer what needs to happen when there is a change
+     */
+    public void registerForMessages(String dest, Consumer<Note> consumer) {
+        session.subscribe(dest, new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return Note.class;
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                consumer.accept((Note) payload);
+            }
+        });
+    }
+
+    /**
+     * Sends a change to the websocket server
+     * @param dest the destination to the websocket function
+     * @param o the object
+     */
+    public void send(String dest, Object o) {
+        session.send(dest, o);
     }
 }

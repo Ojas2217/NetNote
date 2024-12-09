@@ -98,7 +98,7 @@ public class NewNoteTitleCtrl {
                 if (!newTitle.isEmpty()) {
                     String oldTitle = note.getTitle();
                     note.setTitle(newTitle);
-                    noteUtils.editNote(note);
+                    noteUtils.send("/app/title", note);
                     clearFields();
                     mainCtrl.logRegular("Changed the title of note '" + oldTitle + "' to '" + newTitle + "'");
                 }
