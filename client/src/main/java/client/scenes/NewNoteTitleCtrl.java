@@ -96,12 +96,15 @@ public class NewNoteTitleCtrl {
             if (note != null) {
                 String newTitle = newNoteTitle.getText();
                 if (!newTitle.isEmpty()) {
+                    String oldTitle = note.getTitle();
                     note.setTitle(newTitle);
                     noteUtils.editNote(note);
                     clearFields();
+                    mainCtrl.logRegular("Changed the title of note '" + oldTitle + "' to '" + newTitle + "'");
                 }
             }
         } catch (Exception e) {
+            mainCtrl.logError("Error changing title of note " + note.getTitle() + ": " + e.getMessage());
             e.printStackTrace();
         }
     }
