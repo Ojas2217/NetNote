@@ -97,7 +97,7 @@ public class NewNoteTitleCtrl {
                 String newTitle = newNoteTitle.getText();
                 if (!newTitle.isEmpty()) {
                     note.setTitle(newTitle);
-                    noteUtils.editNote(note);
+                    noteUtils.send("/app/title", note);
                     clearFields();
                 }
             }
