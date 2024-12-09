@@ -171,6 +171,8 @@ public class NoteOverviewCtrl implements Initializable {
 
         String message = "Are you sure you want to delete this note?";
         String title = "Confirm deletion";
+        String noteTitle = note.get().getTitle();
+
         int choice = JOptionPane.showConfirmDialog(
                 null,
                 message,
@@ -183,7 +185,7 @@ public class NoteOverviewCtrl implements Initializable {
             server.send("/app/delete", note.get().getId());
             clear();
             enableContent(false);
-            mainCtrl.logRegular("Deleted note '" + selectedNote.getTitle() + "'");
+            mainCtrl.logRegular("Deleted note '" + noteTitle + "'");
         }
     }
 
