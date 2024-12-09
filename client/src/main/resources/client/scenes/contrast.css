@@ -1,94 +1,77 @@
-/* General settings for dark theme */
+/* General settings for dark mode */
 .root {
-    -fx-background-color: #2e2e2e; /* Dark background */
-    -fx-text-fill: #ffffff; /* White text */
+    -fx-background-color: #2e2e2e; /* Dark gray background */
+    -fx-text-fill: #ffffff; /* White text for readability */
 }
 
-/* MenuBar styling */
+/* Menu bar */
 .menu-bar {
-    -fx-background-color: #3c3c3c; /* Slightly lighter dark background */
+    -fx-background-color: #3e3e3e; /* Slightly lighter gray */
     -fx-text-fill: #ffffff;
 }
 
-.menu {
+.menu-bar .menu {
     -fx-text-fill: #ffffff;
 }
 
-.menu-item {
-    -fx-text-fill: #ffffff;
-}
-
-/* Button styling */
+/* Buttons */
 .button {
-    -fx-background-color: #444444; /* Dark gray for buttons */
-    -fx-text-fill: #ffffff;
-    -fx-border-color: #555555; /* Subtle border */
-    -fx-border-width: 1px;
-    -fx-border-radius: 4px;
-    -fx-background-radius: 4px;
+    -fx-background-color: #4e4e4e; /* Darker gray buttons */
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-border-color: #6e6e6e; /* Subtle border */
+    -fx-border-width: 0.1px;
 }
 
 .button:hover {
-    -fx-background-color: #555555; /* Slightly lighter on hover */
+    -fx-background-color: #5e5e5e; /* Slightly brighter on hover */
 }
 
-/* TextField styling */
-.text-field {
-    -fx-background-color: #3c3c3c;
-    -fx-text-fill: #ffffff;
-    -fx-border-color: #555555;
-    -fx-border-radius: 4px;
-    -fx-background-radius: 4px;
-}
-
-/* TextArea styling */
-.text-area {
-    -fx-background-color: #3c3c3c;
-    -fx-text-fill: #ffffff;
-    -fx-border-color: #555555;
-    -fx-border-radius: 4px;
-    -fx-background-radius: 4px;
-}
-
-/* Label styling */
+/* Labels */
 .label {
     -fx-text-fill: #ffffff;
 }
 
-/* TableView styling */
-.table-view {
-    -fx-background-color: #3c3c3c;
+/* TextField */
+.text-field {
+    -fx-background-color: #3e3e3e;
     -fx-text-fill: #ffffff;
+    -fx-border-color: #6e6e6e;
+}
+
+/* TextArea */
+.text-area {
+    -fx-background-color: #3e3e3e;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #6e6e6e;
+}
+
+/* TableView */
+.table-view {
+    -fx-background-color: #3e3e3e;
+    -fx-control-inner-background: #3e3e3e;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #6e6e6e;
 }
 
 .table-view .column-header {
-    -fx-background-color: #444444;
+    -fx-background-color: #4e4e4e;
     -fx-text-fill: #ffffff;
+    -fx-border-color: #6e6e6e;
 }
 
-.table-view .cell {
-    -fx-background-color: #3c3c3c;
-    -fx-text-fill: #ffffff;
-}
-
-/* WebView styling (assumes content uses default styles) */
+/* WebView */
 .web-view {
-    -fx-background-color: #2e2e2e;
+    -fx-background-color: #3e3e3e;
 }
 
-/* SplitPane divider styling */
-.split-pane .divider {
-    -fx-background-color: #444444;
+.web-view .content {
+    -fx-background-color: #3e3e3e;
+    -fx-text-fill: #ffffff;
 }
 
-/* AnchorPane and VBox styling */
-.anchor-pane, .v-box, .h-box {
-    -fx-background-color: #2e2e2e;
-}
-
-/* ContextMenu styling */
+/* Context Menu */
 .context-menu {
-    -fx-background-color: #3c3c3c;
+    -fx-background-color: #4e4e4e;
     -fx-text-fill: #ffffff;
 }
 
@@ -98,5 +81,134 @@
 }
 
 .context-menu .menu-item:hover {
-    -fx-background-color: #555555;
+    -fx-background-color: #5e5e5e;
+}
+
+/* Highlighted Selection */
+.table-row-cell:selected, .table-cell:selected {
+    -fx-background-color: #6e6e6e;
+    -fx-text-fill: #ffffff;
+}
+
+/* Scrollbars */
+.scroll-bar {
+    -fx-background-color: #3e3e3e;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #6e6e6e;
+}
+/* SplitPane styling */
+.split-pane {
+    -fx-background-color: #4e4e4e; /* Dark gray background */
+    -fx-divider-color: #6e6e6e; /* Divider color for contrast */
+}
+
+/* AnchorPane styling */
+.anchor-pane {
+    -fx-background-color: #4e4e4e; /* Darker gray for AnchorPane */
+    -fx-control-inner-background: #3e3e3e;
+    -fx-border-color: #4e4e4e; /* Subtle border to distinguish AnchorPanes */
+    -fx-border-width: 1px; /* Thin border */
+    -fx-padding: 10px; /* Padding inside the AnchorPane */
+}
+
+/* HBox styling */
+.hbox {
+    -fx-background-color: #2e2e2e;
+}
+
+/* TableView styling */
+.table-view {
+    -fx-background-color: #3e3e3e; /* Slightly lighter gray for contrast */
+    -fx-control-inner-background: #3e3e3e;
+    -fx-border-color: #6e6e6e; /* Subtle border */
+    -fx-text-fill: #ffffff; /* White text */
+}
+
+.table-view .column-header {
+    -fx-background-color: #4e4e4e; /* Header background color */
+    -fx-text-fill: #ffffff; /* Header text color */
+    -fx-border-color: #6e6e6e;
+}
+
+.table-row-cell {
+    -fx-background-color: #3e3e3e;
+    -fx-text-fill: #ffffff;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #6e6e6e; /* Highlighted row color */
+    -fx-text-fill: #ffffff;
+}
+
+/* ContextMenu styling */
+.context-menu {
+    -fx-background-color: #4e4e4e;
+    -fx-text-fill: #ffffff;
+}
+
+.context-menu .menu-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+}
+
+.context-menu .menu-item:hover {
+    -fx-background-color: #5e5e5e;
+}
+
+/* Label styling */
+.label {
+    -fx-text-fill: #ffffff; /* White text for labels */
+}
+
+/* Specific Label (Markdown View) */
+.label[text="Markdown View"] {
+    -fx-font-size: 19px;
+    -fx-text-fill: #ffffff; /* White text for visibility */
+}
+
+/* Styling for TextArea */
+.text-area {
+    -fx-background-color: #3e3e3e; /* Dark gray background */
+    -fx-control-inner-background: #3e3e3e;
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-border-color: #6e6e6e; /* Subtle border color */
+    -fx-border-width: 1px; /* Thin border */
+    -fx-font-size: 22px; /* Font size */
+}
+
+
+/* WebView Styling */
+.web-view {
+    -fx-background-color: #3e3e3e; /* Dark background for the WebView */
+    -fx-page-fill: #3e3e3e;
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-control-inner-background: #3e3e3e;
+}
+
+/* WebView content styling - make sure the content inside inherits the dark mode */
+.web-view .content {
+    -fx-background-color: #2e2e2e; /* Ensure the content is dark */
+    -fx-text-fill: #ffffff; /* White text for content */
+}
+
+/* WebView styling for inner HTML content (if needed for your web content) */
+.web-view .web-view {
+    -fx-background-color: #2e2e2e; /* Dark background for inner web content */
+    -fx-text-fill: #ffffff; /* White text for web content */
+}
+
+/* Scrollbars styling */
+.scroll-bar {
+    -fx-background-color: #3e3e3e; /* Matches background */
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #6e6e6e; /* Subtle scrollbar thumb */
+}
+
+/* Font styling for consistent text sizes */
+.font {
+    -fx-font-family: "Arial";
 }
