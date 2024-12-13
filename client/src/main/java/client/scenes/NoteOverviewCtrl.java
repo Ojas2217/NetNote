@@ -63,6 +63,9 @@ public class NoteOverviewCtrl implements Initializable {
     private WebView webView;
     private final Markdown markdown = new Markdown();
 
+    @FXML
+    private WebView webViewLogger;
+
     private List<NotePreview> notes;
     @FXML
     private Label selectedNoteTitle;
@@ -138,6 +141,11 @@ public class NoteOverviewCtrl implements Initializable {
         });
     }
 
+    public void log(String logString) {
+        String html = markdown.render(logString);
+        webViewLogger.getEngine().loadContent(html);
+    }
+
     /**
      * Loads the rendered {@link Markdown} version of the note to the WebView part of the NoteOverview Scene.
      *
@@ -163,6 +171,8 @@ public class NoteOverviewCtrl implements Initializable {
 
         String message = "Are you sure you want to delete this note?";
         String title = "Confirm deletion";
+        String noteTitle = note.get().getTitle();
+
         int choice = JOptionPane.showConfirmDialog(
                 null,
                 message,
@@ -175,6 +185,7 @@ public class NoteOverviewCtrl implements Initializable {
             server.send("/app/delete", note.get().getId());
             clear();
             enableContent(false);
+            mainCtrl.logRegular("Deleted note '" + noteTitle + "'");
         }
     }
 
@@ -400,6 +411,10 @@ public class NoteOverviewCtrl implements Initializable {
                 JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
             }
         });
+
+        int amount = foundInNotes.size();
+        int noteCount = (int) foundInNotes.stream().map(n -> n.getNotePreview().getId()).distinct().count();
+        mainCtrl.logRegular("Found string '" + queryString + "', " + amount + " times, across " + noteCount + " notes");
 
         return foundInNotes;
     }

@@ -73,10 +73,13 @@ public class AddNoteControl {
         try {
             if (!noteTitle.getText().isEmpty()) {
                 if (isUnique(noteTitle)) {
-                    server.send("/app/add", new Note(noteTitle.getText(), "empty 123 testing 123 format"));
+                    String title = noteTitle.getText();
+                    server.send("/app/add", new Note(title, "empty 123 testing 123 format"));
                     clearFields();
                     noteTitle.setFocusTraversable(false);
                     cancel.requestFocus();
+
+                    mainCtrl.logRegular("Added new note: '" + title + "'");
                     mainCtrl.showOverview();
                 } else {
                     var alert = new Alert(Alert.AlertType.ERROR);

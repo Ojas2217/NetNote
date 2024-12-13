@@ -19,6 +19,7 @@ package client.scenes;
 
 import client.handlers.NoteSearchResult;
 import client.handlers.SceneInfo;
+import client.services.Logger;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.Parent;
@@ -55,6 +56,8 @@ public class MainCtrl {
     private Scene add;
     private Scene title;
 
+    private final Logger logger = new Logger();
+
     /**
      * Initializes the primary stage and sets up the scenes and controllers for the application.
      *
@@ -79,6 +82,7 @@ public class MainCtrl {
         primaryStage.show();
 
         initializeSearchContentStage(searchContent);
+        searchNoteContentCtrl.init();
     }
 
     /**
@@ -111,6 +115,16 @@ public class MainCtrl {
     public void showOverview(NoteSearchResult searchResult) {
         showOverview();
         overviewCtrl.show(searchResult);
+    }
+
+    public void logRegular(String message) {
+        String logString = logger.addRegularLog(message);
+        overviewCtrl.log(logString);
+    }
+
+    public void logError(String message) {
+        String logString = logger.addErrorLog(message);
+        overviewCtrl.log(logString);
     }
 
     /**
@@ -156,7 +170,6 @@ public class MainCtrl {
         searchContentStage.show();
         Platform.runLater(() -> primaryStage.requestFocus());
 
-        searchNoteContentCtrl.init();
         searchNoteContentCtrl.setSearchResult(searchResult);
     }
 
