@@ -149,7 +149,7 @@
                                           <Font size="22.0" />
                                        </font>
                                     </TextArea>
-                                    <WebView fx:id="webViewLogger" layoutY="462.0" prefHeight="100.0" prefWidth="548.0" />
+                                    <WebView fx:id="webViewLogger" layoutY="462.0" prefHeight="100.0" prefWidth="548.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="13.0" />
                                  </children>
                               </AnchorPane>
                               <AnchorPane prefHeight="554.0" prefWidth="211.0" HBox.hgrow="ALWAYS">
