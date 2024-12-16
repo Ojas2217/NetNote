@@ -137,7 +137,11 @@ public class MainCtrl {
         return overviewCtrl;
     }
 
-    public void changeTheme(){
+    /**
+     * Toggles between light and dark theme
+     */
+
+    public void changeTheme() {
         if (overview.getStylesheets().isEmpty()) {
             overview.getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
         } else {

@@ -477,7 +477,7 @@ public class NoteOverviewCtrl implements Initializable {
         return OptionalLong.of(selectedNoteId);
     }
 
-    public void changeTheme(){
+    public void changeTheme() {
         mainCtrl.changeTheme();
     }
 
