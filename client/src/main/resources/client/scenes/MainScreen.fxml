@@ -148,7 +148,7 @@
                                           <Font size="19.0" />
                                        </font>
                                     </Label>
-                                    <TextArea fx:id="selectedNoteContent" layoutY="28.0" prefHeight="526.0" prefWidth="561.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="28.0">
+                                    <TextArea fx:id="selectedNoteContent" layoutY="28.0" prefHeight="434.0" prefWidth="546.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="28.0">
                                        <font>
                                           <Font size="22.0" />
                                        </font>
