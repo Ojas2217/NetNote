@@ -1,9 +1,9 @@
 package server.api;
 
-import commons.ExceptionType;
+import commons.exceptions.ExceptionType;
 import commons.Note;
 import commons.NotePreview;
-import commons.ProcessOperationException;
+import commons.exceptions.ProcessOperationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;

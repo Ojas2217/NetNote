@@ -1,4 +1,4 @@
-package commons;
+package commons.exceptions;
 
 import java.util.Objects;
 /**

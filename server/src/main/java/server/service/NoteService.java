@@ -1,9 +1,9 @@
 package server.service;
 
-import commons.ExceptionType;
+import commons.exceptions.ExceptionType;
 import commons.Note;
 import commons.NotePreview;
-import commons.ProcessOperationException;
+import commons.exceptions.ProcessOperationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import server.database.NoteRepository;
