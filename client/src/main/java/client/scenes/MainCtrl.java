@@ -94,7 +94,6 @@ public class MainCtrl {
     private void initializeSearchContentStage(Pair<SearchNoteContentCtrl, Parent> searchContent) {
         this.searchNoteContentCtrl = searchContent.getKey();
         Scene searchContentScene = new Scene(searchContent.getValue());
-
         this.searchContentStage = new Stage();
         searchContentStage.setTitle("SearchContent");
         searchContentStage.setScene(searchContentScene);
@@ -150,6 +149,18 @@ public class MainCtrl {
 
     public NoteOverviewCtrl getOverviewCtrl() {
         return overviewCtrl;
+    }
+
+    /**
+     * Toggles between light and dark theme
+     */
+
+    public void changeTheme() {
+        if (overview.getStylesheets().isEmpty()) {
+            overview.getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
+        } else {
+            overview.getStylesheets().clear();
+        }
     }
 
     /**

@@ -505,6 +505,10 @@ public class NoteOverviewCtrl implements Initializable {
         return OptionalLong.of(selectedNoteId);
     }
 
+    public void changeTheme() {
+        mainCtrl.changeTheme();
+    }
+
     public List<NotePreview> getNotes() {
         return notes;
     }
