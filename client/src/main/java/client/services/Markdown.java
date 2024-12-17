@@ -6,8 +6,8 @@ import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.data.MutableDataSet;
-import commons.ExceptionType;
-import commons.MarkdownRenderException;
+import commons.exceptions.ExceptionType;
+import commons.exceptions.MarkdownRenderException;
 import org.springframework.http.HttpStatus;
 
 

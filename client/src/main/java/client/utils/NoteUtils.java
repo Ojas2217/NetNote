@@ -2,7 +2,7 @@ package client.utils;
 
 import commons.Note;
 import commons.NotePreview;
-import commons.ProcessOperationException;
+import commons.exceptions.ProcessOperationException;
 import jakarta.ws.rs.core.GenericType;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.*;

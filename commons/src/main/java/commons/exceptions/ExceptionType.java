@@ -1,4 +1,4 @@
-package commons;
+package commons.exceptions;
 
 /**
  * Enum representing various types of exceptions that can occur in the application.

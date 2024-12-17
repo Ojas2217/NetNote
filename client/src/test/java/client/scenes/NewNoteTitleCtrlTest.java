@@ -2,7 +2,7 @@ package client.scenes;
 
 import client.utils.NoteUtils;
 import commons.Note;
-import commons.ProcessOperationException;
+import commons.exceptions.ProcessOperationException;
 import javafx.application.Platform;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;

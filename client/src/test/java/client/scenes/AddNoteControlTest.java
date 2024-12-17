@@ -2,7 +2,7 @@ package client.scenes;
 
 import client.utils.NoteUtils;
 import commons.Note;
-import commons.ProcessOperationException;
+import commons.exceptions.ProcessOperationException;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import javafx.application.Platform;

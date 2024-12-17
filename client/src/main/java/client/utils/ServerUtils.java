@@ -20,8 +20,8 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.net.ConnectException;
 
-import commons.ExceptionType;
-import commons.ProcessOperationException;
+import commons.exceptions.ExceptionType;
+import commons.exceptions.ProcessOperationException;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 import jakarta.ws.rs.ProcessingException;

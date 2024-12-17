@@ -1,16 +1,15 @@
-package commons;
+package commons.exceptions;
 
 import java.util.Objects;
-
 /**
- * Custom exception class for handling process operation errors.
+ * Custom exception class for handling Markdown Errors.
  * <p>
- * The {@code ProcessOperationException} class extends {@link Exception} and is used
+ * The {@code MarkdownRenderException} class extends {@link RuntimeException} and is used
  * to represent errors that occur during the execution of a process. It includes
  * an HTTP status code and an {@link ExceptionType} to categorize the type of error.
  * </p>
  * <p>
- * This exception is thrown when specific operational issues are encountered,
+ * This exception is thrown when Markdown issues relating to syntax / incorrect initialization are encountered,
  * and provides methods to access the status code, exception type, and message.
  * </p>
  * <ul>
@@ -21,77 +20,56 @@ import java.util.Objects;
  *     <li>{@link #hashCode()}: Computes the hash code for this exception.</li>
  * </ul>
  */
-public class ProcessOperationException extends Exception {
+
+public class MarkdownRenderException extends RuntimeException {
     private int statusCode;
     private ExceptionType type;
 
-    /**
-     * Constructor for a ProcessOperationException
-     *
-     * @param message
-     * @param statusCode
-     * @param type
-     */
-    public ProcessOperationException(String message, int statusCode, ExceptionType type) {
+    public MarkdownRenderException(String message, int statusCode, ExceptionType type) {
         super(message);
         this.statusCode = statusCode;
         this.type = type;
     }
 
-    /**
-     * Get the status code of the problem
-     *
-     * @return the status code
-     */
+    public ExceptionType getType() {
+        return type;
+    }
+
     public int getStatusCode() {
         return statusCode;
     }
 
     /**
-     * Get the type of the problem
-     *
-     * @return the type of the problem
-     */
-    public ExceptionType getType() {
-        return type;
-    }
-
-    /**
-     * ToString method
-     *
-     * @return the object in string format
+     * toString method
+     * @return String
      */
     @Override
     public String toString() {
-        return "ProcessOperationException{" +
+        return "MarkdownRenderException{" +
                 "statusCode=" + statusCode +
                 ", type=" + type +
-                ", message=" + this.getMessage() +
                 '}';
     }
 
     /**
-     * Equals method
-     *
+     * equals method
      * @param o
-     * @return true if equal, false otherwise
+     * @return equality check
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ProcessOperationException that = (ProcessOperationException) o;
-        return statusCode == that.statusCode && type == that.type &&
-                getMessage() == that.getMessage();
+        MarkdownRenderException that = (MarkdownRenderException) o;
+        return statusCode == that.statusCode && type == that.type;
     }
 
     /**
-     * HashCode method
-     *
-     * @return the hash code
+     * hash code method
+     * @return hashcode
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getMessage(), statusCode, type);
+        return Objects.hash(statusCode, type);
     }
 }
