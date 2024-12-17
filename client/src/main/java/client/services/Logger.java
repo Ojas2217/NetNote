@@ -21,6 +21,14 @@ public class Logger {
         this.dateTimeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM).withLocale(Locale.getDefault());
     }
 
+    public String getStyleErrorStart() {
+        return styleErrorStart;
+    }
+
+    public String getStyleErrorEnd() {
+        return styleErrorEnd;
+    }
+
     private String getStartOfMessage() {
         ZonedDateTime dateTime = ZonedDateTime.now();
         return dateTime.toLocalTime().format(dateTimeFormatter) + ": ";
