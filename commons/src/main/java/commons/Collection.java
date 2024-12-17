@@ -9,6 +9,22 @@ import java.util.List;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
+/**
+ * Entity class representing a Collection.
+ * <p>
+ * The {@code Collection} class is a JPA entity annotated with {@link Entity}, which maps
+ * it to a database table. It contains fields for the collection's ID, name, and content,
+ * along with constructors, and overrides for {@link Object#equals(Object)},
+ * {@link Object#hashCode()}, and {@link Object#toString()}.
+ * </p>
+ * <ul>
+ *     <li>{@link Id} and {@link GeneratedValue} annotations are used to specify
+ *         that the {@code id} field is the primary key and its value is
+ *         automatically generated.</li>
+ *     <li>The no-argument constructor is provided for frameworks like object mappers
+ *         that require it for instantiation.</li>
+ * </ul>
+ */
 @Entity
 public class Collection {
     @Id
@@ -18,11 +34,14 @@ public class Collection {
     @OneToMany
     private List<Note> notes;
 
-    public Collection(String name,List<Note> notes) {
+    public Collection(String name, List<Note> notes) {
         this.name = name;
         this.notes = notes;
     }
-    public Collection() {}
+
+    public Collection() {
+        //for object mapper
+    }
 
     public long getId() {
         return id;

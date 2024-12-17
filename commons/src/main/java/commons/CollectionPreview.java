@@ -1,5 +1,9 @@
 package commons;
 
+/**
+ * Collection data transfer object for transferring the ID and title.
+ */
+
 public class CollectionPreview {
     private Long id;
     private String name;
