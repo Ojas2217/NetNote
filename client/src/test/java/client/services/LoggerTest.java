@@ -13,7 +13,7 @@ public class LoggerTest {
     private final String dateRegex;
 
     public LoggerTest() {
-        this.dateRegex = "\\d\\d:\\d\\d:\\d\\d\\x{202F}((PM)|(AM)): ";
+        this.dateRegex = "\\d\\d:\\d\\d:\\d\\d\\ ((PM)|(AM)): ";
     }
 
     @BeforeEach
