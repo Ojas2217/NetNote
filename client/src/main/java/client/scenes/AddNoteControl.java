@@ -4,7 +4,6 @@ import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.Note;
 import commons.NotePreview;
-import commons.ProcessOperationException;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -74,10 +73,13 @@ public class AddNoteControl {
         try {
             if (!noteTitle.getText().isEmpty()) {
                 if (isUnique(noteTitle)) {
-                    server.createNote(new Note(noteTitle.getText(), "empty 123 testing 123 format"));
+                    String title = noteTitle.getText();
+                    server.send("/app/add", new Note(title, "empty 123 testing 123 format"));
                     clearFields();
                     noteTitle.setFocusTraversable(false);
                     cancel.requestFocus();
+
+                    mainCtrl.logRegular("Added new note: '" + title + "'");
                     mainCtrl.showOverview();
                 } else {
                     var alert = new Alert(Alert.AlertType.ERROR);
@@ -91,7 +93,7 @@ public class AddNoteControl {
                 alert.setContentText("Please add a note title.");
                 alert.showAndWait();
             }
-        } catch (WebApplicationException | ProcessOperationException e) {
+        } catch (WebApplicationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
             alert.setContentText(e.getMessage());
