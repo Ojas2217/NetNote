@@ -2,7 +2,8 @@ package client.services;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.Locale;
 
 /**
@@ -17,8 +18,22 @@ public class Logger {
     private String log = "";
     private final DateTimeFormatter dateTimeFormatter;
 
+    /**
+     * Constructor that creates a dateTimeFormatter that outputs the date as "hh:mm:ss (AM/PM)"
+     */
     public Logger() {
-        this.dateTimeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM).withLocale(Locale.getDefault());
+        this.dateTimeFormatter = new DateTimeFormatterBuilder()
+                .appendPattern("hh:mm:ss ")
+                .appendText(ChronoField.AMPM_OF_DAY)
+                .toFormatter(Locale.US);
+    }
+
+    public String getStyleErrorStart() {
+        return styleErrorStart;
+    }
+
+    public String getStyleErrorEnd() {
+        return styleErrorEnd;
     }
 
     private String getStartOfMessage() {
