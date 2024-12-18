@@ -44,6 +44,7 @@ public class AddNoteControl {
     private TextField noteTitle;
     @FXML
     private Button cancel;
+    private final int maxNumOfCharacters = 50;
 
     @Inject
     public AddNoteControl(NoteUtils server, MainCtrl mainCtrl) {
@@ -131,6 +132,16 @@ public class AddNoteControl {
                 break;
             default:
                 break;
+        }
+    }
+
+    /**
+     * Ensures that the title is not longer then a certain amount of characters
+     */
+    public void ensureMaxCharacters() {
+        if (noteTitle.getText().length() > maxNumOfCharacters) {
+            String goodString = noteTitle.getText().substring(0, maxNumOfCharacters);
+            noteTitle.replaceText(maxNumOfCharacters, noteTitle.getText().length(), "");
         }
     }
 }
