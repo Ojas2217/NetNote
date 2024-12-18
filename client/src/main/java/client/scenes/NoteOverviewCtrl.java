@@ -506,7 +506,70 @@ public class NoteOverviewCtrl implements Initializable {
     }
 
     public void changeTheme() {
-        mainCtrl.changeTheme();
+        boolean isDarkMode = mainCtrl.changeTheme();
+        if (isDarkMode) {
+            webViewLogger.getEngine().executeScript("""
+                        (function() {
+                            var style = document.createElement('style');
+                            style.innerHTML = `
+                                body {
+                                    background-color: #2e2e2e;
+                                    color: #ffffff;
+                                }
+                                a {
+                                    color: #4e9af1;
+                                }
+                            `;
+                            document.head.appendChild(style);
+                        })();
+                    """);
+            webView.getEngine().executeScript("""
+                    (function() {
+                        var style = document.createElement('style');
+                        style.innerHTML = `
+                            body {
+                                background-color: #2e2e2e; /* Dark background */
+                                color: #ffffff; /* White text */
+                            }
+                            a {
+                                color: #4e9af1; /* Custom link color */
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    })();
+                """);
+        } else {
+            webViewLogger.getEngine().executeScript("""
+                    (function() {
+                        var style = document.createElement('style');
+                        style.innerHTML = `
+                            body {
+                                background-color: #ffffff; /* Default white background */
+                                color: #000000; /* Default black text */
+                            }
+                            a {
+                                color: #0000ff; /* Default link color */
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    })();
+                """);
+            webView.getEngine().executeScript("""
+                    (function() {
+                        var style = document.createElement('style');
+                        style.innerHTML = `
+                            body {
+                                background-color: #ffffff; /* Default white background */
+                                color: #000000; /* Default black text */
+                            }
+                            a {
+                                color: #0000ff; /* Default link color */
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    })();
+                """);
+        }
     }
 
     public List<NotePreview> getNotes() {
