@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 public class NewNoteTitleServiceTest {
     /**
-     * Tests for the Business Logic of AddNote should be written here
+     * Tests for the Business Logic of NewNoteTitle should be written here
      */
     @Test
     public void test() {
