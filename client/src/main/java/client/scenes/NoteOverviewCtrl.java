@@ -505,10 +505,7 @@ public class NoteOverviewCtrl implements Initializable {
         return OptionalLong.of(selectedNoteId);
     }
 
-    public void changeTheme() {
-        boolean isDarkMode = mainCtrl.changeTheme();
-        if (isDarkMode) {
-            webViewLogger.getEngine().executeScript("""
+    private final String darkWebview = """
                         (function() {
                             var style = document.createElement('style');
                             style.innerHTML = `
@@ -522,53 +519,31 @@ public class NoteOverviewCtrl implements Initializable {
                             `;
                             document.head.appendChild(style);
                         })();
-                    """);
-            webView.getEngine().executeScript("""
+                    """;
+    private final String lightWebView = """
                     (function() {
                         var style = document.createElement('style');
                         style.innerHTML = `
                             body {
-                                background-color: #2e2e2e; /* Dark background */
-                                color: #ffffff; /* White text */
+                                background-color: #ffffff; /* Default white background */
+                                color: #000000; /* Default black text */
                             }
                             a {
-                                color: #4e9af1; /* Custom link color */
+                                color: #0000ff; /* Default link color */
                             }
                         `;
                         document.head.appendChild(style);
                     })();
-                """);
+                """;
+
+    public void changeTheme() {
+        boolean isDarkMode = mainCtrl.changeTheme();
+        if (isDarkMode) {
+            webViewLogger.getEngine().executeScript(darkWebview);
+            webView.getEngine().executeScript(darkWebview);
         } else {
-            webViewLogger.getEngine().executeScript("""
-                    (function() {
-                        var style = document.createElement('style');
-                        style.innerHTML = `
-                            body {
-                                background-color: #ffffff; /* Default white background */
-                                color: #000000; /* Default black text */
-                            }
-                            a {
-                                color: #0000ff; /* Default link color */
-                            }
-                        `;
-                        document.head.appendChild(style);
-                    })();
-                """);
-            webView.getEngine().executeScript("""
-                    (function() {
-                        var style = document.createElement('style');
-                        style.innerHTML = `
-                            body {
-                                background-color: #ffffff; /* Default white background */
-                                color: #000000; /* Default black text */
-                            }
-                            a {
-                                color: #0000ff; /* Default link color */
-                            }
-                        `;
-                        document.head.appendChild(style);
-                    })();
-                """);
+            webViewLogger.getEngine().executeScript(lightWebView);
+            webView.getEngine().executeScript(lightWebView);
         }
     }
 
