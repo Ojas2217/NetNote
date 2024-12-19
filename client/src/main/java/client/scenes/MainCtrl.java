@@ -155,11 +155,13 @@ public class MainCtrl {
      * Toggles between light and dark theme
      */
 
-    public void changeTheme() {
+    public boolean changeTheme() {
         if (overview.getStylesheets().isEmpty()) {
             overview.getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
+            return true;
         } else {
             overview.getStylesheets().clear();
+            return false;
         }
     }
 
