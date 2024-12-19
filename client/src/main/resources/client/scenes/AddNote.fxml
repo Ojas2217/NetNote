@@ -14,5 +14,10 @@
             <Font size="20.0" />
          </font>
       </Label>
+      <Label fx:id="characterWarning" alignment="CENTER" layoutX="67.0" layoutY="100.0" prefHeight="35.0" prefWidth="335.0" text="The title can't exceed 50 characters" textAlignment="CENTER" visible="false">
+         <font>
+            <Font name="System Italic" size="14.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

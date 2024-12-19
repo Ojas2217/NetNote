@@ -8,6 +8,7 @@ import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
@@ -44,6 +45,8 @@ public class AddNoteControl {
     private TextField noteTitle;
     @FXML
     private Button cancel;
+    @FXML
+    private Label characterWarning;
     private final int maxNumOfCharacters = 50;
 
     @Inject
@@ -104,6 +107,7 @@ public class AddNoteControl {
 
     public void clearFields() {
         noteTitle.clear();
+        characterWarning.setVisible(false);
     }
 
     public boolean isUnique(TextField noteTitle) {
@@ -140,8 +144,11 @@ public class AddNoteControl {
      */
     public void ensureMaxCharacters() {
         if (noteTitle.getText().length() > maxNumOfCharacters) {
+            characterWarning.setVisible(true);
             String goodString = noteTitle.getText().substring(0, maxNumOfCharacters);
             noteTitle.replaceText(maxNumOfCharacters, noteTitle.getText().length(), "");
+        } else {
+            characterWarning.setVisible(false);
         }
     }
 }
