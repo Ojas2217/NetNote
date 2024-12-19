@@ -1,6 +1,7 @@
 package client.utils;
 
 import javafx.scene.control.Alert;
+import javafx.stage.Modality;
 
 /**
  * Utility class for showing alerts
@@ -38,4 +39,12 @@ public class AlertUtils {
         alert.setContentText(content);
         alert.showAndWait();
     }
+
+    public void showAlert(Alert.AlertType type, String content) {
+        Alert alert = new Alert(type);
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
 }

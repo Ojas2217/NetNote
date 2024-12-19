@@ -483,12 +483,14 @@ public class NoteOverviewCtrl implements Initializable {
     public void setTitle() {
         Optional<Note> note = fetchSelected();
         if (note.isEmpty()) return;
-
         try {
-            mainCtrl.getNewCtrl().newTitle(
-                    server.getNote(note.get().getId())
-            );
-        } catch (ProcessOperationException e) {
+            mainCtrl.showNewTitle();
+            if (!mainCtrl.getNewCtrl().getNewNoteTitle().getText().isEmpty()) {
+                mainCtrl.getNewCtrl().getNewNoteTitleService().newTitle(
+                        note.get(), mainCtrl.getNewCtrl().getNewNoteTitle().getText()
+                );
+            }
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             String errorMessage = "Error retrieving data from the server, unable to fetch note selected note.";
             JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
