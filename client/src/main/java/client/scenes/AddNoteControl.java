@@ -106,21 +106,14 @@ public class AddNoteControl {
     }
 
     public boolean isUnique(TextField noteTitle) {
-        List<NotePreview> Notes = mainCtrl.getOverviewCtrl().getNotes();
-        if (Notes == null) {
-            return true;
-        }
-        for (NotePreview note:Notes) {
-            if (note.getTitle().equals(noteTitle.getText())) {
-                return false;
-            }
-        }
-        return true;
+        List<NotePreview> notes = mainCtrl.getOverviewCtrl().getNotes();
+        if (notes == null) return true;
+        return notes.stream().noneMatch(n -> n.getTitle().equals(noteTitle.getText()));
     }
+
     /**
      * Handles keyboard input
      */
-
     public void keyPressed(KeyEvent e) {
         switch (e.getCode()) {
             case ENTER:
