@@ -187,6 +187,8 @@ public class NoteOverviewCtrl implements Initializable {
             enableContent(false);
             mainCtrl.logRegular("Deleted note '" + noteTitle + "'");
         }
+
+        refresh(); // This is needed to prevent two notes from being removed from the table
     }
 
     private void enableContent(boolean b) {
