@@ -187,6 +187,8 @@ public class NoteOverviewCtrl implements Initializable {
             enableContent(false);
             mainCtrl.logRegular("Deleted note '" + noteTitle + "'");
         }
+
+        refresh(); // This is needed to prevent two notes from being removed from the table
     }
 
     private void enableContent(boolean b) {
@@ -507,8 +509,46 @@ public class NoteOverviewCtrl implements Initializable {
         return OptionalLong.of(selectedNoteId);
     }
 
+    private final String darkWebview = """
+                        (function() {
+                            var style = document.createElement('style');
+                            style.innerHTML = `
+                                body {
+                                    background-color: #2e2e2e;
+                                    color: #ffffff;
+                                }
+                                a {
+                                    color: #4e9af1;
+                                }
+                            `;
+                            document.head.appendChild(style);
+                        })();
+                    """;
+    private final String lightWebView = """
+                    (function() {
+                        var style = document.createElement('style');
+                        style.innerHTML = `
+                            body {
+                                background-color: #ffffff; /* Default white background */
+                                color: #000000; /* Default black text */
+                            }
+                            a {
+                                color: #0000ff; /* Default link color */
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    })();
+                """;
+
     public void changeTheme() {
-        mainCtrl.changeTheme();
+        boolean isDarkMode = mainCtrl.changeTheme();
+        if (isDarkMode) {
+            webViewLogger.getEngine().executeScript(darkWebview);
+            webView.getEngine().executeScript(darkWebview);
+        } else {
+            webViewLogger.getEngine().executeScript(lightWebView);
+            webView.getEngine().executeScript(lightWebView);
+        }
     }
 
     public List<NotePreview> getNotes() {

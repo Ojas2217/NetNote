@@ -4,12 +4,18 @@ import client.business.AddNoteService;
 import client.utils.AlertUtils;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
+import commons.Note;
+import commons.NotePreview;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Modality;
+
+import java.util.List;
 
 /**
  * Controller class for adding a new note.
@@ -42,6 +48,9 @@ public class AddNoteControl {
     private Button cancel;
     private AlertUtils alertUtils;
     private AddNoteService addNoteService;
+    @FXML
+    private Label characterWarning;
+    private final int maxNumOfCharacters = 50;
 
     @Inject
     public AddNoteControl(AddNoteService addNoteService, MainCtrl mainCtrl) {
@@ -89,6 +98,7 @@ public class AddNoteControl {
 
     public void clearFields() {
         noteTitle.clear();
+        characterWarning.setVisible(false);
     }
 
 
@@ -106,6 +116,19 @@ public class AddNoteControl {
                 break;
             default:
                 break;
+        }
+    }
+
+    /**
+     * Ensures that the title is not longer then a certain amount of characters
+     */
+    public void ensureMaxCharacters() {
+        if (noteTitle.getText().length() > maxNumOfCharacters) {
+            characterWarning.setVisible(true);
+            String goodString = noteTitle.getText().substring(0, maxNumOfCharacters);
+            noteTitle.replaceText(maxNumOfCharacters, noteTitle.getText().length(), "");
+        } else {
+            characterWarning.setVisible(false);
         }
     }
 }
