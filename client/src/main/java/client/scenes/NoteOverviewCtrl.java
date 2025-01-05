@@ -8,7 +8,7 @@ import java.util.ResourceBundle;
 
 import client.handlers.ThemeViewHandler;
 import client.services.NoteOverviewService;
-import client.services.NoteSearchService;
+import client.Helpers.NoteSearchHelper;
 import javafx.scene.input.MouseButton;
 import client.handlers.NoteSearchResult;
 import client.services.Markdown;
@@ -56,7 +56,6 @@ public class NoteOverviewCtrl implements Initializable {
     private final MainCtrl mainCtrl;
 
     private final NoteOverviewService noteOverviewService;
-    private final NoteSearchService noteSearchService;
 
     private final ThemeViewHandler themeViewHandler;
 
@@ -97,7 +96,6 @@ public class NoteOverviewCtrl implements Initializable {
         this.mainCtrl = mainCtrl;
 
         this.noteOverviewService = new NoteOverviewService();
-        this.noteSearchService = new NoteSearchService();
 
         this.themeViewHandler = new ThemeViewHandler();
     }
@@ -351,10 +349,10 @@ public class NoteOverviewCtrl implements Initializable {
 
         if (input.startsWith("#")) {
             String queryString = input.replaceFirst("#", "");
-            List<NoteSearchResult> foundInNotes = noteSearchService.searchNoteContent(queryString, notes, server);
+            List<NoteSearchResult> foundInNotes = NoteSearchHelper.searchNoteContent(queryString, notes, server);
 
             setViewableNotes(foundInNotes.stream().map(NoteSearchResult::getNotePreview).distinct().toList());
-            mainCtrl.logRegular(noteSearchService.getSearchLogString(foundInNotes, queryString));
+            mainCtrl.logRegular(NoteSearchHelper.getSearchLogString(foundInNotes, queryString));
             mainCtrl.showSearchContent(foundInNotes);
         } else {
             searchAllNotes(input);
@@ -362,7 +360,7 @@ public class NoteOverviewCtrl implements Initializable {
     }
 
     private void searchAllNotes(String text) {
-        setViewableNotes(noteSearchService.filterNotes(notes, text));
+        setViewableNotes(NoteSearchHelper.filterNotes(notes, text));
     }
 
     /**
