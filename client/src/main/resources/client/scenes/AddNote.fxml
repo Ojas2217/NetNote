@@ -8,10 +8,10 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="146.0" prefWidth="470.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddNoteControl">
    <children>
-      <Button layoutX="419.0" layoutY="105.0" mnemonicParsing="false" onAction="#ok" text="Ok" />
-      <Button fx:id="cancel" layoutX="14.0" layoutY="105.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" />
+      <Button layoutX="419.0" layoutY="105.0" mnemonicParsing="false" onAction="#ok" text="%okButtonText" />
+      <Button fx:id="cancel" layoutX="14.0" layoutY="105.0" mnemonicParsing="false" onAction="#cancel" text="%cancelButtonText" />
       <TextField fx:id="noteTitle" layoutX="43.0" layoutY="61.0" prefHeight="26.0" prefWidth="383.0" />
-      <Label layoutX="73.0" layoutY="27.0" prefHeight="35.0" prefWidth="383.0" text="Please enter the title of your Note:" textAlignment="CENTER" AnchorPane.bottomAnchor="85.0" AnchorPane.leftAnchor="73.0" AnchorPane.rightAnchor="14.199999999999989" AnchorPane.topAnchor="27.0">
+      <Label layoutX="73.0" layoutY="27.0" prefHeight="35.0" prefWidth="383.0" text="%enterNoteTitleLabelText" textAlignment="CENTER" AnchorPane.bottomAnchor="85.0" AnchorPane.leftAnchor="73.0" AnchorPane.rightAnchor="14.199999999999989" AnchorPane.topAnchor="27.0">
          <font>
             <Font size="20.0" />
          </font>
