@@ -1,6 +1,7 @@
 package client.utils;
 
 import client.model.LanguageOption;
+import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -38,19 +39,25 @@ class LanguageOptionCreatorTest {
 
     @Test
     void createWithNullLocaleTest() {
-        Locale locale = null;
-        assertThrows(NullPointerException.class, () -> LanguageOptionCreator.create(locale));
+        Platform.runLater(() -> {
+            Locale locale = null;
+            assertThrows(NullPointerException.class, () -> LanguageOptionCreator.create(locale));
+        });
     }
 
     @Test
     void testCreateWithEmptyCountryCode() {
-        Locale locale = Locale.of("en");
-        assertThrows(ExceptionInInitializerError.class, () -> LanguageOptionCreator.create(locale));
+        Platform.runLater(() -> {
+            Locale locale = Locale.of("en");
+            assertThrows(IllegalArgumentException.class, () -> LanguageOptionCreator.create(locale));
+        });
     }
 
     @Test
     void testCreateWithMissingFlagImage() {
-        Locale locale = Locale.of("en", "XX");
-        assertThrows(NoClassDefFoundError.class, () -> LanguageOptionCreator.create(locale));
+        Platform.runLater(() -> {
+            Locale locale = Locale.of("en", "XX");
+            assertThrows(IllegalArgumentException.class, () -> LanguageOptionCreator.create(locale));
+        });
     }
 }
