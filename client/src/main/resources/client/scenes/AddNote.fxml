@@ -10,10 +10,15 @@
    <children>
       <Button layoutX="419.0" layoutY="105.0" mnemonicParsing="false" onAction="#ok" text="%okButtonText" />
       <Button fx:id="cancel" layoutX="14.0" layoutY="105.0" mnemonicParsing="false" onAction="#cancel" text="%cancelButtonText" />
-      <TextField fx:id="noteTitle" layoutX="43.0" layoutY="61.0" prefHeight="26.0" prefWidth="383.0" />
+      <TextField fx:id="noteTitle" layoutX="43.0" layoutY="61.0" onKeyTyped="#ensureMaxCharacters" prefHeight="26.0" prefWidth="383.0" />
       <Label layoutX="73.0" layoutY="27.0" prefHeight="35.0" prefWidth="383.0" text="%enterNoteTitleLabelText" textAlignment="CENTER" AnchorPane.bottomAnchor="85.0" AnchorPane.leftAnchor="73.0" AnchorPane.rightAnchor="14.199999999999989" AnchorPane.topAnchor="27.0">
          <font>
             <Font size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="characterWarning" alignment="CENTER" layoutX="67.0" layoutY="100.0" prefHeight="35.0" prefWidth="335.0" text="The title can't exceed 50 characters" textAlignment="CENTER" visible="false">
+         <font>
+            <Font name="System Italic" size="14.0" />
          </font>
       </Label>
    </children>
