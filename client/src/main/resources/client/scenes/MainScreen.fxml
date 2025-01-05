@@ -72,11 +72,12 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.web.WebView?>
 
-<VBox fx:id="vBoxMain" alignment="CENTER" prefHeight="646.0" prefWidth="1017.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.NoteOverviewCtrl">
+<?import javafx.scene.control.ComboBox?>
+<VBox fx:id="vBoxMain" alignment="CENTER" prefHeight="646.0" prefWidth="1017.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.NoteOverviewCtrl">
   <children>
     <MenuBar VBox.vgrow="ALWAYS">
       <menus>
-        <Menu mnemonicParsing="false" text="File">
+        <Menu mnemonicParsing="false" text="%fileMenuText">
           <items>
             <MenuItem mnemonicParsing="false" text="New" />
             <MenuItem mnemonicParsing="false" text="Open…" />
@@ -92,36 +93,36 @@
             <MenuItem mnemonicParsing="false" text="Quit" />
           </items>
         </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
+        <Menu mnemonicParsing="false" text="%editMenuText">
           <items>
-            <MenuItem mnemonicParsing="false" text="Undo" />
-            <MenuItem mnemonicParsing="false" text="Redo" />
+            <MenuItem mnemonicParsing="false" text="%undoMenuItemText" />
+            <MenuItem mnemonicParsing="false" text="%redoMenuItemText" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Cut" />
-            <MenuItem mnemonicParsing="false" text="Copy" />
-            <MenuItem mnemonicParsing="false" text="Paste" />
-            <MenuItem mnemonicParsing="false" text="Delete" />
+            <MenuItem mnemonicParsing="false" text="%cutMenuItemText" />
+            <MenuItem mnemonicParsing="false" text="%copyMenuItemText" />
+            <MenuItem mnemonicParsing="false" text="%pasteMenuItemText" />
+            <MenuItem mnemonicParsing="false" text="%deleteMenuItemText" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Select All" />
-            <MenuItem mnemonicParsing="false" text="Unselect All" />
+            <MenuItem mnemonicParsing="false" text="%selectAllMenuItemText" />
+            <MenuItem mnemonicParsing="false" text="%unselectAllMenuItemText" />
           </items>
         </Menu>
-        <Menu mnemonicParsing="false" text="Help">
+        <Menu mnemonicParsing="false" text="%helpMenuItemText">
           <items>
-            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
+            <MenuItem mnemonicParsing="false" text="%aboutMenuItemText" />
           </items>
         </Menu>
       </menus>
     </MenuBar>
       <HBox layoutY="-1.0" prefHeight="32.0" prefWidth="1018.0">
           <children>
-              <Button mnemonicParsing="false" onAction="#search" prefHeight="48.0" prefWidth="97.0" text="Search" HBox.hgrow="ALWAYS">
+              <Button mnemonicParsing="false" onAction="#search" prefHeight="48.0" prefWidth="97.0" text="%searchButtonText" HBox.hgrow="ALWAYS">
                   <font>
                       <Font name="System Bold" size="12.0" />
                   </font>
               </Button>
               <TextField fx:id="searchText" onKeyTyped="#search" prefHeight="32.0" prefWidth="826.0" HBox.hgrow="ALWAYS" />
-              <Button mnemonicParsing="false" onAction="#empty" prefHeight="39.0" prefWidth="94.0" text="Clear" HBox.hgrow="ALWAYS">
+              <Button mnemonicParsing="false" onAction="#empty" prefHeight="39.0" prefWidth="94.0" text="%clearButtonText" HBox.hgrow="ALWAYS">
                   <font>
                       <Font name="System Bold" size="12.0" />
                   </font>
@@ -140,13 +141,13 @@
                                  <children>
                                     <TableView fx:id="table" onMousePressed="#refresh" prefHeight="556.0" prefWidth="222.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <columns>
-                                        <TableColumn fx:id="noteTitle" prefWidth="220.80000606775283" sortable="false" text="Notes">
+                                        <TableColumn fx:id="noteTitle" prefWidth="220.80000606775283" sortable="false" text="%notesTableText">
                                              <contextMenu>
                                                 <ContextMenu fx:id="contextMenu">
                                                   <items>
-                                                      <MenuItem fx:id="changeTitle" mnemonicParsing="false" onAction="#setTitle" text="Edit note title" />
-                                                      <MenuItem fx:id="deleteNote" mnemonicParsing="false" onAction="#deleteNote" text="Delete note" />
-                                                      <MenuItem fx:id="refreshNote" mnemonicParsing="false" onAction="#refresh" text="Refresh" />
+                                                      <MenuItem fx:id="changeTitle" mnemonicParsing="false" onAction="#setTitle" text="%editContextMenuText" />
+                                                      <MenuItem fx:id="deleteNote" mnemonicParsing="false" onAction="#deleteNote" text="%deleteContextMenuText" />
+                                                      <MenuItem fx:id="refreshNote" mnemonicParsing="false" onAction="#refresh" text="%refreshContextMenuText" />
                                                   </items>
                                                 </ContextMenu>
                                              </contextMenu></TableColumn>
@@ -162,7 +163,7 @@
                               </AnchorPane>
                               <AnchorPane prefHeight="554.0" prefWidth="550.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <Label fx:id="selectedNoteTitle" layoutX="238.0" text="Note Title">
+                                    <Label fx:id="selectedNoteTitle" layoutX="238.0" text="%selectedNoteTitleText">
                                        <font>
                                           <Font size="19.0" />
                                        </font>
@@ -177,7 +178,7 @@
                               </AnchorPane>
                               <AnchorPane prefHeight="554.0" prefWidth="211.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <Label layoutX="32.0" prefHeight="28.0" prefWidth="152.0" text="Markdown View">
+                                    <Label layoutX="32.0" prefHeight="28.0" prefWidth="152.0" text="%markdownLabelText">
                                        <font>
                                           <Font size="19.0" />
                                        </font>
@@ -193,34 +194,35 @@
             </SplitPane>
          </items>
     </SplitPane>
-      <HBox id="HBox" alignment="CENTER_LEFT" maxHeight="-Infinity" prefHeight="0.0" prefWidth="1018.0" spacing="5.0" VBox.vgrow="ALWAYS">
+      <HBox id="HBox" alignment="CENTER_LEFT" maxHeight="-Infinity" prefHeight="32.0" prefWidth="497.0" spacing="5.0" VBox.vgrow="ALWAYS">
          <children>
-            <ButtonBar maxHeight="-Infinity" maxWidth="-Infinity" nodeOrientation="RIGHT_TO_LEFT" prefHeight="94.0" prefWidth="1012.0" HBox.hgrow="ALWAYS">
+            <ButtonBar maxHeight="-Infinity" maxWidth="-Infinity" nodeOrientation="RIGHT_TO_LEFT" prefHeight="25.0" prefWidth="802.0" HBox.hgrow="ALWAYS">
                <buttons>
-                  <Button mnemonicParsing="false" onAction="#changeTheme" text="Switch Theme">
+                  <Button mnemonicParsing="false" onAction="#changeTheme" text="%switchThemeButtonText">
                      <font>
                         <Font name="System Bold" size="11.0" />
                      </font>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#addNote" text="Add">
+                  <Button mnemonicParsing="false" onAction="#addNote" text="%addButtonText">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font></Button>
-                  <Button fx:id="noteDeleteButton" mnemonicParsing="false" onAction="#deleteNote" text="Delete">
+                  <Button fx:id="noteDeleteButton" mnemonicParsing="false" onAction="#deleteNote" text="%deleteButtonText">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font></Button>
-                  <Button fx:id="noteRefreshButton" mnemonicParsing="false" onAction="#refresh" text="Refresh">
+                  <Button fx:id="noteRefreshButton" mnemonicParsing="false" onAction="#refresh" text="%refreshButtonText">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font></Button>
-                  <Button mnemonicParsing="false" onAction="#setTitle" text="Edit Title">
+                  <Button mnemonicParsing="false" onAction="#setTitle" text="%editTitleButtonText">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </Button>
                </buttons>
             </ButtonBar>
+            <ComboBox fx:id="languageComboBox" prefWidth="150.0" promptText="%languagesComboBoxText" />
          </children>
          <padding>
             <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
