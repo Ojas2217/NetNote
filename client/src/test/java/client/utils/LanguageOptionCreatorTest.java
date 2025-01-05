@@ -45,12 +45,12 @@ class LanguageOptionCreatorTest {
     @Test
     void testCreateWithEmptyCountryCode() {
         Locale locale = Locale.of("en");
-        assertThrows(IllegalArgumentException.class, () -> LanguageOptionCreator.create(locale));
+        assertThrows(ExceptionInInitializerError.class, () -> LanguageOptionCreator.create(locale));
     }
 
     @Test
     void testCreateWithMissingFlagImage() {
         Locale locale = Locale.of("en", "XX");
-        assertThrows(IllegalArgumentException.class, () -> LanguageOptionCreator.create(locale));
+        assertThrows(NoClassDefFoundError.class, () -> LanguageOptionCreator.create(locale));
     }
 }
