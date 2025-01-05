@@ -1,6 +1,7 @@
 package client.utils;
 
 import client.model.LanguageOption;
+import client.scenes.BaseTest;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -11,7 +12,7 @@ import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class LanguageOptionCreatorTest {
+class LanguageOptionCreatorTest extends BaseTest {
 
     @Test
     void createTest() {
