@@ -17,6 +17,7 @@
 
 package client.scenes;
 
+import client.Main;
 import client.handlers.NoteSearchResult;
 import client.handlers.SceneInfo;
 import client.services.Logger;
@@ -28,6 +29,7 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Controller class for managing the primary stage and scenes of the client application.
@@ -209,5 +211,9 @@ public class MainCtrl {
         stage.setHeight(sceneInfo.getSize().getY());
         stage.setX(sceneInfo.getPos().getX());
         stage.setY(sceneInfo.getPos().getY());
+    }
+
+    public void changeLocale(Locale locale) {
+        Main.loadLocale(primaryStage, locale);
     }
 }
