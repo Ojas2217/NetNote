@@ -19,7 +19,7 @@ public class LanguageOptionCreator {
     public static LanguageOption create(Locale locale) {
         HBox hbox = new HBox();
         hbox.setId(locale.getCountry());
-        Label label = new Label(locale.getDisplayLanguage());
+        Label label = new Label(locale.getLanguage().equals("pi") ? "Pirate" : locale.getDisplayLanguage());
         ImageView imageView = new ImageView();
         Image flag = new Image("/flags/small/" + locale.getCountry().toLowerCase() + ".png");
         imageView.setImage(flag);

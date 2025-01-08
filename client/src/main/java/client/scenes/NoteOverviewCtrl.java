@@ -153,7 +153,8 @@ public class NoteOverviewCtrl implements Initializable {
         // this could be in the config, but I don't know where the config is
         List<Locale> supportedLanguages = List.of(
                 Locale.US,
-                Locale.UK,
+                Locale.of("nl", "NL"),
+                Locale.of("pi", "GB"),
                 Locale.FRANCE,
                 Locale.GERMANY,
                 Locale.of("es", "ES") // Spanish
