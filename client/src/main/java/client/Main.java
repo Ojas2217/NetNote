@@ -84,6 +84,7 @@ public class Main extends Application {
         }
 
         // todo: this needs to be proper lang selection prior to launching the program
+        // todo: make this use config
         loadLocale(primaryStage, Locale.of("en", "US"));
     }
 
