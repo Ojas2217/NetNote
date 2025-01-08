@@ -31,6 +31,9 @@ import client.utils.ServerUtils;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 /**
  * Main class for the client application.
  * <p>
@@ -49,7 +52,7 @@ public class Main extends Application {
     private static final MyFXML FXML = new MyFXML(INJECTOR);
     private static final ExceptionHandler exceptionHandler =
             new ExceptionHandler(new AlertUtils());
-
+    private static ResourceBundle resourceBundle;
 
     public static void main(String[] args) {
         launch();
@@ -79,11 +82,23 @@ public class Main extends Application {
 
             System.out.println("Found server, starting program");
         }
-        var overview = FXML.load(NoteOverviewCtrl.class, "client", "scenes", "MainScreen.fxml");
-        var add = FXML.load(AddNoteControl.class, "client", "scenes", "AddNote.fxml");
-        var title = FXML.load(NewNoteTitleCtrl.class, "client", "scenes", "newTitle.fxml");
-        var searchContent = FXML.load(SearchNoteContentCtrl.class, "client", "scenes", "SearchNoteContent.fxml"
-        );
+
+        // todo: this needs to be proper lang selection prior to launching the program
+        // todo: make this use config
+        loadLocale(primaryStage, Locale.of("en", "US"));
+    }
+
+    /**
+     * Loads fxml files with resources provided based on what locale is passed.
+     * Should reinitialize the primary stage when changing locale, so should work dynamically as well.
+     * */
+    public static void loadLocale(Stage primaryStage, Locale locale) {
+        resourceBundle = ResourceBundle.getBundle("language", locale);
+        var overview = FXML.load(NoteOverviewCtrl.class, resourceBundle, "client", "scenes", "MainScreen.fxml");
+        var add = FXML.load(AddNoteControl.class, resourceBundle, "client", "scenes", "AddNote.fxml");
+        var title = FXML.load(NewNoteTitleCtrl.class, resourceBundle, "client", "scenes", "newTitle.fxml");
+        var searchContent = FXML.load(SearchNoteContentCtrl.class, resourceBundle,
+                "client", "scenes", "SearchNoteContent.fxml");
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         mainCtrl.initialize(primaryStage, overview, add, searchContent, title);
     }

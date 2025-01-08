@@ -74,7 +74,10 @@ public class CollectionService {
     public Collection updateCollection(Collection collection) throws ProcessOperationException {
         if (isNullOrEmpty(collection.getName()) || !repo.existsById(collection.getId())) {
             throw new ProcessOperationException(
-                    "Invalid collection ID or missing name", HttpStatus.BAD_REQUEST.value(), ExceptionType.INVALID_REQUEST);
+                    "Invalid collection ID or missing name",
+                    HttpStatus.BAD_REQUEST.value(),
+                    ExceptionType.INVALID_REQUEST
+            );
         }
         return repo.save(collection);
     }
@@ -113,8 +116,6 @@ public class CollectionService {
 
     /**
      * Gets the IDs and names of all collections in the repo.
-     *
-     * @throws ProcessOperationException if query result is empty
      */
     public List<CollectionPreview> getIdsAndNames() {
         List<Object[]> result = repo.findIdAndName();

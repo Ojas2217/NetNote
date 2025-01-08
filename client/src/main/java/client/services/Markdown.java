@@ -51,12 +51,30 @@ public class Markdown {
     public String render(String commonmark) throws MarkdownRenderException {
         try {
             if (htmlRenderer == null) {
-                throw new MarkdownRenderException("Error instantiating htmlRenderer", HttpStatus.BAD_REQUEST.value(), ExceptionType.SERVER_ERROR);
+                throw new MarkdownRenderException(
+                        "Error instantiating htmlRenderer",
+                        HttpStatus.BAD_REQUEST.value(),
+                        ExceptionType.SERVER_ERROR
+                );
             }
             if (htmlRenderer.render(parser.parse(commonmark)).isEmpty()) {
-                throw new MarkdownRenderException("Error rendering markdown, Make sure the markdown syntax is valid", HttpStatus.BAD_REQUEST.value(), ExceptionType.INVALID_REQUEST);
+                throw new MarkdownRenderException(
+                        "Error rendering markdown, Make sure the markdown syntax is valid",
+                        HttpStatus.BAD_REQUEST.value(),
+                        ExceptionType.INVALID_REQUEST
+                );
             }
-            return htmlRenderer.render(parser.parse(commonmark));
+            StringBuilder goodString = new StringBuilder();
+            if (commonmark.contains("\\")) {
+                for (int i = 0; i < commonmark.length(); i++) {
+                    char character = commonmark.charAt(i);
+                    goodString.append(character);
+                    if (character == '\\') goodString.append(character);
+                }
+            } else {
+                goodString = new StringBuilder(commonmark);
+            }
+            return htmlRenderer.render(parser.parse(goodString.toString()));
         } catch (MarkdownRenderException e) {
             return showDialog(e);
         }
@@ -69,22 +87,12 @@ public class Markdown {
     public String showDialog(MarkdownRenderException e) {
         switch (e.getType()) {
             case SERVER_ERROR -> {
-                String html = htmlRenderer.render(parser.parse("Error instantiating html renderer please try again"));
-                return html;
+                return htmlRenderer.render(parser.parse("Error instantiating html renderer please try again"));
             }
             case INVALID_REQUEST -> {
-                String html = htmlRenderer.render(parser.parse("Invalid markdown syntax please try again"));
-                return html;
+                return htmlRenderer.render(parser.parse("Invalid markdown syntax please try again"));
             }
         }
         return null;
-    }
-
-    public HtmlRenderer getHtmlRenderer() {
-        return htmlRenderer;
-    }
-
-    public Parser getParser() {
-        return parser;
     }
 }
