@@ -1,10 +1,10 @@
 | **Key**          | **Value**          |
 | -----------------|--------------------|
-| **Date**         | 12-18-2024          |
+| **Date**         | 8-1-2025          |
 | **Time**         | Wed, 14:45-15:30   |
 | **Location**     | DW IZ1             |
-| **Chair**        | Otte Hamoen        |
-| **Minute Taker** | Ojas Pandey        |
+| **Chair**        | Quinten Rensen        |
+| **Minute Taker** | Dander de Jong       |
 | **Attendees**    | Vilius Birgeris    |
 |                  | Sander de Jong     |
 |                  | Otte Hamoen        |
