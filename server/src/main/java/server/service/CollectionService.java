@@ -55,6 +55,12 @@ public class CollectionService {
                     HttpStatus.BAD_REQUEST.value(),
                     ExceptionType.INVALID_REQUEST);
         }
+        if (collection.getNotes() == null) {
+            throw new ProcessOperationException(
+                    "Notes list cannot be null",
+                    HttpStatus.BAD_REQUEST.value(),
+                    ExceptionType.INVALID_REQUEST);
+        }
         return repo.save(collection);
     }
 
