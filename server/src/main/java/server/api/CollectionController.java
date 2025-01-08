@@ -67,7 +67,8 @@ public class CollectionController {
      * Handles a POST request to add a new Collection.
      *
      * @param collection the collection to be added, provided in the request body
-     * @return a ResponseEntity containing the saved collection if valid, or a bad request response if the collection is invalid
+     * @return a ResponseEntity containing the saved collection if valid, or a bad request response
+     *      if the collection is invalid
      */
     @PostMapping(path = {"", "/"})
     public ResponseEntity<Collection> add(@RequestBody Collection collection) {
@@ -82,7 +83,8 @@ public class CollectionController {
      * Handles a PUT request to add a new collection.
      *
      * @param collection the collection to be updated, provided in the request body
-     * @return a ResponseEntity containing the changed collection if valid, or a bad request response if the collection is invalid
+     * @return a ResponseEntity containing the changed collection if valid,
+     *      or a bad request response if the collection is invalid
      */
     @PutMapping(path = {"", "/"})
     public ResponseEntity<Collection> update(@RequestBody Collection collection) {

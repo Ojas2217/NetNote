@@ -1,6 +1,10 @@
 package client.scenes;
 
 import java.net.URL;
+
+import client.handlers.ThemeViewHandler;
+import client.services.NoteOverviewService;
+import client.Helpers.NoteSearchHelper;
 import java.util.*;
 
 import client.Main;
@@ -51,44 +55,52 @@ import static java.util.Objects.isNull;
 public class NoteOverviewCtrl implements Initializable {
     private final NoteUtils server;
     private final MainCtrl mainCtrl;
-    private final Main main;
+
+    private final NoteOverviewService noteOverviewService;
+
+    private final ThemeViewHandler themeViewHandler;
+
     private ObservableList<NotePreview> data;
+    private List<NotePreview> notes;
+
     @FXML
     private TableView<NotePreview> table;
     @FXML
     private TableColumn<NotePreview, String> noteTitle;
     @FXML
     private TextField searchText;
+
     @FXML
     private WebView webView;
-    private final Markdown markdown = new Markdown();
-
     @FXML
     private WebView webViewLogger;
+    private final Markdown markdown = new Markdown();
 
-    private List<NotePreview> notes;
     @FXML
     private Label selectedNoteTitle;
     @FXML
     private TextArea selectedNoteContent;
     @FXML
     private ContextMenu contextMenu;
-    @FXML
-    private MenuItem changeTitle;
-    @FXML
-    private MenuItem refreshNote;
-    @FXML
-    private MenuItem deleteNote;
     private String selectedNoteContentBuffer;
     private long selectedNoteId;
     @FXML
     private ComboBox<LanguageOption> languageComboBox;
 
+    /**
+     * Instatiate the class using injected parameters
+     *
+     * @param server the injected server
+     * @param mainCtrl the injected scene
+     */
     @Inject
     public NoteOverviewCtrl(NoteUtils server, MainCtrl mainCtrl, Main main) {
         this.server = server;
         this.mainCtrl = mainCtrl;
-        this.main = main;
+
+        this.noteOverviewService = new NoteOverviewService();
+
+        this.themeViewHandler = new ThemeViewHandler();
     }
 
     @Override
@@ -105,13 +117,9 @@ public class NoteOverviewCtrl implements Initializable {
                 });
 
         // NEED TO ADD DELAY
-        selectedNoteContent.textProperty().addListener((_, _, _) -> {
-            sendSelectedNoteContentToServer();
-        });
+        selectedNoteContent.textProperty().addListener((_, _, _) -> sendSelectedNoteContentToServer());
 
-        selectedNoteContent.textProperty().addListener((_, _, newValue) -> {
-            markdownView(newValue);
-        });
+        selectedNoteContent.textProperty().addListener((_, _, newValue) -> markdownView(newValue));
 
         table.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
@@ -119,26 +127,13 @@ public class NoteOverviewCtrl implements Initializable {
             }
         });
 
-        server.registerForMessages("/topic/add", q -> {
-            data.add(new NotePreview(q.id, q.title));
-        });
+        server.registerForMessages("/topic/add", q -> noteOverviewService.initializeServerAdd(data, q));
         server.registerForMessages("/topic/title", q -> {
-            NotePreview theNote = data.stream().filter(n -> n.getId() == q.id).toList().get(0);
-            int indexData = data.indexOf(theNote);
-            int indexList = notes.indexOf(theNote);
-            NotePreview newNote = new NotePreview(q.id,  q.title);
-            data.set(indexData, newNote);
-            notes.set(indexList, newNote);
-
-            if (selectedNoteTitle.equals(theNote.getTitle())) selectedNoteTitle.setText(q.title);
+            NotePreview note = data.stream().filter(n -> n.getId() == q.id).toList().getFirst();
+            noteOverviewService.initializeServerTitle(data, note, notes);
+            if (selectedNoteTitle.getText().equals(note.getTitle())) selectedNoteTitle.setText(q.title);
         });
-        server.registerForMessages("/topic/delete", q -> {
-            NotePreview theNote = data.stream().filter(n -> n.getId() == q.id).toList().get(0);
-            int indexData = data.indexOf(theNote);
-            int indexList = notes.indexOf(theNote);
-            data.remove(indexData);
-            notes.remove(indexList);
-        });
+        server.registerForMessages("/topic/delete", q -> noteOverviewService.initializeServerDelete(data, q, notes));
         server.registerForMessages("/topic/update", q -> {
             if (selectedNoteId == q.id) selectedNoteContent.setText(q.content);
         });
@@ -215,33 +210,20 @@ public class NoteOverviewCtrl implements Initializable {
 
     /**
      * Deletes the selected note from the table and refreshes the overview.
-     *
-     * @throws ProcessOperationException if there is an issue during the deletion process
      */
-    public void deleteNote() throws ProcessOperationException {
+    public void deleteNote() {
         Optional<Note> note = fetchSelected();
         if (note.isEmpty()) return;
 
-        String message = "Are you sure you want to delete this note?";
-        String title = "Confirm deletion";
-        String noteTitle = note.get().getTitle();
-
-        int choice = JOptionPane.showConfirmDialog(
-                null,
-                message,
-                title,
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE
-        );
-
+        int choice = noteOverviewService.promptDeleteNote();
         if (choice == JOptionPane.YES_OPTION) {
             server.send("/app/delete", note.get().getId());
             clear();
             enableContent(false);
-            mainCtrl.logRegular("Deleted note '" + noteTitle + "'");
-        }
+            mainCtrl.logRegular("Deleted note '" + note.get().getTitle() + "'");
 
-        refresh(); // This is needed to prevent two notes from being removed from the table
+            refresh(); // This is needed to prevent two notes from being removed from the table
+        }
     }
 
     private void enableContent(boolean b) {
@@ -292,11 +274,7 @@ public class NoteOverviewCtrl implements Initializable {
      */
     public void updateSelection() {
         int indexInTable = table.getSelectionModel().getSelectedIndex();
-        if (indexInTable == -1) {
-            selectedNoteId = -1; // for when nothing is selected
-        } else {
-            selectedNoteId = table.getSelectionModel().getSelectedItem().getId();
-        }
+        selectedNoteId = (indexInTable == -1) ? -1 : table.getSelectionModel().getSelectedItem().getId();
     }
 
     /**
@@ -341,10 +319,7 @@ public class NoteOverviewCtrl implements Initializable {
         show(note.get());
         select(notePreview);
 
-        // This should be moved to a service class
-        int startIndex = searchResult.getStartIndex();
-        int endIndex = searchResult.getEndIndex();
-        selectedNoteContent.selectRange(startIndex, endIndex);
+        selectedNoteContent.selectRange(searchResult.getStartIndex(), searchResult.getEndIndex());
     }
 
     /**
@@ -363,13 +338,6 @@ public class NoteOverviewCtrl implements Initializable {
 
         // Select Note if Note of that ID exists
         table.getSelectionModel().select(ids.indexOf(id));
-    }
-
-    /**
-     * Select a {@link Note} directly by its index in the table
-     */
-    public void select(int index) {
-        table.getSelectionModel().select(index);
     }
 
     /**
@@ -430,61 +398,22 @@ public class NoteOverviewCtrl implements Initializable {
      * If there is text in the search bar, displays notes whose title contains the text.
      */
     public void search() {
-        String text = searchText.getText();
+        String input = searchText.getText();
 
-        if (text.startsWith("#")) {
-            List<NoteSearchResult> foundInNotes = searchNoteContent(text.replaceFirst("#", ""));
+        if (input.startsWith("#")) {
+            String queryString = input.replaceFirst("#", "");
+            List<NoteSearchResult> foundInNotes = NoteSearchHelper.searchNoteContent(queryString, notes, server);
+
             setViewableNotes(foundInNotes.stream().map(NoteSearchResult::getNotePreview).distinct().toList());
+            mainCtrl.logRegular(NoteSearchHelper.getSearchLogString(foundInNotes, queryString));
             mainCtrl.showSearchContent(foundInNotes);
         } else {
-            searchAllNotes(text);
+            searchAllNotes(input);
         }
     }
 
-    /**
-     * Search all notes for occurrences of queryString
-     *
-     * @param queryString the string to search for inside the content of each note
-     * @return a list of NoteSearchResult that contains the note and an index where the searchValue was found
-     */
-    private List<NoteSearchResult> searchNoteContent(String queryString) {
-        List<NoteSearchResult> foundInNotes = new ArrayList<>();
-        if (queryString.isEmpty()) return foundInNotes;
-
-        notes.forEach(n -> {
-            try {
-                Note note = server.getNote(n.getId());
-                List<Integer> foundIndices = note.contentSearchQueryString(queryString);
-                if (!foundIndices.isEmpty()) {
-                    // Indexes should be recalculated when a user clicks on the note
-                    // since the note gets updated and could change!!!
-                    foundIndices.forEach(i -> foundInNotes.add(new NoteSearchResult(n, i, queryString.length())));
-                }
-            } catch (ProcessOperationException e) {
-                System.out.println(e.getMessage());
-                String errorMessage = "Error retrieving data from the server, unable to get note " + n.getTitle();
-                JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
-            }
-        });
-
-        int amount = foundInNotes.size();
-        int noteCount = (int) foundInNotes.stream().map(n -> n.getNotePreview().getId()).distinct().count();
-        mainCtrl.logRegular("Found string '" + queryString + "', " + amount + " times, across " + noteCount + " notes");
-
-        return foundInNotes;
-    }
-
-    /**
-     * Filters the table with all available notes on the provided text
-     *
-     * @param text the text to search for
-     */
     private void searchAllNotes(String text) {
-        List<NotePreview> filteredNotes = notes
-                .stream()
-                .filter(x -> x.getTitle().contains(text))
-                .toList();
-        setViewableNotes(filteredNotes);
+        setViewableNotes(NoteSearchHelper.filterNotes(notes, text));
     }
 
     /**
@@ -560,46 +489,10 @@ public class NoteOverviewCtrl implements Initializable {
         return OptionalLong.of(selectedNoteId);
     }
 
-    private final String darkWebview = """
-                        (function() {
-                            var style = document.createElement('style');
-                            style.innerHTML = `
-                                body {
-                                    background-color: #2e2e2e;
-                                    color: #ffffff;
-                                }
-                                a {
-                                    color: #4e9af1;
-                                }
-                            `;
-                            document.head.appendChild(style);
-                        })();
-                    """;
-    private final String lightWebView = """
-                    (function() {
-                        var style = document.createElement('style');
-                        style.innerHTML = `
-                            body {
-                                background-color: #ffffff; /* Default white background */
-                                color: #000000; /* Default black text */
-                            }
-                            a {
-                                color: #0000ff; /* Default link color */
-                            }
-                        `;
-                        document.head.appendChild(style);
-                    })();
-                """;
-
     public void changeTheme() {
-        boolean isDarkMode = mainCtrl.changeTheme();
-        if (isDarkMode) {
-            webViewLogger.getEngine().executeScript(darkWebview);
-            webView.getEngine().executeScript(darkWebview);
-        } else {
-            webViewLogger.getEngine().executeScript(lightWebView);
-            webView.getEngine().executeScript(lightWebView);
-        }
+        String theme = mainCtrl.changeTheme() ? themeViewHandler.getDarkWebview() : themeViewHandler.getLightWebView();
+        webViewLogger.getEngine().executeScript(theme);
+        webView.getEngine().executeScript(theme);
     }
 
     public List<NotePreview> getNotes() {
