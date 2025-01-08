@@ -252,6 +252,18 @@ public class NoteOverviewCtrl implements Initializable {
     }
 
     /**
+     * Responsible for refreshing all content in the overview screen without refreshing list.
+     */
+    public void refreshListPress() {
+        enableContent(fetchSelected().isEmpty());
+
+        sendSelectedNoteContentToServer();
+        fetchNotes();
+
+        if (wantsToSearch()) search();
+    }
+
+    /**
      * Fetches all notes from the server and stores them locally.
      */
     public void fetchNotes() {
