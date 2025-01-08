@@ -1,8 +1,9 @@
 package client.scenes;
 
+import client.business.AddNoteService;
+import client.utils.AlertUtils;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
-import commons.Note;
 import commons.NotePreview;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
@@ -11,7 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Modality;
 
 import java.util.List;
 
@@ -39,30 +39,28 @@ import java.util.List;
  * </p>
  */
 public class AddNoteControl {
-    private final NoteUtils server;
     private final MainCtrl mainCtrl;
     @FXML
-    private TextField noteTitle;
+    public TextField noteTitle;
     @FXML
     private Button cancel;
+    private AlertUtils alertUtils;
+    private AddNoteService addNoteService;
     @FXML
     private Label characterWarning;
     private final int maxNumOfCharacters = 50;
 
     @Inject
-    public AddNoteControl(NoteUtils server, MainCtrl mainCtrl) {
+    public AddNoteControl(AddNoteService addNoteService, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
-        this.server = server;
+        this.addNoteService = addNoteService;
+        this.alertUtils = new AlertUtils();
 
     }
 
     public void cancel() {
         clearFields();
         mainCtrl.showOverview();
-    }
-
-    public void setNoteTitle(TextField noteTitle) {
-        this.noteTitle = noteTitle;
     }
 
     public TextField getNoteTitle() {
@@ -74,35 +72,26 @@ public class AddNoteControl {
      * In case of exceptions, shows an alert.
      **/
     public void ok() {
-        try {
-            if (!noteTitle.getText().isEmpty()) {
-                if (isUnique(noteTitle)) {
-                    String title = noteTitle.getText();
-                    server.send("/app/add", new Note(title, "empty 123 testing 123 format"));
-                    clearFields();
-                    noteTitle.setFocusTraversable(false);
-                    cancel.requestFocus();
-
-                    mainCtrl.logRegular("Added new note: '" + title + "'");
-                    mainCtrl.showOverview();
-                } else {
-                    var alert = new Alert(Alert.AlertType.ERROR);
-                    alert.initModality(Modality.APPLICATION_MODAL);
-                    alert.setContentText("Note with this title already exists");
-                    alert.showAndWait();
-                }
-            } else {
-                var alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.initModality(Modality.APPLICATION_MODAL);
-                alert.setContentText("Please add a note title.");
-                alert.showAndWait();
-            }
-        } catch (WebApplicationException e) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
+        if (noteTitle.getText().isEmpty()) {
+            alertUtils.showAlert(Alert.AlertType.INFORMATION, "Please add a note title.");
+            return;
         }
+        if (!addNoteService.isUnique(noteTitle.getText())) {
+            alertUtils.showAlert(Alert.AlertType.ERROR, "Note with this title already exists");
+            return;
+        }
+        try {
+            String title = noteTitle.getText();
+            addNoteService.addNote(title);
+            clearFields();
+            noteTitle.setFocusTraversable(false);
+            cancel.requestFocus();
+            mainCtrl.logRegular("Added new note: '" + title + "'");
+            mainCtrl.showOverview();
+        } catch (WebApplicationException e) {
+            alertUtils.showAlert(Alert.AlertType.ERROR, e.getMessage());
+        }
+
     }
 
     public void clearFields() {

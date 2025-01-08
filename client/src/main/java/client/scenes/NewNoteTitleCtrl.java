@@ -1,6 +1,8 @@
 package client.scenes;
 
 
+import client.business.NewNoteTitleService;
+import client.utils.AlertUtils;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.Note;
@@ -8,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Modality;
 
 import java.util.Optional;
 
@@ -25,7 +26,7 @@ import java.util.Optional;
  *     <li>Cancel the title change process and return to the overview page ({@link #cancel()}).</li>
  *     <li>Confirm the new title, update the selected note, and transition
  *     back to the overview page ({@link #ok()}).</li>
- *     <li>Update the title of the given note, handling potential errors ({@link #newTitle(Note)}).</li>
+ *     <li>Update the title of the given note, handling potential errors ().</li>
  *     <li>Clear the input fields ({@link #clearFields()}).</li>
  *     <li>Handle key events for the {@link TextField}, supporting keyboard shortcuts for confirming (ENTER)
  *     and canceling (ESCAPE) the operation ({@link #keyPressed(KeyEvent)}).</li>
@@ -38,14 +39,16 @@ import java.util.Optional;
  */
 public class NewNoteTitleCtrl {
     private final MainCtrl mainCtrl;
-    private final NoteUtils noteUtils;
     @FXML
     private TextField newNoteTitle;
+    private AlertUtils alertUtils;
+    private NewNoteTitleService newNoteTitleService;
 
     @Inject
-    public NewNoteTitleCtrl(MainCtrl mainCtrl, NoteUtils noteUtils) {
+    public NewNoteTitleCtrl(MainCtrl mainCtrl, NewNoteTitleService newNoteTitleService) {
         this.mainCtrl = mainCtrl;
-        this.noteUtils = noteUtils;
+        this.newNoteTitleService = newNoteTitleService;
+        this.alertUtils = new AlertUtils();
     }
 
     public void cancel() {
@@ -53,8 +56,16 @@ public class NewNoteTitleCtrl {
         mainCtrl.showOverview();
     }
 
+    public NewNoteTitleService getNewNoteTitleService() {
+        return newNoteTitleService;
+    }
+
     public void setNewNoteTitle(TextField newNoteTitle) {
         this.newNoteTitle = newNoteTitle;
+    }
+
+    public TextField getNewNoteTitle() {
+        return newNoteTitle;
     }
 
     /**
@@ -64,50 +75,30 @@ public class NewNoteTitleCtrl {
      */
     public void ok() {
         if (newNoteTitle.getText().isEmpty()) {
-            var alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText("Please enter a new note title");
-            alert.showAndWait();
+            alertUtils.showAlert(Alert.AlertType.INFORMATION , "Please enter a new note title");
             return;
         }
 
         // Fetch the selected Note if it exists on the server
         Optional<Note> note = mainCtrl.getOverviewCtrl().fetchSelected();
         if (note.isEmpty()) {
-            var alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.initModality(Modality.APPLICATION_MODAL);                     // There needs to be an alert class!!
-            alert.setContentText("The note doesn't exist on the server");
-            alert.showAndWait();
+            alertUtils.showAlert(Alert.AlertType.INFORMATION, "The note doesn't exist on the server");
             return;
         }
-
-        newTitle(note.get());
-        mainCtrl.showOverview();
-    }
-
-    /**
-     * it shows the newTitle scene and changes the title of the selected note
-     *
-     * @param note the note of which the title will be changed
-     */
-    public void newTitle(Note note) {
+        String oldTitle = note.get().getTitle();
         try {
-            mainCtrl.showNewTitle();
-            if (note != null) {
-                String newTitle = newNoteTitle.getText();
-                if (!newTitle.isEmpty()) {
-                    String oldTitle = note.getTitle();
-                    note.setTitle(newTitle);
-                    noteUtils.send("/app/title", note);
-                    clearFields();
-                    mainCtrl.logRegular("Changed the title of note '" + oldTitle + "' to '" + newTitle + "'");
-                }
-            }
+            String title = newNoteTitle.getText();
+            newNoteTitleService.newTitle(note.get(), title);
+            clearFields();
+            mainCtrl.logRegular("Changed the title of note '" + oldTitle + "' to '" + title + "'");
+            mainCtrl.showOverview();
         } catch (Exception e) {
-            mainCtrl.logError("Error changing title of note " + note.getTitle() + ": " + e.getMessage());
+            mainCtrl.logError("Error changing title of note " + note.get().getTitle() + ": " + e.getMessage());
             e.printStackTrace();
         }
+
     }
+
 
     private void clearFields() {
         newNoteTitle.clear();
