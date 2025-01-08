@@ -57,10 +57,14 @@ public class Markdown {
                 throw new MarkdownRenderException("Error rendering markdown, Make sure the markdown syntax is valid", HttpStatus.BAD_REQUEST.value(), ExceptionType.INVALID_REQUEST);
             }
             StringBuilder goodString = new StringBuilder();
-            for (int i = 0; i < commonmark.length(); i++) {
-                char character = commonmark.charAt(i);
-                goodString.append(character);
-                if (character == '\\') goodString.append(character);
+            if (commonmark.contains("\\")) {
+                for (int i = 0; i < commonmark.length(); i++) {
+                    char character = commonmark.charAt(i);
+                    goodString.append(character);
+                    if (character == '\\') goodString.append(character);
+                }
+            } else {
+                goodString = new StringBuilder(commonmark);
             }
             return htmlRenderer.render(parser.parse(goodString.toString()));
         } catch (MarkdownRenderException e) {
