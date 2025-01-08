@@ -4,7 +4,7 @@
 | **Time**         | Wed, 14:45-15:30   |
 | **Location**     | DW IZ1             |
 | **Chair**        | Quinten Rensen        |
-| **Minute Taker** | Dander de Jong       |
+| **Minute Taker** | Sander de Jong       |
 | **Attendees**    | Vilius Birgeris    |
 |                  | Sander de Jong     |
 |                  | Otte Hamoen        |
