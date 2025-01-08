@@ -10,7 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-
+import static commons.exceptions.ErrorKeys.*;
 import java.util.Optional;
 
 /**
@@ -75,14 +75,14 @@ public class NewNoteTitleCtrl {
      */
     public void ok() {
         if (newNoteTitle.getText().isEmpty()) {
-            alertUtils.showError(Alert.AlertType.INFORMATION , "Please enter a new note title");
+            alertUtils.showError(INFORMATION, "Please enter a new note title");
             return;
         }
 
         // Fetch the selected Note if it exists on the server
         Optional<Note> note = mainCtrl.getOverviewCtrl().fetchSelected();
         if (note.isEmpty()) {
-            alertUtils.showError(Alert.AlertType.INFORMATION, "The note doesn't exist on the server");
+            alertUtils.showError(INFORMATION, "The note doesn't exist on the server");
             return;
         }
         String oldTitle = note.get().getTitle();
