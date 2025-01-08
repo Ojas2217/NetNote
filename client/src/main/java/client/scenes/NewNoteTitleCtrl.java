@@ -45,10 +45,10 @@ public class NewNoteTitleCtrl {
     private NewNoteTitleService newNoteTitleService;
 
     @Inject
-    public NewNoteTitleCtrl(MainCtrl mainCtrl, NewNoteTitleService newNoteTitleService) {
+    public NewNoteTitleCtrl(MainCtrl mainCtrl, NewNoteTitleService newNoteTitleService, AlertUtils alertUtils) {
         this.mainCtrl = mainCtrl;
         this.newNoteTitleService = newNoteTitleService;
-        this.alertUtils = new AlertUtils();
+        this.alertUtils = alertUtils;
     }
 
     public void cancel() {

@@ -51,10 +51,10 @@ public class AddNoteControl {
     private final int maxNumOfCharacters = 50;
 
     @Inject
-    public AddNoteControl(AddNoteService addNoteService, MainCtrl mainCtrl) {
+    public AddNoteControl(AddNoteService addNoteService, MainCtrl mainCtrl, AlertUtils alertUtils) {
         this.mainCtrl = mainCtrl;
         this.addNoteService = addNoteService;
-        this.alertUtils = new AlertUtils();
+        this.alertUtils = alertUtils;
 
     }
 

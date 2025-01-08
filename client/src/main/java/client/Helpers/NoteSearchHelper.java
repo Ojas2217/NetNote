@@ -1,9 +1,12 @@
 package client.Helpers;
 
 import client.handlers.NoteSearchResult;
+import client.utils.AlertUtils;
 import client.utils.NoteUtils;
+import com.google.inject.Inject;
 import commons.Note;
 import commons.NotePreview;
+import commons.exceptions.ErrorKeys;
 import commons.exceptions.ProcessOperationException;
 
 import javax.swing.*;
@@ -15,13 +18,20 @@ import java.util.List;
  */
 public class NoteSearchHelper {
 
+    AlertUtils alertUtils;
+
+    @Inject
+    public NoteSearchHelper(AlertUtils alertUtils) {
+        this.alertUtils = alertUtils;
+    }
+
     /**
      * Search all notes for occurrences of query
      *
      * @param query the string to search for inside the content of each note
      * @return a list of NoteSearchResult that contains the note and an index where the searchValue was found
      */
-    public static List<NoteSearchResult> searchNoteContent(String query, List<NotePreview> notes, NoteUtils server) {
+    public List<NoteSearchResult> searchNoteContent(String query, List<NotePreview> notes, NoteUtils server) {
         List<NoteSearchResult> foundInNotes = new ArrayList<>();
         if (query.isEmpty()) return foundInNotes;
 
@@ -36,15 +46,20 @@ public class NoteSearchHelper {
                 }
             } catch (ProcessOperationException e) {
                 System.out.println(e.getMessage());
-                String errorMessage = "Error retrieving data from the server, unable to get note " + n.getTitle();
-                JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
+
+                alertUtils.showError(
+                        ErrorKeys.ERROR,
+                        ErrorKeys.UNABLE_TO_RETRIEVE_NOTE,
+                        ErrorKeys.NOTE_MAY_BE_DELETED);
+                //String errorMessage = "Error retrieving data from the server, unable to get note" + " " + n.getTitle();
+                //JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
             }
         });
 
         return foundInNotes;
     }
 
-    public static String getSearchLogString(List<NoteSearchResult> foundInNotes, String queryString) {
+    public String getSearchLogString(List<NoteSearchResult> foundInNotes, String queryString) {
         int amount = foundInNotes.size();
         int noteCount = (int) foundInNotes.stream().map(n -> n.getNotePreview().getId()).distinct().count();
         return "Found string '" + queryString + "', " + amount + " times, across " + noteCount + " notes";
@@ -55,7 +70,7 @@ public class NoteSearchHelper {
      *
      * @param text the text to search for
      */
-    public static List<NotePreview> filterNotes(List<NotePreview> notes, String text) {
+    public List<NotePreview> filterNotes(List<NotePreview> notes, String text) {
         return notes.stream()
                 .filter(x -> x.getTitle().contains(text))
                 .toList();

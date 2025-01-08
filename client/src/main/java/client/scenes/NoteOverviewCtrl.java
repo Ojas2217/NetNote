@@ -57,6 +57,7 @@ public class NoteOverviewCtrl implements Initializable {
     private final NoteOverviewService noteOverviewService;
     private final ThemeViewHandler themeViewHandler;
     private final LanguageHelper languageHelper;
+    private final NoteSearchHelper noteSearchHelper;
 
     private ObservableList<NotePreview> data;
     private List<NotePreview> notes;
@@ -88,16 +89,21 @@ public class NoteOverviewCtrl implements Initializable {
     /**
      * Instatiate the class using injected parameters
      *
-     * @param server the injected server
+     * @param server   the injected server
      * @param mainCtrl the injected scene
      */
     @Inject
-    public NoteOverviewCtrl(NoteUtils server, MainCtrl mainCtrl, Main main, LanguageHelper languageHelper) {
+    public NoteOverviewCtrl(NoteUtils server,
+                            MainCtrl mainCtrl,
+                            Main main,
+                            LanguageHelper languageHelper,
+                            NoteSearchHelper noteSearchHelper) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.noteOverviewService = new NoteOverviewService();
         this.themeViewHandler = new ThemeViewHandler();
         this.languageHelper = languageHelper;
+        this.noteSearchHelper = noteSearchHelper;
     }
 
     @Override
@@ -363,10 +369,10 @@ public class NoteOverviewCtrl implements Initializable {
 
         if (input.startsWith("#")) {
             String queryString = input.replaceFirst("#", "");
-            List<NoteSearchResult> foundInNotes = NoteSearchHelper.searchNoteContent(queryString, notes, server);
+            List<NoteSearchResult> foundInNotes = noteSearchHelper.searchNoteContent(queryString, notes, server);
 
             setViewableNotes(foundInNotes.stream().map(NoteSearchResult::getNotePreview).distinct().toList());
-            mainCtrl.logRegular(NoteSearchHelper.getSearchLogString(foundInNotes, queryString));
+            mainCtrl.logRegular(noteSearchHelper.getSearchLogString(foundInNotes, queryString));
             mainCtrl.showSearchContent(foundInNotes);
         } else {
             searchAllNotes(input);
@@ -374,7 +380,7 @@ public class NoteOverviewCtrl implements Initializable {
     }
 
     private void searchAllNotes(String text) {
-        setViewableNotes(NoteSearchHelper.filterNotes(notes, text));
+        setViewableNotes(noteSearchHelper.filterNotes(notes, text));
     }
 
     /**

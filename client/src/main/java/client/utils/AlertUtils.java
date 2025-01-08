@@ -1,12 +1,24 @@
 package client.utils;
 
+import client.state.ResourceBundleHolder;
+import com.google.inject.Inject;
+import commons.exceptions.ErrorKeys;
 import javafx.scene.control.Alert;
 import javafx.stage.Modality;
+
+import java.util.ResourceBundle;
 
 /**
  * Utility class for showing alerts
  */
 public class AlertUtils {
+
+    private final ResourceBundleHolder resourceBundleHolder;
+
+    @Inject
+    public AlertUtils(ResourceBundleHolder resourceBundleHolder) {
+        this.resourceBundleHolder = resourceBundleHolder;
+    }
 
     public void showInfo(String title, String header, String content) {
         showAlert(Alert.AlertType.INFORMATION, title, header, content);
@@ -18,6 +30,15 @@ public class AlertUtils {
 
     public void showError(String title, String header, String content) {
         showAlert(Alert.AlertType.ERROR, title, header, content);
+    }
+
+    public void showError(ErrorKeys title, ErrorKeys header, ErrorKeys content) {
+        ResourceBundle resourceBundle = resourceBundleHolder.getResourceBundle();
+        showAlert(Alert.AlertType.ERROR,
+                resourceBundle.getString(title.getKey()),
+                resourceBundle.getString(header.getKey()),
+                resourceBundle.getString(content.getKey())
+        );
     }
 
     public void showConfirmation(String title, String header, String content) {

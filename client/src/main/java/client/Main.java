@@ -23,6 +23,7 @@ import client.handlers.ExceptionHandler;
 import client.scenes.NewNoteTitleCtrl;
 import client.scenes.NoteOverviewCtrl;
 import client.scenes.SearchNoteContentCtrl;
+import client.state.ResourceBundleHolder;
 import client.utils.AlertUtils;
 import com.google.inject.Injector;
 import client.scenes.AddNoteControl;
@@ -51,7 +52,7 @@ public class Main extends Application {
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
     private static final ExceptionHandler exceptionHandler =
-            new ExceptionHandler(new AlertUtils());
+            new ExceptionHandler(new AlertUtils(new ResourceBundleHolder()));
 
     public static void main(String[] args) {
         launch();
