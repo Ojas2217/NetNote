@@ -17,7 +17,6 @@ import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.Note;
 import commons.NotePreview;
-import commons.exceptions.ProcessOperationException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
