@@ -17,7 +17,6 @@
 
 package client.scenes;
 
-import client.Main;
 import client.handlers.NoteSearchResult;
 import client.handlers.SceneInfo;
 import client.services.Logger;
@@ -27,9 +26,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Controller class for managing the primary stage and scenes of the client application.
@@ -57,8 +54,15 @@ public class MainCtrl {
     private Scene overview;
     private Scene add;
     private Scene title;
-
     private final Logger logger = new Logger();
+
+    public Scene getOverviewScene() { return overview; }
+
+    public Scene getSearchContentScene() { return searchContentStage.getScene(); }
+
+    public Scene getAddScene() { return add; }
+
+    public Scene getTitleScene() { return title; }
 
     /**
      * Initializes the primary stage and sets up the scenes and controllers for the application.
@@ -211,9 +215,5 @@ public class MainCtrl {
         stage.setHeight(sceneInfo.getSize().getY());
         stage.setX(sceneInfo.getPos().getX());
         stage.setY(sceneInfo.getPos().getY());
-    }
-
-    public void changeLocale(Locale locale) {
-        Main.loadLocale(primaryStage, locale);
     }
 }

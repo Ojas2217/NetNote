@@ -2,6 +2,7 @@ package client.scenes;
 
 import java.net.URL;
 
+import client.Helpers.LanguageHelper;
 import client.handlers.ThemeViewHandler;
 import client.services.NoteOverviewService;
 import client.Helpers.NoteSearchHelper;
@@ -9,7 +10,6 @@ import java.util.*;
 
 import client.Main;
 import client.model.LanguageOption;
-import client.utils.LanguageOptionCreator;
 import javafx.scene.input.MouseButton;
 import client.handlers.NoteSearchResult;
 import client.services.Markdown;
@@ -54,10 +54,9 @@ import static java.util.Objects.isNull;
 public class NoteOverviewCtrl implements Initializable {
     private final NoteUtils server;
     private final MainCtrl mainCtrl;
-
     private final NoteOverviewService noteOverviewService;
-
     private final ThemeViewHandler themeViewHandler;
+    private final LanguageHelper languageHelper;
 
     private ObservableList<NotePreview> data;
     private List<NotePreview> notes;
@@ -93,13 +92,12 @@ public class NoteOverviewCtrl implements Initializable {
      * @param mainCtrl the injected scene
      */
     @Inject
-    public NoteOverviewCtrl(NoteUtils server, MainCtrl mainCtrl, Main main) {
+    public NoteOverviewCtrl(NoteUtils server, MainCtrl mainCtrl, Main main, LanguageHelper languageHelper) {
         this.server = server;
         this.mainCtrl = mainCtrl;
-
         this.noteOverviewService = new NoteOverviewService();
-
         this.themeViewHandler = new ThemeViewHandler();
+        this.languageHelper = languageHelper;
     }
 
     @Override
@@ -137,55 +135,7 @@ public class NoteOverviewCtrl implements Initializable {
             if (selectedNoteId == q.id) selectedNoteContent.setText(q.content);
         });
 
-        initializeLanguageComboBox();
-    }
-
-    /**
-     * Initialized language combo box
-     **/
-    public void initializeLanguageComboBox() {
-        // this could be in the config, but I don't know where the config is
-        List<Locale> supportedLanguages = List.of(
-                Locale.US,
-                Locale.of("nl", "NL"),
-                Locale.of("pi", "GB"),
-                Locale.FRANCE,
-                Locale.GERMANY,
-                Locale.of("es", "ES") // Spanish
-        );
-        // Language locales need to have both language, ex. "en", and country, ex. "US".
-        // So Locale.ENGLISH does not work, but Locale.US and manually created Locale.of("ln", "ct") will work.
-        // This is because images use ISO 639 for the file names and the country isn't always specified, but
-        // the language is.
-
-        supportedLanguages.forEach(lang -> languageComboBox.getItems().add(LanguageOptionCreator.create(lang)));
-        languageComboBox.setCellFactory(param -> new ListCell<LanguageOption>() {
-            @Override
-            protected void updateItem(LanguageOption item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    setGraphic(item.getHBox());
-                }
-            }
-        });
-
-        languageComboBox.setButtonCell(new ListCell<LanguageOption>() {
-            @Override
-            protected void updateItem(LanguageOption item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    setGraphic(item.getHBox());
-                    setText("");
-                    mainCtrl.changeLocale(item.getLocale());
-                }
-            }
-        });
+        languageHelper.initializeLanguageComboBox(languageComboBox);
     }
 
     public void log(String logString) {

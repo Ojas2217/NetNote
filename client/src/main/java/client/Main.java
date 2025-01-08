@@ -52,7 +52,6 @@ public class Main extends Application {
     private static final MyFXML FXML = new MyFXML(INJECTOR);
     private static final ExceptionHandler exceptionHandler =
             new ExceptionHandler(new AlertUtils());
-    private static ResourceBundle resourceBundle;
 
     public static void main(String[] args) {
         launch();
@@ -93,7 +92,7 @@ public class Main extends Application {
      * Should reinitialize the primary stage when changing locale, so should work dynamically as well.
      * */
     public static void loadLocale(Stage primaryStage, Locale locale) {
-        resourceBundle = ResourceBundle.getBundle("language", locale);
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("language", locale);
         var overview = FXML.load(NoteOverviewCtrl.class, resourceBundle, "client", "scenes", "MainScreen.fxml");
         var add = FXML.load(AddNoteControl.class, resourceBundle, "client", "scenes", "AddNote.fxml");
         var title = FXML.load(NewNoteTitleCtrl.class, resourceBundle, "client", "scenes", "newTitle.fxml");
