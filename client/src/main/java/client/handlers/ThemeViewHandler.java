@@ -5,6 +5,9 @@ package client.handlers;
 */
 public class ThemeViewHandler {
 
+    public ThemeViewHandler() {
+    }
+
     public String getDarkWebview() {
         return  """
                     (function() {

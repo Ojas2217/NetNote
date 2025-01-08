@@ -8,7 +8,6 @@ import client.services.NoteOverviewService;
 import client.Helpers.NoteSearchHelper;
 import java.util.*;
 
-import client.Main;
 import client.model.LanguageOption;
 import javafx.scene.input.MouseButton;
 import client.handlers.NoteSearchResult;
@@ -95,13 +94,14 @@ public class NoteOverviewCtrl implements Initializable {
     @Inject
     public NoteOverviewCtrl(NoteUtils server,
                             MainCtrl mainCtrl,
-                            Main main,
+                            NoteOverviewService noteOverviewService,
+                            ThemeViewHandler themeViewHandler,
                             LanguageHelper languageHelper,
                             NoteSearchHelper noteSearchHelper) {
         this.server = server;
         this.mainCtrl = mainCtrl;
-        this.noteOverviewService = new NoteOverviewService();
-        this.themeViewHandler = new ThemeViewHandler();
+        this.noteOverviewService = noteOverviewService;
+        this.themeViewHandler = themeViewHandler;
         this.languageHelper = languageHelper;
         this.noteSearchHelper = noteSearchHelper;
     }

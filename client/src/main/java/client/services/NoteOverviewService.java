@@ -12,6 +12,8 @@ import java.util.List;
  */
 public class NoteOverviewService {
 
+    public NoteOverviewService() { }
+
     public void initializeServerAdd(ObservableList<NotePreview> data, Note note) {
         data.add(new NotePreview(note.id, note.title));
     }
