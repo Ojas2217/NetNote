@@ -6,12 +6,12 @@ import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.Note;
 import commons.NotePreview;
-import commons.exceptions.ErrorKeys;
 import commons.exceptions.ProcessOperationException;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static commons.exceptions.ErrorKeys.*;
 
 /**
  * A helper class that aids the searching of text inside all notes
@@ -48,11 +48,10 @@ public class NoteSearchHelper {
                 System.out.println(e.getMessage());
 
                 alertUtils.showError(
-                        ErrorKeys.ERROR,
-                        ErrorKeys.UNABLE_TO_RETRIEVE_NOTE,
-                        ErrorKeys.NOTE_MAY_BE_DELETED);
-                //String errorMessage = "Error retrieving data from the server, unable to get note" + " " + n.getTitle();
-                //JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
+                        ERROR,
+                        UNABLE_TO_RETRIEVE_NOTE,
+                        NOTE_MAY_BE_DELETED
+                );
             }
         });
 

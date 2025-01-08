@@ -21,20 +21,20 @@ public class AlertUtils {
     }
 
     public void showInfo(String title, String header, String content) {
-        showAlert(Alert.AlertType.INFORMATION, title, header, content);
+        showError(Alert.AlertType.INFORMATION, title, header, content);
     }
 
     public void showWarning(String title, String header, String content) {
-        showAlert(Alert.AlertType.WARNING, title, header, content);
+        showError(Alert.AlertType.WARNING, title, header, content);
     }
 
     public void showError(String title, String header, String content) {
-        showAlert(Alert.AlertType.ERROR, title, header, content);
+        showError(Alert.AlertType.ERROR, title, header, content);
     }
 
     public void showError(ErrorKeys title, ErrorKeys header, ErrorKeys content) {
         ResourceBundle resourceBundle = resourceBundleHolder.getResourceBundle();
-        showAlert(Alert.AlertType.ERROR,
+        showError(Alert.AlertType.ERROR,
                 resourceBundle.getString(title.getKey()),
                 resourceBundle.getString(header.getKey()),
                 resourceBundle.getString(content.getKey())
@@ -42,7 +42,7 @@ public class AlertUtils {
     }
 
     public void showConfirmation(String title, String header, String content) {
-        showAlert(Alert.AlertType.CONFIRMATION, title, header, content);
+        showError(Alert.AlertType.CONFIRMATION, title, header, content);
     }
 
     /**
@@ -53,7 +53,7 @@ public class AlertUtils {
      * @param header  Header of the alert text area
      * @param content Content of the alert text area
      */
-    public void showAlert(Alert.AlertType type, String title, String header, String content) {
+    public void showError(Alert.AlertType type, String title, String header, String content) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(header);
@@ -61,9 +61,11 @@ public class AlertUtils {
         alert.showAndWait();
     }
 
-    public void showAlert(Alert.AlertType type, String content) {
-        Alert alert = new Alert(type);
+    public void showError(ErrorKeys type, String content) {
+        ResourceBundle resourceBundle = resourceBundleHolder.getResourceBundle();
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initModality(Modality.APPLICATION_MODAL);
+        alert.setTitle(resourceBundle.getString(type.getKey()));
         alert.setContentText(content);
         alert.showAndWait();
     }
