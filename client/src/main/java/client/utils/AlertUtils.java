@@ -67,12 +67,21 @@ public class AlertUtils {
         alert.showAndWait();
     }
 
-    public void showError(InternationalizationKeys type, String content) {
+    public void showError(InternationalizationKeys type, String  content) {
         ResourceBundle resourceBundle = resourceBundleHolder.getResourceBundle();
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initModality(Modality.APPLICATION_MODAL);
         alert.setTitle(resourceBundle.getString(type.getKey()));
         alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    public void showError(InternationalizationKeys type, InternationalizationKeys content) {
+        ResourceBundle resourceBundle = resourceBundleHolder.getResourceBundle();
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.setTitle(resourceBundle.getString(type.getKey()));
+        alert.setContentText(resourceBundle.getString(content.getKey()));
         alert.showAndWait();
     }
 

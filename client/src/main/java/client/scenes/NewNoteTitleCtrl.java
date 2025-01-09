@@ -74,14 +74,14 @@ public class NewNoteTitleCtrl {
      */
     public void ok() {
         if (newNoteTitle.getText().isEmpty()) {
-            alertUtils.showError(INFORMATION, "Please enter a new note title");
+            alertUtils.showError(INFORMATION, ENTER_VALID_NOTE_TITLE);
             return;
         }
 
         // Fetch the selected Note if it exists on the server
         Optional<Note> note = mainCtrl.getOverviewCtrl().fetchSelected();
         if (note.isEmpty()) {
-            alertUtils.showError(INFORMATION, "The note doesn't exist on the server");
+            alertUtils.showError(INFORMATION, NOTE_MAY_BE_DELETED);
             return;
         }
         String oldTitle = note.get().getTitle();
