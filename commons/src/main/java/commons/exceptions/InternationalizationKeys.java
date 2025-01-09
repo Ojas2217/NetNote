@@ -18,6 +18,7 @@ public enum InternationalizationKeys {
     MARKDOWN_INVALID_REQUEST("markdown.invalid.request"),
 
     // Client
+    UNHANDLED_EXCEPTION("unhandled.exception"),
     MARKDOWN_INSTANTIATION_ERROR("markdown.instantiation.error"),
     MARKDOWN_RENDER_ERROR("markdown.render.error"),
 

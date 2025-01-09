@@ -32,6 +32,12 @@ public class AlertUtils {
         showError(Alert.AlertType.ERROR, title, header, content);
     }
 
+    /**
+     * Shows an error with internationalized text
+     * @param title title key
+     * @param header header key
+     * @param content content key
+     */
     public void showError(InternationalizationKeys title, InternationalizationKeys header, InternationalizationKeys content) {
         ResourceBundle resourceBundle = resourceBundleHolder.getResourceBundle();
         showError(Alert.AlertType.ERROR,

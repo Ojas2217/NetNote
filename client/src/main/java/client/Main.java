@@ -18,6 +18,7 @@
 package client;
 
 import static com.google.inject.Guice.createInjector;
+import static commons.exceptions.InternationalizationKeys.UNHANDLED_EXCEPTION;
 
 import client.handlers.ExceptionHandler;
 import client.scenes.NewNoteTitleCtrl;
@@ -62,7 +63,11 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         Thread.setDefaultUncaughtExceptionHandler((_, throwable) -> {
-            exceptionHandler.handle(throwable, "An Unhandled Exception Occurred!");
+            exceptionHandler.handle(
+                    throwable,
+                    INJECTOR.getInstance(ResourceBundleHolder.class)
+                            .getResourceBundle()
+                            .getString(UNHANDLED_EXCEPTION.getKey()));
         });
 
         var serverUtils = INJECTOR.getInstance(ServerUtils.class);
