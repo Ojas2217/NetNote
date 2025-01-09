@@ -29,7 +29,6 @@ import com.google.inject.Injector;
 import client.scenes.AddNoteControl;
 import client.scenes.MainCtrl;
 import client.utils.ServerUtils;
-import com.google.inject.Provider;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

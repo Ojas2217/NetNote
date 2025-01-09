@@ -10,9 +10,11 @@ public enum ErrorKeys {
     // Input errors
     EMPTY_TITLE("empty.title"),
     NOTE_WITH_TITLE_EXISTS("note.title.exists"),
+    MARKDOWN_INVALID_REQUEST("markdown.invalid.request"),
 
     // Server
     UNABLE_TO_RETRIEVE_DATA("unable.to.retrieve.data"),
+    MARKDOWN_SERVER("markdown.server"),
 
     // Suggestions
     NOTE_MAY_BE_DELETED("note.may.be.deleted"),

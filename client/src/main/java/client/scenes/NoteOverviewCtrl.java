@@ -75,7 +75,7 @@ public class NoteOverviewCtrl implements Initializable {
     private WebView webView;
     @FXML
     private WebView webViewLogger;
-    private final Markdown markdown = new Markdown();
+    private final Markdown markdown;
 
     @FXML
     private Label selectedNoteTitle;
@@ -101,7 +101,8 @@ public class NoteOverviewCtrl implements Initializable {
                             ThemeViewHandler themeViewHandler,
                             LanguageHelper languageHelper,
                             NoteSearchHelper noteSearchHelper,
-                            AlertUtils alertUtils) {
+                            AlertUtils alertUtils,
+                            Markdown markdown) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.noteOverviewService = noteOverviewService;
@@ -109,6 +110,7 @@ public class NoteOverviewCtrl implements Initializable {
         this.languageHelper = languageHelper;
         this.noteSearchHelper = noteSearchHelper;
         this.alertUtils = alertUtils;
+        this.markdown = markdown;
     }
 
     @Override

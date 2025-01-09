@@ -7,7 +7,6 @@ import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.Note;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import static commons.exceptions.ErrorKeys.*;
