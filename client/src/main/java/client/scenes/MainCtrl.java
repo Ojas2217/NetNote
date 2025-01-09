@@ -53,10 +53,14 @@ public class MainCtrl {
     private AddNoteControl addCtrl;
     private NewNoteTitleCtrl newCtrl;
     private SearchNoteContentCtrl searchNoteContentCtrl;
+    private CollectionOverviewCtrl collectionOverviewCtrl;
+    private AddCollectionCtrl addCollectionCtrl;
 
     private Scene overview;
     private Scene add;
     private Scene title;
+    private Scene collections;
+    private Scene addCollections;
 
     private final Logger logger = new Logger();
 
@@ -71,20 +75,28 @@ public class MainCtrl {
                            Pair<NoteOverviewCtrl, Parent> overview,
                            Pair<AddNoteControl, Parent> add,
                            Pair<SearchNoteContentCtrl, Parent> searchContent,
-                           Pair<NewNoteTitleCtrl, Parent> title) {
+                           Pair<NewNoteTitleCtrl, Parent> title,
+                           Pair<CollectionOverviewCtrl, Parent> collections,
+                           Pair<AddCollectionCtrl, Parent> addCollections) {
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
         this.addCtrl = add.getKey();
         this.newCtrl = title.getKey();
+        this.addCollectionCtrl=addCollections.getKey();
+        this.collectionOverviewCtrl=collections.getKey();
         this.add = new Scene(add.getValue());
         this.title = new Scene(title.getValue());
+        this.collections=new Scene(collections.getValue());
+        this.addCollections = new Scene(addCollections.getValue());
+
 
         showOverview();
         primaryStage.show();
 
         initializeSearchContentStage(searchContent);
         searchNoteContentCtrl.init();
+        collectionOverviewCtrl.init();
     }
 
     /**
@@ -152,6 +164,9 @@ public class MainCtrl {
     public NoteOverviewCtrl getOverviewCtrl() {
         return overviewCtrl;
     }
+    public CollectionOverviewCtrl getCollectionOverviewCtrl() {
+        return collectionOverviewCtrl;
+    }
 
     /**
      * Toggles between light and dark theme
@@ -216,4 +231,18 @@ public class MainCtrl {
     public void changeLocale(Locale locale) {
         Main.loadLocale(primaryStage, locale);
     }
+
+    public void showCollectionOverview() {
+        primaryStage.setTitle("Collection Menu");
+        collectionOverviewCtrl.refresh();
+        primaryStage.setScene(collections);
+    }
+
+    public void showAddCollection() {
+        primaryStage.setTitle("Collections: Adding Collection");
+        primaryStage.setScene(addCollections);
+        addCollections.setOnKeyPressed(e -> addCollectionCtrl.keyPressed(e));
+
+    }
+
 }

@@ -263,6 +263,9 @@ public class NoteOverviewCtrl implements Initializable {
         if (wantsToSearch()) search();
     }
 
+    public void showCollectionMenu(){
+        mainCtrl.showCollectionOverview();
+    }
     /**
      * Fetches all notes from the server and stores them locally.
      */

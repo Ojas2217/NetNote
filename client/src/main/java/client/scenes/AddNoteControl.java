@@ -99,11 +99,6 @@ public class AddNoteControl {
         characterWarning.setVisible(false);
     }
 
-    public boolean isUnique(TextField noteTitle) {
-        List<NotePreview> notes = mainCtrl.getOverviewCtrl().getNotes();
-        if (notes == null) return true;
-        return notes.stream().noneMatch(n -> n.getTitle().equals(noteTitle.getText()));
-    }
 
     /**
      * Handles keyboard input

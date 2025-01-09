@@ -20,13 +20,9 @@ package client;
 import static com.google.inject.Guice.createInjector;
 
 import client.handlers.ExceptionHandler;
-import client.scenes.NewNoteTitleCtrl;
-import client.scenes.NoteOverviewCtrl;
-import client.scenes.SearchNoteContentCtrl;
+import client.scenes.*;
 import client.utils.AlertUtils;
 import com.google.inject.Injector;
-import client.scenes.AddNoteControl;
-import client.scenes.MainCtrl;
 import client.utils.ServerUtils;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -91,7 +87,7 @@ public class Main extends Application {
     /**
      * Loads fxml files with resources provided based on what locale is passed.
      * Should reinitialize the primary stage when changing locale, so should work dynamically as well.
-     * */
+     */
     public static void loadLocale(Stage primaryStage, Locale locale) {
         resourceBundle = ResourceBundle.getBundle("language", locale);
         var overview = FXML.load(NoteOverviewCtrl.class, resourceBundle, "client", "scenes", "MainScreen.fxml");
@@ -100,6 +96,8 @@ public class Main extends Application {
         var searchContent = FXML.load(SearchNoteContentCtrl.class, resourceBundle,
                 "client", "scenes", "SearchNoteContent.fxml");
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, overview, add, searchContent, title);
+        var collections = FXML.load(CollectionOverviewCtrl.class, resourceBundle, "client", "scenes", "CollectionOverview.fxml");
+        var addCollections = FXML.load(AddCollectionCtrl.class, resourceBundle, "client", "scenes", "AddCollection.fxml");
+        mainCtrl.initialize(primaryStage, overview, add, searchContent, title, collections,addCollections);
     }
 }
