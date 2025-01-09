@@ -49,7 +49,7 @@ public class NoteSearchHelper {
 
                 alertUtils.showError(
                         ERROR,
-                        UNABLE_TO_RETRIEVE_NOTE,
+                        UNABLE_TO_RETRIEVE_DATA,
                         NOTE_MAY_BE_DELETED
                 );
             }

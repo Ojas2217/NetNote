@@ -9,6 +9,7 @@ import client.Helpers.NoteSearchHelper;
 import java.util.*;
 
 import client.model.LanguageOption;
+import client.utils.AlertUtils;
 import javafx.scene.input.MouseButton;
 import client.handlers.NoteSearchResult;
 import client.services.Markdown;
@@ -29,6 +30,7 @@ import javafx.scene.input.KeyEvent;
 
 import javax.swing.*;
 
+import static commons.exceptions.ErrorKeys.*;
 import static java.util.Objects.isNull;
 
 /**
@@ -57,6 +59,7 @@ public class NoteOverviewCtrl implements Initializable {
     private final ThemeViewHandler themeViewHandler;
     private final LanguageHelper languageHelper;
     private final NoteSearchHelper noteSearchHelper;
+    private final AlertUtils alertUtils;
 
     private ObservableList<NotePreview> data;
     private List<NotePreview> notes;
@@ -97,13 +100,15 @@ public class NoteOverviewCtrl implements Initializable {
                             NoteOverviewService noteOverviewService,
                             ThemeViewHandler themeViewHandler,
                             LanguageHelper languageHelper,
-                            NoteSearchHelper noteSearchHelper) {
+                            NoteSearchHelper noteSearchHelper,
+                            AlertUtils alertUtils) {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.noteOverviewService = noteOverviewService;
         this.themeViewHandler = themeViewHandler;
         this.languageHelper = languageHelper;
         this.noteSearchHelper = noteSearchHelper;
+        this.alertUtils = alertUtils;
     }
 
     @Override
@@ -227,8 +232,11 @@ public class NoteOverviewCtrl implements Initializable {
             notes = server.getIdsAndTitles();
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            String errorMessage = "Error retrieving data from the server, unable to refresh notes";
-            JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
+            alertUtils.showError(
+                    ERROR,
+                    UNABLE_TO_RETRIEVE_DATA,
+                    SERVER_ERROR
+            );
         }
     }
 
@@ -443,8 +451,11 @@ public class NoteOverviewCtrl implements Initializable {
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            String errorMessage = "Error retrieving data from the server, unable to fetch note selected note.";
-            JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
+            alertUtils.showError(
+                    ERROR,
+                    UNABLE_TO_RETRIEVE_DATA,
+                    NOTE_MAY_BE_DELETED
+            );
         }
     }
 

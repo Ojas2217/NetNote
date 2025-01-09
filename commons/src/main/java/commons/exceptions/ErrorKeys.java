@@ -12,10 +12,11 @@ public enum ErrorKeys {
     NOTE_WITH_TITLE_EXISTS("note.title.exists"),
 
     // Server
-    UNABLE_TO_RETRIEVE_NOTE("unable.to.retrieve.notes"),
+    UNABLE_TO_RETRIEVE_DATA("unable.to.retrieve.data"),
 
     // Suggestions
     NOTE_MAY_BE_DELETED("note.may.be.deleted"),
+    SERVER_ERROR("server.error"),
     ENTER_VALID_NOTE_TITLE("enter.valid.note.title"),
 
     ;
