@@ -480,4 +480,8 @@ public class NoteOverviewCtrl implements Initializable {
     public List<NotePreview> getNotes() {
         return notes;
     }
+
+    public NoteOverviewService getNoteOverviewService() {
+        return noteOverviewService;
+    }
 }

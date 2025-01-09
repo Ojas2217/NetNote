@@ -75,4 +75,8 @@ public class NoteOverviewService {
                 JOptionPane.QUESTION_MESSAGE
         );
     }
+
+    public ResourceBundleHolder getResourceBundleHolder() {
+        return resourceBundleHolder;
+    }
 }

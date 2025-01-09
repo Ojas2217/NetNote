@@ -111,7 +111,7 @@
                                              <contextMenu>
                                                 <ContextMenu fx:id="contextMenu">
                                                   <items>
-                                                      <MenuItem fx:id="changeTitle" mnemonicParsing="false" onAction="#setTitle" text="%edit.context.menu.text" />
+                                                      <MenuItem fx:id="changeTitle" mnemonicParsing="false" onAction="#setTitle" text="%edit.text" />
                                                       <MenuItem fx:id="deleteNote" mnemonicParsing="false" onAction="#deleteNote" text="%delete.context.menu.text" />
                                                       <MenuItem fx:id="refreshNote" mnemonicParsing="false" onAction="#refresh" text="%refresh.context.menu.text" />
                                                   </items>

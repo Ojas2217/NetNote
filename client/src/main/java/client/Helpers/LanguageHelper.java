@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import static commons.exceptions.InternationalizationKeys.*;
+
 /**
  * Helper class for language related logic.
  */
@@ -88,5 +90,15 @@ public class LanguageHelper {
         mainCtrl.getAddScene().rootProperty().setValue(add);
         mainCtrl.getTitleScene().rootProperty().setValue(title);
         mainCtrl.getSearchContentScene().rootProperty().setValue(searchContent);
+
+        var currentSceneParent = mainCtrl.getPrimaryStage().getScene().getRoot();
+        if (currentSceneParent.equals(overview))
+            mainCtrl.getPrimaryStage().setTitle(resourceBundle.getString(MAIN.getKey()));
+        if (currentSceneParent.equals(add))
+            mainCtrl.getPrimaryStage().setTitle(resourceBundle.getString(ADD_NOTE.getKey()));
+        if (currentSceneParent.equals(title))
+            mainCtrl.getPrimaryStage().setTitle(resourceBundle.getString(EDIT_TITLE.getKey()));
+        if (currentSceneParent.equals(searchContent))
+            mainCtrl.getPrimaryStage().setTitle(resourceBundle.getString(SEARCH_CONTENT.getKey()));
     }
 }

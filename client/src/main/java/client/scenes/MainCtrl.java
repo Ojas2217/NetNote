@@ -27,6 +27,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import java.util.List;
+import java.util.ResourceBundle;
+
+import static commons.exceptions.InternationalizationKeys.*;
 
 /**
  * Controller class for managing the primary stage and scenes of the client application.
@@ -42,6 +45,7 @@ import java.util.List;
  * </p>
  */
 public class MainCtrl {
+
 
     private Stage primaryStage;
     private Stage searchContentStage;
@@ -63,6 +67,8 @@ public class MainCtrl {
     public Scene getAddScene() { return add; }
 
     public Scene getTitleScene() { return title; }
+
+    public Stage getPrimaryStage() { return primaryStage; }
 
     /**
      * Initializes the primary stage and sets up the scenes and controllers for the application.
@@ -101,7 +107,7 @@ public class MainCtrl {
         this.searchNoteContentCtrl = searchContent.getKey();
         Scene searchContentScene = new Scene(searchContent.getValue());
         this.searchContentStage = new Stage();
-        searchContentStage.setTitle("SearchContent");
+        searchContentStage.setTitle(getResourceBundle().getString(SEARCH_CONTENT.getKey()));
         searchContentStage.setScene(searchContentScene);
         searchContentStage.setAlwaysOnTop(true);
     }
@@ -110,7 +116,7 @@ public class MainCtrl {
      * Shows the main overview and refreshes the tableView with all the notes from the server
      */
     public void showOverview() {
-        primaryStage.setTitle("Main");
+        primaryStage.setTitle(getResourceBundle().getString(MAIN.getKey()));
         primaryStage.setScene(overview);
         overview.setOnKeyPressed(e -> overviewCtrl.keyPressed(e));
         overviewCtrl.emptySearchText();
@@ -136,7 +142,7 @@ public class MainCtrl {
      * shows the "add a note" scene
      */
     public void showAdd() {
-        primaryStage.setTitle("Notes: Adding Note");
+        primaryStage.setTitle(getResourceBundle().getString(ADD_NOTE.getKey()));
         primaryStage.setScene(add);
         addCtrl.clearFields();
         addCtrl.getNoteTitle().setFocusTraversable(Boolean.FALSE);
@@ -144,7 +150,7 @@ public class MainCtrl {
     }
 
     public void showNewTitle() {
-        primaryStage.setTitle("New Title");
+        primaryStage.setTitle(getResourceBundle().getString(EDIT_TITLE.getKey()));
         primaryStage.setScene(title);
         title.setOnKeyPressed(e -> newCtrl.keyPressed(e));
     }
@@ -215,5 +221,9 @@ public class MainCtrl {
         stage.setHeight(sceneInfo.getSize().getY());
         stage.setX(sceneInfo.getPos().getX());
         stage.setY(sceneInfo.getPos().getY());
+    }
+
+    public ResourceBundle getResourceBundle() {
+        return overviewCtrl.getNoteOverviewService().getResourceBundleHolder().getResourceBundle();
     }
 }

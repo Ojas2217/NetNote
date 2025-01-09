@@ -5,8 +5,13 @@ package commons.exceptions;
  */
 public enum InternationalizationKeys {
     // Types
+    MAIN("main"),
     ERROR("error"),
     INFORMATION("information"),
+    ADD_NOTE("add.note"),
+    EDIT_TITLE("edit.text"),
+    SEARCH_CONTENT("search.content"),
+
 
     // Delete prompt
     DELETE_CONFIRM("delete.confirm"),
@@ -17,13 +22,13 @@ public enum InternationalizationKeys {
     NOTE_WITH_TITLE_EXISTS("note.title.exists"),
     MARKDOWN_INVALID_REQUEST("markdown.invalid.request"),
 
-    // Client
+    // Client errors
     UNHANDLED_EXCEPTION("unhandled.exception"),
     MARKDOWN_INSTANTIATION_ERROR("markdown.instantiation.error"),
     MARKDOWN_RENDER_ERROR("markdown.render.error"),
 
 
-    // Server
+    // Server errors
     UNABLE_TO_RETRIEVE_DATA("unable.to.retrieve.data"),
     MARKDOWN_SERVER("markdown.server"),
 
