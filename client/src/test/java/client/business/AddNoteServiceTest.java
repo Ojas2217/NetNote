@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,13 +20,12 @@ class AddNoteServiceTest {
     private NoteUtils server;
     private MainCtrl mainCtrl;
     private AddNoteService service;
-    private NoteOverviewCtrl overviewCtrl;
 
     @BeforeEach
     void setUp() {
         server = mock(NoteUtils.class);
         mainCtrl = mock(MainCtrl.class);
-        overviewCtrl = mock(NoteOverviewCtrl.class);
+        NoteOverviewCtrl overviewCtrl = mock(NoteOverviewCtrl.class);
         when(mainCtrl.getOverviewCtrl()).thenReturn(overviewCtrl);
         service = new AddNoteService(server, mainCtrl);
     }
