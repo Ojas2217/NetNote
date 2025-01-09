@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
-import static commons.exceptions.ErrorKeys.*;
+import static commons.exceptions.InternationalizationKeys.*;
 
 /**
  * Markdown class to parse, render, and print Note content as HTML.
@@ -43,7 +43,6 @@ public class Markdown {
         htmlRenderer = HtmlRenderer.builder(options).build();
     }
 
-    @Inject
     public Markdown(HtmlRenderer htmlRenderer,
                     Parser parser,
                     ResourceBundleHolder resourceBundleHolder) {
@@ -59,17 +58,18 @@ public class Markdown {
      * @return HTML markdown
      */
     public String render(String commonmark) throws MarkdownRenderException {
+        ResourceBundle resourceBundle = resourceBundleHolder.getResourceBundle();
         try {
             if (htmlRenderer == null) {
                 throw new MarkdownRenderException(
-                        "Error instantiating htmlRenderer",
+                        resourceBundle.getString(MARKDOWN_INSTANTIATION_ERROR.getKey()),
                         HttpStatus.BAD_REQUEST.value(),
                         ExceptionType.SERVER_ERROR
-                );
+                        );
             }
             if (htmlRenderer.render(parser.parse(commonmark)).isEmpty()) {
                 throw new MarkdownRenderException(
-                        "Error rendering markdown, Make sure the markdown syntax is valid",
+                        resourceBundle.getString(MARKDOWN_RENDER_ERROR.getKey()),
                         HttpStatus.BAD_REQUEST.value(),
                         ExceptionType.INVALID_REQUEST
                 );

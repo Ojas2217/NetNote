@@ -1,18 +1,27 @@
 package client.services;
 
+import client.state.ResourceBundleHolder;
+import com.google.inject.Inject;
 import commons.Note;
 import commons.NotePreview;
 import javafx.collections.ObservableList;
 
 import javax.swing.*;
 import java.util.List;
+import java.util.ResourceBundle;
+
+import static commons.exceptions.InternationalizationKeys.*;
 
 /**
  * Service class that aids the NoteOverviewCtrl
  */
 public class NoteOverviewService {
+    private final ResourceBundleHolder resourceBundleHolder;
 
-    public NoteOverviewService() { }
+    @Inject
+    public NoteOverviewService(ResourceBundleHolder resourceBundleHolder) {
+        this.resourceBundleHolder = resourceBundleHolder;
+    }
 
     public void initializeServerAdd(ObservableList<NotePreview> data, Note note) {
         data.add(new NotePreview(note.id, note.title));
@@ -54,8 +63,9 @@ public class NoteOverviewService {
      * @return the users selection
      */
     public int promptDeleteNote() {
-        String message = "Are you sure you want to delete this note?";
-        String title = "Confirm deletion";
+        ResourceBundle resourceBundle = resourceBundleHolder.getResourceBundle();
+        String message = resourceBundle.getString(DELETE_MESSAGE.getKey());
+        String title = resourceBundle.getString(DELETE_CONFIRM.getKey());
 
         return JOptionPane.showConfirmDialog(
                 null,

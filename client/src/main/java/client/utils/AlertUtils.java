@@ -2,7 +2,7 @@ package client.utils;
 
 import client.state.ResourceBundleHolder;
 import com.google.inject.Inject;
-import commons.exceptions.ErrorKeys;
+import commons.exceptions.InternationalizationKeys;
 import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 
@@ -32,7 +32,7 @@ public class AlertUtils {
         showError(Alert.AlertType.ERROR, title, header, content);
     }
 
-    public void showError(ErrorKeys title, ErrorKeys header, ErrorKeys content) {
+    public void showError(InternationalizationKeys title, InternationalizationKeys header, InternationalizationKeys content) {
         ResourceBundle resourceBundle = resourceBundleHolder.getResourceBundle();
         showError(Alert.AlertType.ERROR,
                 resourceBundle.getString(title.getKey()),
@@ -61,7 +61,7 @@ public class AlertUtils {
         alert.showAndWait();
     }
 
-    public void showError(ErrorKeys type, String content) {
+    public void showError(InternationalizationKeys type, String content) {
         ResourceBundle resourceBundle = resourceBundleHolder.getResourceBundle();
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initModality(Modality.APPLICATION_MODAL);

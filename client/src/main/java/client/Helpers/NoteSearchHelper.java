@@ -11,7 +11,7 @@ import commons.exceptions.ProcessOperationException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static commons.exceptions.ErrorKeys.*;
+import static commons.exceptions.InternationalizationKeys.*;
 
 /**
  * A helper class that aids the searching of text inside all notes

@@ -9,7 +9,7 @@ import commons.Note;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import static commons.exceptions.ErrorKeys.*;
+import static commons.exceptions.InternationalizationKeys.*;
 import java.util.Optional;
 
 /**

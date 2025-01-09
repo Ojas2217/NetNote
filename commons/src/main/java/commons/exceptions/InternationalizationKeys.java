@@ -3,14 +3,24 @@ package commons.exceptions;
 /**
  * Error keys for use with {@link java.util.ResourceBundle}.
  */
-public enum ErrorKeys {
+public enum InternationalizationKeys {
+    // Types
     ERROR("error"),
     INFORMATION("information"),
+
+    // Delete prompt
+    DELETE_CONFIRM("delete.confirm"),
+    DELETE_MESSAGE("delete.message"),
 
     // Input errors
     EMPTY_TITLE("empty.title"),
     NOTE_WITH_TITLE_EXISTS("note.title.exists"),
     MARKDOWN_INVALID_REQUEST("markdown.invalid.request"),
+
+    // Client
+    MARKDOWN_INSTANTIATION_ERROR("markdown.instantiation.error"),
+    MARKDOWN_RENDER_ERROR("markdown.render.error"),
+
 
     // Server
     UNABLE_TO_RETRIEVE_DATA("unable.to.retrieve.data"),
@@ -24,7 +34,7 @@ public enum ErrorKeys {
     ;
     private final String key;
 
-    ErrorKeys(String key) {
+    InternationalizationKeys(String key) {
         this.key = key;
     }
 

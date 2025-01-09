@@ -30,7 +30,7 @@ import javafx.scene.input.KeyEvent;
 
 import javax.swing.*;
 
-import static commons.exceptions.ErrorKeys.*;
+import static commons.exceptions.InternationalizationKeys.*;
 import static java.util.Objects.isNull;
 
 /**
