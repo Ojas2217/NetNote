@@ -17,6 +17,7 @@
 
 package client.scenes;
 
+import client.MyStorage;
 import client.handlers.NoteSearchResult;
 import client.handlers.SceneInfo;
 import client.services.Logger;
@@ -46,7 +47,7 @@ import static commons.exceptions.InternationalizationKeys.*;
  */
 public class MainCtrl {
 
-
+    private MyStorage storage;
     private Stage primaryStage;
     private Stage searchContentStage;
 
@@ -83,11 +84,12 @@ public class MainCtrl {
      * @param overview     a pair containing the controller and root node for the note overview scene
      * @param add          a pair containing the controller and root node for the add note scene
      */
-    public void initialize(Stage primaryStage,
+    public void initialize(MyStorage storage, Stage primaryStage,
                            Pair<NoteOverviewCtrl, Parent> overview,
                            Pair<AddNoteControl, Parent> add,
                            Pair<SearchNoteContentCtrl, Parent> searchContent,
                            Pair<NewNoteTitleCtrl, Parent> title) {
+        this.storage = storage;
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
@@ -233,5 +235,9 @@ public class MainCtrl {
 
     public ResourceBundle getResourceBundle() {
         return overviewCtrl.getNoteOverviewService().getResourceBundleHolder().getResourceBundle();
+    }
+
+    public MyStorage getStorage() {
+        return this.storage;
     }
 }

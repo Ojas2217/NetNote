@@ -54,6 +54,7 @@ public class Main extends Application {
     private static final MyFXML FXML = new MyFXML(INJECTOR);
     private static final ExceptionHandler exceptionHandler =
             new ExceptionHandler(new AlertUtils(new ResourceBundleHolder()));
+    private static final MyStorage storage = new MyStorage();
 
     public static void main(String[] args) {
         launch();
@@ -100,6 +101,6 @@ public class Main extends Application {
         var searchContent = FXML.load(SearchNoteContentCtrl.class, resourceBundle,
                 "client", "scenes", "SearchNoteContent.fxml");
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, overview, add, searchContent, title);
+        mainCtrl.initialize(storage, primaryStage, overview, add, searchContent, title);
     }
 }
