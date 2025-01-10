@@ -6,12 +6,13 @@ import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 
+
+import static commons.exceptions.InternationalizationKeys.*;
 
 /**
  * Controller class for adding a new note.
@@ -42,17 +43,17 @@ public class AddNoteControl {
     public TextField noteTitle;
     @FXML
     private Button cancel;
-    private AlertUtils alertUtils;
+    private final AlertUtils alertUtils;
     private AddNoteService addNoteService;
     @FXML
     private Label characterWarning;
     private final int maxNumOfCharacters = 50;
 
     @Inject
-    public AddNoteControl(AddNoteService addNoteService, MainCtrl mainCtrl) {
+    public AddNoteControl(AddNoteService addNoteService, MainCtrl mainCtrl, AlertUtils alertUtils) {
         this.mainCtrl = mainCtrl;
         this.addNoteService = addNoteService;
-        this.alertUtils = new AlertUtils();
+        this.alertUtils = alertUtils;
 
     }
 
@@ -71,11 +72,19 @@ public class AddNoteControl {
      **/
     public void ok() {
         if (noteTitle.getText().isEmpty()) {
-            alertUtils.showAlert(Alert.AlertType.INFORMATION, "Please add a note title.");
+            alertUtils.showError(
+                    INFORMATION,
+                    EMPTY_TITLE,
+                    ENTER_VALID_NOTE_TITLE
+            );
             return;
         }
         if (!addNoteService.isUnique(noteTitle.getText())) {
-            alertUtils.showAlert(Alert.AlertType.ERROR, "Note with this title already exists");
+            alertUtils.showError(
+                    ERROR,
+                    NOTE_WITH_TITLE_EXISTS,
+                    ENTER_VALID_NOTE_TITLE
+            );
             return;
         }
         try {
@@ -87,7 +96,10 @@ public class AddNoteControl {
             mainCtrl.logRegular("Added new note: '" + title + "'");
             mainCtrl.showOverview();
         } catch (WebApplicationException e) {
-            alertUtils.showAlert(Alert.AlertType.ERROR, e.getMessage());
+            alertUtils.showError(
+                    ERROR,
+                    e.getMessage()
+            );
         }
 
     }

@@ -17,7 +17,7 @@
 
 package client.scenes;
 
-import client.Main;
+import client.MyStorage;
 import client.handlers.NoteSearchResult;
 import client.handlers.SceneInfo;
 import client.services.Logger;
@@ -27,9 +27,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-
 import java.util.List;
-import java.util.Locale;
+import java.util.ResourceBundle;
+
+import static commons.exceptions.InternationalizationKeys.*;
 
 /**
  * Controller class for managing the primary stage and scenes of the client application.
@@ -46,6 +47,7 @@ import java.util.Locale;
  */
 public class MainCtrl {
 
+    private MyStorage storage;
     private Stage primaryStage;
     private Stage searchContentStage;
 
@@ -64,6 +66,22 @@ public class MainCtrl {
 
     private final Logger logger = new Logger();
 
+    public Scene getOverviewScene() { return overview; }
+
+    public Scene getSearchContentScene() { return searchContentStage.getScene(); }
+
+    public Scene getAddScene() { return add; }
+
+    public Scene getTitleScene() { return title; }
+
+    public Stage getPrimaryStage() { return primaryStage; }
+
+    private boolean isDarkMode;
+
+    public boolean isDarkMode() {
+        return isDarkMode;
+    }
+
     /**
      * Initializes the primary stage and sets up the scenes and controllers for the application.
      *
@@ -71,13 +89,15 @@ public class MainCtrl {
      * @param overview     a pair containing the controller and root node for the note overview scene
      * @param add          a pair containing the controller and root node for the add note scene
      */
-    public void initialize(Stage primaryStage,
+    public void initialize(MyStorage storage,
+                           Stage primaryStage,
                            Pair<NoteOverviewCtrl, Parent> overview,
                            Pair<AddNoteControl, Parent> add,
                            Pair<SearchNoteContentCtrl, Parent> searchContent,
                            Pair<NewNoteTitleCtrl, Parent> title,
                            Pair<CollectionOverviewCtrl, Parent> collections,
                            Pair<AddCollectionCtrl, Parent> addCollections) {
+        this.storage = storage;
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
@@ -91,6 +111,7 @@ public class MainCtrl {
         this.addCollections = new Scene(addCollections.getValue());
 
 
+//        this.isDarkMode = storage.getTheme().equals("dark");
         showOverview();
         primaryStage.show();
 
@@ -109,7 +130,7 @@ public class MainCtrl {
         this.searchNoteContentCtrl = searchContent.getKey();
         Scene searchContentScene = new Scene(searchContent.getValue());
         this.searchContentStage = new Stage();
-        searchContentStage.setTitle("SearchContent");
+        searchContentStage.setTitle(getResourceBundle().getString(SEARCH_CONTENT.getKey()));
         searchContentStage.setScene(searchContentScene);
         searchContentStage.setAlwaysOnTop(true);
     }
@@ -118,7 +139,7 @@ public class MainCtrl {
      * Shows the main overview and refreshes the tableView with all the notes from the server
      */
     public void showOverview() {
-        primaryStage.setTitle("Main");
+        primaryStage.setTitle(getResourceBundle().getString(MAIN.getKey()));
         primaryStage.setScene(overview);
         overview.setOnKeyPressed(e -> overviewCtrl.keyPressed(e));
         overviewCtrl.emptySearchText();
@@ -144,7 +165,7 @@ public class MainCtrl {
      * shows the "add a note" scene
      */
     public void showAdd() {
-        primaryStage.setTitle("Notes: Adding Note");
+        primaryStage.setTitle(getResourceBundle().getString(ADD_NOTE.getKey()));
         primaryStage.setScene(add);
         addCtrl.clearFields();
         addCtrl.getNoteTitle().setFocusTraversable(Boolean.FALSE);
@@ -152,7 +173,7 @@ public class MainCtrl {
     }
 
     public void showNewTitle() {
-        primaryStage.setTitle("New Title");
+        primaryStage.setTitle(getResourceBundle().getString(EDIT_TITLE.getKey()));
         primaryStage.setScene(title);
         title.setOnKeyPressed(e -> newCtrl.keyPressed(e));
     }
@@ -176,9 +197,13 @@ public class MainCtrl {
     public boolean changeTheme() {
         if (overview.getStylesheets().isEmpty()) {
             overview.getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
+            isDarkMode = true;
+            storage.setTheme("dark");
             return true;
         } else {
             overview.getStylesheets().clear();
+            isDarkMode = false;
+            storage.setTheme("light");
             return false;
         }
     }
@@ -229,8 +254,12 @@ public class MainCtrl {
         stage.setY(sceneInfo.getPos().getY());
     }
 
-    public void changeLocale(Locale locale) {
-        Main.loadLocale(primaryStage, locale);
+    public ResourceBundle getResourceBundle() {
+        return overviewCtrl.getNoteOverviewService().getResourceBundleHolder().getResourceBundle();
+    }
+
+    public MyStorage getStorage() {
+        return this.storage;
     }
 
     public void showCollectionOverview() {

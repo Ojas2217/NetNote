@@ -7,10 +7,9 @@ import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.Note;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-
+import static commons.exceptions.InternationalizationKeys.*;
 import java.util.Optional;
 
 /**
@@ -45,10 +44,10 @@ public class NewNoteTitleCtrl {
     private NewNoteTitleService newNoteTitleService;
 
     @Inject
-    public NewNoteTitleCtrl(MainCtrl mainCtrl, NewNoteTitleService newNoteTitleService) {
+    public NewNoteTitleCtrl(MainCtrl mainCtrl, NewNoteTitleService newNoteTitleService, AlertUtils alertUtils) {
         this.mainCtrl = mainCtrl;
         this.newNoteTitleService = newNoteTitleService;
-        this.alertUtils = new AlertUtils();
+        this.alertUtils = alertUtils;
     }
 
     public void cancel() {
@@ -75,14 +74,14 @@ public class NewNoteTitleCtrl {
      */
     public void ok() {
         if (newNoteTitle.getText().isEmpty()) {
-            alertUtils.showAlert(Alert.AlertType.INFORMATION , "Please enter a new note title");
+            alertUtils.showError(INFORMATION, ENTER_VALID_NOTE_TITLE);
             return;
         }
 
         // Fetch the selected Note if it exists on the server
         Optional<Note> note = mainCtrl.getOverviewCtrl().fetchSelected();
         if (note.isEmpty()) {
-            alertUtils.showAlert(Alert.AlertType.INFORMATION, "The note doesn't exist on the server");
+            alertUtils.showError(INFORMATION, NOTE_MAY_BE_DELETED);
             return;
         }
         String oldTitle = note.get().getTitle();

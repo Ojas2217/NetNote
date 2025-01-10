@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ResourceBundle;
 
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 import javafx.fxml.FXMLLoader;
@@ -49,6 +50,7 @@ public class MyFXML {
 
     private Injector injector;
 
+    @Inject
     public MyFXML(Injector injector) {
         this.injector = injector;
     }
@@ -69,6 +71,24 @@ public class MyFXML {
             Parent parent = loader.load();
             T ctrl = loader.getController();
             return new Pair<>(ctrl, parent);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Loads an FXML file with passed resources.
+     *
+     * @param resources resource bundle with all the required key-value pairs for internationalization
+     * @param parts     path
+     * @return the loaded file as {@link Parent}
+     */
+    public Parent loadParent(ResourceBundle resources, String... parts) {
+        try {
+            var loader = new FXMLLoader(
+                    getLocation(parts), null, null, new MyFactory(), StandardCharsets.UTF_8);
+            loader.setResources(resources);
+            return loader.load();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

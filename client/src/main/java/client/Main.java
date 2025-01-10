@@ -18,9 +18,14 @@
 package client;
 
 import static com.google.inject.Guice.createInjector;
+import static commons.exceptions.InternationalizationKeys.UNHANDLED_EXCEPTION;
 
 import client.handlers.ExceptionHandler;
 import client.scenes.*;
+import client.scenes.NewNoteTitleCtrl;
+import client.scenes.NoteOverviewCtrl;
+import client.scenes.SearchNoteContentCtrl;
+import client.state.ResourceBundleHolder;
 import client.utils.AlertUtils;
 import com.google.inject.Injector;
 import client.utils.ServerUtils;
@@ -47,8 +52,8 @@ public class Main extends Application {
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
     private static final ExceptionHandler exceptionHandler =
-            new ExceptionHandler(new AlertUtils());
-    private static ResourceBundle resourceBundle;
+            new ExceptionHandler(new AlertUtils(new ResourceBundleHolder()));
+    private static MyStorage storage = new MyStorage();
 
     public static void main(String[] args) {
         launch();
@@ -58,7 +63,11 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         Thread.setDefaultUncaughtExceptionHandler((_, throwable) -> {
-            exceptionHandler.handle(throwable, "An Unhandled Exception Occurred!");
+            exceptionHandler.handle(
+                    throwable,
+                    INJECTOR.getInstance(ResourceBundleHolder.class)
+                            .getResourceBundle()
+                            .getString(UNHANDLED_EXCEPTION.getKey()));
         });
 
         var serverUtils = INJECTOR.getInstance(ServerUtils.class);
@@ -81,15 +90,32 @@ public class Main extends Application {
 
         // todo: this needs to be proper lang selection prior to launching the program
         // todo: make this use config
-        loadLocale(primaryStage, Locale.of("en", "US"));
-    }
+        Locale locale;
+        switch (storage.getLanguage()){
+            case ("en"):
+                locale = Locale.US;
+                break;
+            case ("nl"):
+                locale = Locale.of("nl", "NL");
+                break;
+            case ("pi"):
+                locale = Locale.of("pi", "GB");
+                break;
+            case ("fr"):
+                locale = Locale.FRANCE;
+                break;
+            case ("de"):
+                locale = Locale.GERMANY;
+                break;
+            case ("es"):
+                locale = Locale.of("es", "ES");
+                break;
+            default:
+                locale = Locale.US;
+        }
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("language", locale);
+        INJECTOR.getInstance(ResourceBundleHolder.class).setResourceBundle(resourceBundle);
 
-    /**
-     * Loads fxml files with resources provided based on what locale is passed.
-     * Should reinitialize the primary stage when changing locale, so should work dynamically as well.
-     */
-    public static void loadLocale(Stage primaryStage, Locale locale) {
-        resourceBundle = ResourceBundle.getBundle("language", locale);
         var overview = FXML.load(NoteOverviewCtrl.class, resourceBundle, "client", "scenes", "MainScreen.fxml");
         var add = FXML.load(AddNoteControl.class, resourceBundle, "client", "scenes", "AddNote.fxml");
         var title = FXML.load(NewNoteTitleCtrl.class, resourceBundle, "client", "scenes", "newTitle.fxml");
@@ -98,6 +124,6 @@ public class Main extends Application {
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         var collections = FXML.load(CollectionOverviewCtrl.class, resourceBundle, "client", "scenes", "CollectionOverview.fxml");
         var addCollections = FXML.load(AddCollectionCtrl.class, resourceBundle, "client", "scenes", "AddCollection.fxml");
-        mainCtrl.initialize(primaryStage, overview, add, searchContent, title, collections, addCollections);
+        mainCtrl.initialize(storage,primaryStage, overview, add, searchContent, title, collections, addCollections);
     }
 }

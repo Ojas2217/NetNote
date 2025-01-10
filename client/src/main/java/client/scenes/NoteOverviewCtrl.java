@@ -1,15 +1,18 @@
 package client.scenes;
 
+import java.io.InputStream;
 import java.net.URL;
 
+import client.Helpers.LanguageHelper;
 import client.handlers.ThemeViewHandler;
 import client.services.NoteOverviewService;
 import client.Helpers.NoteSearchHelper;
 import java.util.*;
 
-import client.Main;
 import client.model.LanguageOption;
-import client.utils.LanguageOptionCreator;
+import client.utils.AlertUtils;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import client.handlers.NoteSearchResult;
 import client.services.Markdown;
@@ -30,6 +33,7 @@ import javafx.scene.input.KeyEvent;
 
 import javax.swing.*;
 
+import static commons.exceptions.InternationalizationKeys.*;
 import static java.util.Objects.isNull;
 
 /**
@@ -54,10 +58,11 @@ import static java.util.Objects.isNull;
 public class NoteOverviewCtrl implements Initializable {
     private final NoteUtils server;
     private final MainCtrl mainCtrl;
-
     private final NoteOverviewService noteOverviewService;
-
     private final ThemeViewHandler themeViewHandler;
+    private final LanguageHelper languageHelper;
+    private final NoteSearchHelper noteSearchHelper;
+    private final AlertUtils alertUtils;
 
     private ObservableList<NotePreview> data;
     private List<NotePreview> notes;
@@ -73,7 +78,7 @@ public class NoteOverviewCtrl implements Initializable {
     private WebView webView;
     @FXML
     private WebView webViewLogger;
-    private final Markdown markdown = new Markdown();
+    private final Markdown markdown;
 
     @FXML
     private Label selectedNoteTitle;
@@ -85,21 +90,38 @@ public class NoteOverviewCtrl implements Initializable {
     private long selectedNoteId;
     @FXML
     private ComboBox<LanguageOption> languageComboBox;
+    @FXML
+    private Button searchButton;
+    @FXML
+    private Button noteAddButton;
+    @FXML
+    private Button noteDeleteButton;
+    @FXML
+    private Button noteRefreshButton;
 
     /**
      * Instatiate the class using injected parameters
      *
-     * @param server the injected server
+     * @param server   the injected server
      * @param mainCtrl the injected scene
      */
     @Inject
-    public NoteOverviewCtrl(NoteUtils server, MainCtrl mainCtrl, Main main) {
+    public NoteOverviewCtrl(NoteUtils server,
+                            MainCtrl mainCtrl,
+                            NoteOverviewService noteOverviewService,
+                            ThemeViewHandler themeViewHandler,
+                            LanguageHelper languageHelper,
+                            NoteSearchHelper noteSearchHelper,
+                            AlertUtils alertUtils,
+                            Markdown markdown) {
         this.server = server;
         this.mainCtrl = mainCtrl;
-
-        this.noteOverviewService = new NoteOverviewService();
-
-        this.themeViewHandler = new ThemeViewHandler();
+        this.noteOverviewService = noteOverviewService;
+        this.themeViewHandler = themeViewHandler;
+        this.languageHelper = languageHelper;
+        this.noteSearchHelper = noteSearchHelper;
+        this.alertUtils = alertUtils;
+        this.markdown = markdown;
     }
 
     @Override
@@ -137,55 +159,47 @@ public class NoteOverviewCtrl implements Initializable {
             if (selectedNoteId == q.id) selectedNoteContent.setText(q.content);
         });
 
-        initializeLanguageComboBox();
+        languageHelper.initializeLanguageComboBox(languageComboBox);
+//        if (mainCtrl.isDarkMode()) changeTheme();
+//        System.err.println(mainCtrl.isDarkMode());
+//        System.err.println(mainCtrl.getStorage().getTheme());
     }
 
-    /**
-     * Initialized language combo box
-     **/
-    public void initializeLanguageComboBox() {
-        // this could be in the config, but I don't know where the config is
-        List<Locale> supportedLanguages = List.of(
-                Locale.US,
-                Locale.of("nl", "NL"),
-                Locale.of("pi", "GB"),
-                Locale.FRANCE,
-                Locale.GERMANY,
-                Locale.of("es", "ES") // Spanish
-        );
-        // Language locales need to have both language, ex. "en", and country, ex. "US".
-        // So Locale.ENGLISH does not work, but Locale.US and manually created Locale.of("ln", "ct") will work.
-        // This is because images use ISO 639 for the file names and the country isn't always specified, but
-        // the language is.
+    public void initIcons(boolean isLightMode) {
+        InputStream searchLight = getClass().getResourceAsStream("/icons/search-black.png");
+        InputStream searchDark = getClass().getResourceAsStream("/icons/search-white.png");
+        InputStream refreshLight = getClass().getResourceAsStream("/icons/refresh-black.png");
+        InputStream refreshDark = getClass().getResourceAsStream("/icons/refresh-white.png");
+        int size = Integer.parseInt("20");
 
-        supportedLanguages.forEach(lang -> languageComboBox.getItems().add(LanguageOptionCreator.create(lang)));
-        languageComboBox.setCellFactory(param -> new ListCell<LanguageOption>() {
-            @Override
-            protected void updateItem(LanguageOption item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    setGraphic(item.getHBox());
-                }
+        if (searchLight != null && searchDark != null && refreshLight != null && refreshDark != null) {
+            if (isLightMode) {
+                Image imageS = new Image(searchLight);
+                ImageView imageViewS = new ImageView(imageS);
+                imageViewS.setFitHeight(size); // Set the height
+                imageViewS.setFitWidth(size);
+                searchButton.setGraphic(imageViewS);
+                Image imageR = new Image(refreshLight);
+                ImageView imageViewR = new ImageView(imageR);
+                imageViewR.setFitHeight(size); // Set the height
+                imageViewR.setFitWidth(size);
+                noteRefreshButton.setGraphic(imageViewR);
+            } else {
+                Image imageS = new Image(searchDark);
+                ImageView imageViewS = new ImageView(imageS);
+                imageViewS.setFitHeight(size); // Set the height
+                imageViewS.setFitWidth(size);
+                searchButton.setGraphic(imageViewS);
+                Image imageR = new Image(refreshDark);
+                ImageView imageViewR = new ImageView(imageR);
+                imageViewR.setFitHeight(size); // Set the height
+                imageViewR.setFitWidth(size);
+                noteRefreshButton.setGraphic(imageViewR);
             }
-        });
-
-        languageComboBox.setButtonCell(new ListCell<LanguageOption>() {
-            @Override
-            protected void updateItem(LanguageOption item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    setGraphic(item.getHBox());
-                    setText("");
-                    mainCtrl.changeLocale(item.getLocale());
-                }
-            }
-        });
+        } else {
+            // Handle the error (e.g., log or show a default image)
+            System.err.println("Image not found in resources");
+        }
     }
 
     public void log(String logString) {
@@ -275,8 +289,11 @@ public class NoteOverviewCtrl implements Initializable {
             notes = server.getIdsAndTitles();
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            String errorMessage = "Error retrieving data from the server, unable to refresh notes";
-            JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
+            alertUtils.showError(
+                    ERROR,
+                    UNABLE_TO_RETRIEVE_DATA,
+                    SERVER_ERROR
+            );
         }
     }
 
@@ -417,10 +434,10 @@ public class NoteOverviewCtrl implements Initializable {
 
         if (input.startsWith("#")) {
             String queryString = input.replaceFirst("#", "");
-            List<NoteSearchResult> foundInNotes = NoteSearchHelper.searchNoteContent(queryString, notes, server);
+            List<NoteSearchResult> foundInNotes = noteSearchHelper.searchNoteContent(queryString, notes, server);
 
             setViewableNotes(foundInNotes.stream().map(NoteSearchResult::getNotePreview).distinct().toList());
-            mainCtrl.logRegular(NoteSearchHelper.getSearchLogString(foundInNotes, queryString));
+            mainCtrl.logRegular(noteSearchHelper.getSearchLogString(foundInNotes, queryString));
             mainCtrl.showSearchContent(foundInNotes);
         } else {
             searchAllNotes(input);
@@ -428,7 +445,7 @@ public class NoteOverviewCtrl implements Initializable {
     }
 
     private void searchAllNotes(String text) {
-        setViewableNotes(NoteSearchHelper.filterNotes(notes, text));
+        setViewableNotes(noteSearchHelper.filterNotes(notes, text));
     }
 
     /**
@@ -491,8 +508,11 @@ public class NoteOverviewCtrl implements Initializable {
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            String errorMessage = "Error retrieving data from the server, unable to fetch note selected note.";
-            JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
+            alertUtils.showError(
+                    ERROR,
+                    UNABLE_TO_RETRIEVE_DATA,
+                    NOTE_MAY_BE_DELETED
+            );
         }
     }
 
@@ -510,9 +530,22 @@ public class NoteOverviewCtrl implements Initializable {
         String theme = mainCtrl.changeTheme() ? themeViewHandler.getDarkWebview() : themeViewHandler.getLightWebView();
         webViewLogger.getEngine().executeScript(theme);
         webView.getEngine().executeScript(theme);
+        if (!mainCtrl.isDarkMode()) {
+            initIcons(true);
+            noteAddButton.setStyle("-fx-background-color: lightgreen;");
+            noteDeleteButton.setStyle("-fx-background-color:  #FFCCCB;");
+        } else {
+            initIcons(false);
+            noteAddButton.setStyle("-fx-background-color: green;");
+            noteDeleteButton.setStyle("-fx-background-color: red;");
+        }
     }
 
     public List<NotePreview> getNotes() {
         return notes;
+    }
+
+    public NoteOverviewService getNoteOverviewService() {
+        return noteOverviewService;
     }
 }

@@ -8,10 +8,10 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="146.0" prefWidth="470.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.NewNoteTitleCtrl">
    <children>
-      <Button layoutX="419.0" layoutY="105.0" mnemonicParsing="false" onAction="#ok" text="%okButtonText" />
-      <Button layoutX="14.0" layoutY="105.0" mnemonicParsing="false" onAction="#cancel" text="%cancelButtonText" />
+      <Button layoutX="419.0" layoutY="105.0" mnemonicParsing="false" onAction="#ok" text="%ok.button.text" />
+      <Button layoutX="14.0" layoutY="105.0" mnemonicParsing="false" onAction="#cancel" text="%cancel.button.text" />
       <TextField fx:id="newNoteTitle" layoutX="43.0" layoutY="61.0" prefHeight="26.0" prefWidth="383.0" />
-      <Label layoutX="61.0" layoutY="30.0" prefHeight="30.0" prefWidth="347.0" text="%enterNoteTitleLabelText">
+      <Label layoutX="61.0" layoutY="30.0" prefHeight="30.0" prefWidth="347.0" text="%enter.note.title.label.text">
          <font>
             <Font size="20.0" />
          </font>
