@@ -160,7 +160,9 @@ public class NoteOverviewCtrl implements Initializable {
         });
 
         languageHelper.initializeLanguageComboBox(languageComboBox);
-        initIcons(true);
+//        if (mainCtrl.isDarkMode()) changeTheme();
+//        System.err.println(mainCtrl.isDarkMode());
+//        System.err.println(mainCtrl.getStorage().getTheme());
     }
 
     public void initIcons(boolean isLightMode) {
