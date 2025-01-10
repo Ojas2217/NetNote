@@ -1,5 +1,7 @@
 package client.services;
 
+import client.state.ResourceBundleHolder;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
@@ -12,6 +14,9 @@ import org.springframework.http.HttpStatus;
 
 
 import java.util.Arrays;
+import java.util.ResourceBundle;
+
+import static commons.exceptions.InternationalizationKeys.*;
 
 /**
  * Markdown class to parse, render, and print Note content as HTML.
@@ -21,12 +26,14 @@ import java.util.Arrays;
 public class Markdown {
     private final HtmlRenderer htmlRenderer;
     private final Parser parser;
-
+    private final ResourceBundleHolder resourceBundleHolder;
 
     /**
      * Contructor for no-param
      */
-    public Markdown() {
+    @Inject
+    public Markdown(ResourceBundleHolder resourceBundleHolder) {
+        this.resourceBundleHolder = resourceBundleHolder;
         MutableDataSet options = new MutableDataSet();
 
         options.set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), StrikethroughExtension.create()));
@@ -37,9 +44,11 @@ public class Markdown {
     }
 
     public Markdown(HtmlRenderer htmlRenderer,
-                    Parser parser) {
+                    Parser parser,
+                    ResourceBundleHolder resourceBundleHolder) {
         this.htmlRenderer = htmlRenderer;
         this.parser = parser;
+        this.resourceBundleHolder = resourceBundleHolder;
     }
 
     /**
@@ -49,17 +58,18 @@ public class Markdown {
      * @return HTML markdown
      */
     public String render(String commonmark) throws MarkdownRenderException {
+        ResourceBundle resourceBundle = resourceBundleHolder.getResourceBundle();
         try {
             if (htmlRenderer == null) {
                 throw new MarkdownRenderException(
-                        "Error instantiating htmlRenderer",
+                        resourceBundle.getString(MARKDOWN_INSTANTIATION_ERROR.getKey()),
                         HttpStatus.BAD_REQUEST.value(),
                         ExceptionType.SERVER_ERROR
-                );
+                        );
             }
             if (htmlRenderer.render(parser.parse(commonmark)).isEmpty()) {
                 throw new MarkdownRenderException(
-                        "Error rendering markdown, Make sure the markdown syntax is valid",
+                        resourceBundle.getString(MARKDOWN_RENDER_ERROR.getKey()),
                         HttpStatus.BAD_REQUEST.value(),
                         ExceptionType.INVALID_REQUEST
                 );
@@ -76,7 +86,7 @@ public class Markdown {
             }
             return htmlRenderer.render(parser.parse(goodString.toString()));
         } catch (MarkdownRenderException e) {
-            return showDialog(e);
+            return showDialog(e, resourceBundleHolder);
         }
     }
 
@@ -84,13 +94,14 @@ public class Markdown {
      * Shows an error dialog based on the type of the Markdown exception
      * @param e
      */
-    public String showDialog(MarkdownRenderException e) {
+    public String showDialog(MarkdownRenderException e, ResourceBundleHolder resourceBundleHolder) {
+        ResourceBundle resourceBundle = resourceBundleHolder.getResourceBundle();
         switch (e.getType()) {
             case SERVER_ERROR -> {
-                return htmlRenderer.render(parser.parse("Error instantiating html renderer please try again"));
+                return htmlRenderer.render(parser.parse(resourceBundle.getString(MARKDOWN_SERVER.getKey())));
             }
             case INVALID_REQUEST -> {
-                return htmlRenderer.render(parser.parse("Invalid markdown syntax please try again"));
+                return htmlRenderer.render(parser.parse(resourceBundle.getString(MARKDOWN_INVALID_REQUEST.getKey())));
             }
         }
         return null;

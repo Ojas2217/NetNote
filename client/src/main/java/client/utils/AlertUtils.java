@@ -1,27 +1,54 @@
 package client.utils;
 
+import client.state.ResourceBundleHolder;
+import com.google.inject.Inject;
+import commons.exceptions.InternationalizationKeys;
 import javafx.scene.control.Alert;
 import javafx.stage.Modality;
+
+import java.util.ResourceBundle;
 
 /**
  * Utility class for showing alerts
  */
 public class AlertUtils {
 
+    private final ResourceBundleHolder resourceBundleHolder;
+
+    @Inject
+    public AlertUtils(ResourceBundleHolder resourceBundleHolder) {
+        this.resourceBundleHolder = resourceBundleHolder;
+    }
+
     public void showInfo(String title, String header, String content) {
-        showAlert(Alert.AlertType.INFORMATION, title, header, content);
+        showError(Alert.AlertType.INFORMATION, title, header, content);
     }
 
     public void showWarning(String title, String header, String content) {
-        showAlert(Alert.AlertType.WARNING, title, header, content);
+        showError(Alert.AlertType.WARNING, title, header, content);
     }
 
     public void showError(String title, String header, String content) {
-        showAlert(Alert.AlertType.ERROR, title, header, content);
+        showError(Alert.AlertType.ERROR, title, header, content);
+    }
+
+    /**
+     * Shows an error with internationalized text
+     * @param title title key
+     * @param header header key
+     * @param content content key
+     */
+    public void showError(InternationalizationKeys title, InternationalizationKeys header, InternationalizationKeys content) {
+        ResourceBundle resourceBundle = resourceBundleHolder.getResourceBundle();
+        showError(Alert.AlertType.ERROR,
+                resourceBundle.getString(title.getKey()),
+                resourceBundle.getString(header.getKey()),
+                resourceBundle.getString(content.getKey())
+        );
     }
 
     public void showConfirmation(String title, String header, String content) {
-        showAlert(Alert.AlertType.CONFIRMATION, title, header, content);
+        showError(Alert.AlertType.CONFIRMATION, title, header, content);
     }
 
     /**
@@ -32,7 +59,7 @@ public class AlertUtils {
      * @param header  Header of the alert text area
      * @param content Content of the alert text area
      */
-    public void showAlert(Alert.AlertType type, String title, String header, String content) {
+    public void showError(Alert.AlertType type, String title, String header, String content) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(header);
@@ -40,10 +67,21 @@ public class AlertUtils {
         alert.showAndWait();
     }
 
-    public void showAlert(Alert.AlertType type, String content) {
-        Alert alert = new Alert(type);
+    public void showError(InternationalizationKeys type, String  content) {
+        ResourceBundle resourceBundle = resourceBundleHolder.getResourceBundle();
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initModality(Modality.APPLICATION_MODAL);
+        alert.setTitle(resourceBundle.getString(type.getKey()));
         alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    public void showError(InternationalizationKeys type, InternationalizationKeys content) {
+        ResourceBundle resourceBundle = resourceBundleHolder.getResourceBundle();
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.setTitle(resourceBundle.getString(type.getKey()));
+        alert.setContentText(resourceBundle.getString(content.getKey()));
         alert.showAndWait();
     }
 

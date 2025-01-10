@@ -18,11 +18,13 @@
 package client;
 
 import static com.google.inject.Guice.createInjector;
+import static commons.exceptions.InternationalizationKeys.UNHANDLED_EXCEPTION;
 
 import client.handlers.ExceptionHandler;
 import client.scenes.NewNoteTitleCtrl;
 import client.scenes.NoteOverviewCtrl;
 import client.scenes.SearchNoteContentCtrl;
+import client.state.ResourceBundleHolder;
 import client.utils.AlertUtils;
 import com.google.inject.Injector;
 import client.scenes.AddNoteControl;
@@ -51,8 +53,7 @@ public class Main extends Application {
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
     private static final ExceptionHandler exceptionHandler =
-            new ExceptionHandler(new AlertUtils());
-    private static ResourceBundle resourceBundle;
+            new ExceptionHandler(new AlertUtils(new ResourceBundleHolder()));
 
     public static void main(String[] args) {
         launch();
@@ -62,7 +63,11 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         Thread.setDefaultUncaughtExceptionHandler((_, throwable) -> {
-            exceptionHandler.handle(throwable, "An Unhandled Exception Occurred!");
+            exceptionHandler.handle(
+                    throwable,
+                    INJECTOR.getInstance(ResourceBundleHolder.class)
+                            .getResourceBundle()
+                            .getString(UNHANDLED_EXCEPTION.getKey()));
         });
 
         var serverUtils = INJECTOR.getInstance(ServerUtils.class);
@@ -85,15 +90,10 @@ public class Main extends Application {
 
         // todo: this needs to be proper lang selection prior to launching the program
         // todo: make this use config
-        loadLocale(primaryStage, Locale.of("en", "US"));
-    }
+        Locale locale = Locale.of("en", "US");
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("language", locale);
+        INJECTOR.getInstance(ResourceBundleHolder.class).setResourceBundle(resourceBundle);
 
-    /**
-     * Loads fxml files with resources provided based on what locale is passed.
-     * Should reinitialize the primary stage when changing locale, so should work dynamically as well.
-     * */
-    public static void loadLocale(Stage primaryStage, Locale locale) {
-        resourceBundle = ResourceBundle.getBundle("language", locale);
         var overview = FXML.load(NoteOverviewCtrl.class, resourceBundle, "client", "scenes", "MainScreen.fxml");
         var add = FXML.load(AddNoteControl.class, resourceBundle, "client", "scenes", "AddNote.fxml");
         var title = FXML.load(NewNoteTitleCtrl.class, resourceBundle, "client", "scenes", "newTitle.fxml");
