@@ -68,6 +68,7 @@ public class LanguageHelper {
                 } else {
                     setGraphic(item.getHBox());
                     setText("");
+                    mainCtrl.getStorage().setLanguage(item.getLocale().getLanguage());
                     ResourceBundle resourceBundle = ResourceBundle.getBundle("language", item.getLocale());
                     resourceBundleHolder.setResourceBundle(resourceBundle);
                     reloadWithNewLanguage();

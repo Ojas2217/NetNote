@@ -97,7 +97,7 @@ public class MainCtrl {
         this.newCtrl = title.getKey();
         this.add = new Scene(add.getValue());
         this.title = new Scene(title.getValue());
-
+//        this.isDarkMode = storage.getTheme().equals("dark");
         showOverview();
         primaryStage.show();
 
@@ -179,10 +179,12 @@ public class MainCtrl {
         if (overview.getStylesheets().isEmpty()) {
             overview.getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
             isDarkMode = true;
+            storage.setTheme("dark");
             return true;
         } else {
             overview.getStylesheets().clear();
             isDarkMode = false;
+            storage.setTheme("light");
             return false;
         }
     }

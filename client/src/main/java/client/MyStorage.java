@@ -18,7 +18,7 @@ public class MyStorage {
      */
     public MyStorage() {
         this.config = new Properties();
-        loadConfig("src", "main", "resources", "client", "client/userConfig.properties");
+        loadConfig("src", "main", "resources", "client", "userConfig.properties");
     }
 
     /**
@@ -68,7 +68,7 @@ public class MyStorage {
      */
     private void saveConfig() {
         try (FileOutputStream fileOut = new FileOutputStream(
-                getLocation("src", "main", "resources", "client", "client/userConfig.properties")
+                getLocation("src", "main", "resources", "client", "userConfig.properties")
         )) {
             this.config.store(fileOut, "User Configuration");
         } catch (IOException e) {
@@ -102,9 +102,9 @@ public class MyStorage {
 
     /**
      * Set the language
-     * @param isLight the language
+     * @param theme the language
      */
-    public void setTheme(boolean isLight) {
-        setItemConfig("theme", String.valueOf(isLight));
+    public void setTheme(String theme) {
+        setItemConfig("theme", theme);
     }
 }
