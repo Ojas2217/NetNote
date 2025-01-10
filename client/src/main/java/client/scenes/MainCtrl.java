@@ -55,10 +55,15 @@ public class MainCtrl {
     private AddNoteControl addCtrl;
     private NewNoteTitleCtrl newCtrl;
     private SearchNoteContentCtrl searchNoteContentCtrl;
+    private CollectionOverviewCtrl collectionOverviewCtrl;
+    private AddCollectionCtrl addCollectionCtrl;
 
     private Scene overview;
     private Scene add;
     private Scene title;
+    private Scene collections;
+    private Scene addCollections;
+
     private final Logger logger = new Logger();
 
     public Scene getOverviewScene() { return overview; }
@@ -84,25 +89,35 @@ public class MainCtrl {
      * @param overview     a pair containing the controller and root node for the note overview scene
      * @param add          a pair containing the controller and root node for the add note scene
      */
-    public void initialize(MyStorage storage, Stage primaryStage,
+    public void initialize(MyStorage storage,
+                           Stage primaryStage,
                            Pair<NoteOverviewCtrl, Parent> overview,
                            Pair<AddNoteControl, Parent> add,
                            Pair<SearchNoteContentCtrl, Parent> searchContent,
-                           Pair<NewNoteTitleCtrl, Parent> title) {
+                           Pair<NewNoteTitleCtrl, Parent> title,
+                           Pair<CollectionOverviewCtrl, Parent> collections,
+                           Pair<AddCollectionCtrl, Parent> addCollections) {
         this.storage = storage;
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
         this.addCtrl = add.getKey();
         this.newCtrl = title.getKey();
+        this.addCollectionCtrl = addCollections.getKey();
+        this.collectionOverviewCtrl = collections.getKey();
         this.add = new Scene(add.getValue());
         this.title = new Scene(title.getValue());
+        this.collections = new Scene(collections.getValue());
+        this.addCollections = new Scene(addCollections.getValue());
+
+
 //        this.isDarkMode = storage.getTheme().equals("dark");
         showOverview();
         primaryStage.show();
 
         initializeSearchContentStage(searchContent);
         searchNoteContentCtrl.init();
+        collectionOverviewCtrl.init();
     }
 
     /**
@@ -169,6 +184,10 @@ public class MainCtrl {
 
     public NoteOverviewCtrl getOverviewCtrl() {
         return overviewCtrl;
+    }
+
+    public CollectionOverviewCtrl getCollectionOverviewCtrl() {
+        return collectionOverviewCtrl;
     }
 
     /**
@@ -242,4 +261,18 @@ public class MainCtrl {
     public MyStorage getStorage() {
         return this.storage;
     }
+
+    public void showCollectionOverview() {
+        primaryStage.setTitle("Collection Menu");
+        collectionOverviewCtrl.refresh();
+        primaryStage.setScene(collections);
+    }
+
+    public void showAddCollection() {
+        primaryStage.setTitle("Collections: Adding Collection");
+        primaryStage.setScene(addCollections);
+        addCollections.setOnKeyPressed(e -> addCollectionCtrl.keyPressed(e));
+
+    }
+
 }

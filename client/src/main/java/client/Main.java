@@ -21,14 +21,13 @@ import static com.google.inject.Guice.createInjector;
 import static commons.exceptions.InternationalizationKeys.UNHANDLED_EXCEPTION;
 
 import client.handlers.ExceptionHandler;
+import client.scenes.*;
 import client.scenes.NewNoteTitleCtrl;
 import client.scenes.NoteOverviewCtrl;
 import client.scenes.SearchNoteContentCtrl;
 import client.state.ResourceBundleHolder;
 import client.utils.AlertUtils;
 import com.google.inject.Injector;
-import client.scenes.AddNoteControl;
-import client.scenes.MainCtrl;
 import client.utils.ServerUtils;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -123,6 +122,8 @@ public class Main extends Application {
         var searchContent = FXML.load(SearchNoteContentCtrl.class, resourceBundle,
                 "client", "scenes", "SearchNoteContent.fxml");
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(storage, primaryStage, overview, add, searchContent, title);
+        var collections = FXML.load(CollectionOverviewCtrl.class, resourceBundle, "client", "scenes", "CollectionOverview.fxml");
+        var addCollections = FXML.load(AddCollectionCtrl.class, resourceBundle, "client", "scenes", "AddCollection.fxml");
+        mainCtrl.initialize(storage, primaryStage, overview, add, searchContent, title, collections, addCollections);
     }
 }
