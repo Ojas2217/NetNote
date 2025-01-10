@@ -70,6 +70,12 @@ public class MainCtrl {
 
     public Stage getPrimaryStage() { return primaryStage; }
 
+    private boolean isDarkMode;
+
+    public boolean isDarkMode() {
+        return isDarkMode;
+    }
+
     /**
      * Initializes the primary stage and sets up the scenes and controllers for the application.
      *
@@ -170,9 +176,11 @@ public class MainCtrl {
     public boolean changeTheme() {
         if (overview.getStylesheets().isEmpty()) {
             overview.getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
+            isDarkMode = true;
             return true;
         } else {
             overview.getStylesheets().clear();
+            isDarkMode = false;
             return false;
         }
     }

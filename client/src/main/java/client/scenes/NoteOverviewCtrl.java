@@ -1,5 +1,6 @@
 package client.scenes;
 
+import java.io.InputStream;
 import java.net.URL;
 
 import client.Helpers.LanguageHelper;
@@ -10,6 +11,8 @@ import java.util.*;
 
 import client.model.LanguageOption;
 import client.utils.AlertUtils;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import client.handlers.NoteSearchResult;
 import client.services.Markdown;
@@ -87,6 +90,14 @@ public class NoteOverviewCtrl implements Initializable {
     private long selectedNoteId;
     @FXML
     private ComboBox<LanguageOption> languageComboBox;
+    @FXML
+    private Button searchButton;
+    @FXML
+    private Button noteAddButton;
+    @FXML
+    private Button noteDeleteButton;
+    @FXML
+    private Button noteRefreshButton;
 
     /**
      * Instatiate the class using injected parameters
@@ -149,6 +160,44 @@ public class NoteOverviewCtrl implements Initializable {
         });
 
         languageHelper.initializeLanguageComboBox(languageComboBox);
+        initIcons(true);
+    }
+
+    public void initIcons(boolean isLightMode) {
+        InputStream searchLight = getClass().getResourceAsStream("/icons/search-black.png");
+        InputStream searchDark = getClass().getResourceAsStream("/icons/search-white.png");
+        InputStream refreshLight = getClass().getResourceAsStream("/icons/refresh-black.png");
+        InputStream refreshDark = getClass().getResourceAsStream("/icons/refresh-white.png");
+        int size = Integer.parseInt("20");
+
+        if (searchLight != null && searchDark != null && refreshLight != null && refreshDark != null) {
+            if (isLightMode) {
+                Image imageS = new Image(searchLight);
+                ImageView imageViewS = new ImageView(imageS);
+                imageViewS.setFitHeight(size); // Set the height
+                imageViewS.setFitWidth(size);
+                searchButton.setGraphic(imageViewS);
+                Image imageR = new Image(refreshLight);
+                ImageView imageViewR = new ImageView(imageR);
+                imageViewR.setFitHeight(size); // Set the height
+                imageViewR.setFitWidth(size);
+                noteRefreshButton.setGraphic(imageViewR);
+            } else {
+                Image imageS = new Image(searchDark);
+                ImageView imageViewS = new ImageView(imageS);
+                imageViewS.setFitHeight(size); // Set the height
+                imageViewS.setFitWidth(size);
+                searchButton.setGraphic(imageViewS);
+                Image imageR = new Image(refreshDark);
+                ImageView imageViewR = new ImageView(imageR);
+                imageViewR.setFitHeight(size); // Set the height
+                imageViewR.setFitWidth(size);
+                noteRefreshButton.setGraphic(imageViewR);
+            }
+        } else {
+            // Handle the error (e.g., log or show a default image)
+            System.err.println("Image not found in resources");
+        }
     }
 
     public void log(String logString) {
@@ -475,6 +524,15 @@ public class NoteOverviewCtrl implements Initializable {
         String theme = mainCtrl.changeTheme() ? themeViewHandler.getDarkWebview() : themeViewHandler.getLightWebView();
         webViewLogger.getEngine().executeScript(theme);
         webView.getEngine().executeScript(theme);
+        if (!mainCtrl.isDarkMode()) {
+            initIcons(true);
+            noteAddButton.setStyle("-fx-background-color: lightgreen;");
+            noteDeleteButton.setStyle("-fx-background-color:  #FFCCCB;");
+        } else {
+            initIcons(false);
+            noteAddButton.setStyle("-fx-background-color: green;");
+            noteDeleteButton.setStyle("-fx-background-color: red;");
+        }
     }
 
     public List<NotePreview> getNotes() {
