@@ -4,7 +4,6 @@ import client.business.AddNoteService;
 import client.utils.AlertUtils;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
-import commons.NotePreview;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -13,7 +12,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 
-import java.util.List;
 
 /**
  * Controller class for adding a new note.

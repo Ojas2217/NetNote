@@ -14,6 +14,9 @@ import javafx.scene.control.TableView;
 import javax.swing.*;
 import java.util.List;
 
+/**
+ * Overview controller class for the collections menu
+ */
 public class CollectionOverviewCtrl {
     private CollectionUtils server;
 
@@ -25,19 +28,21 @@ public class CollectionOverviewCtrl {
     @FXML
     private TableView<CollectionPreview> table;
     @FXML
-    private TableColumn<CollectionPreview,String> collectionTitles;
+    private TableColumn<CollectionPreview, String> collectionTitles;
 
     public void showAdd() {
         mainCtrl.showAddCollection();
     }
+
     public List<CollectionPreview> getCollections() {
         return collections;
     }
 
-    public void init(){
+    public void init() {
         collectionTitles.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().getName()));
 
     }
+
     @Inject
     public CollectionOverviewCtrl(MainCtrl mainCtrl, Main main, CollectionUtils server) {
         this.mainCtrl = mainCtrl;
@@ -46,7 +51,7 @@ public class CollectionOverviewCtrl {
 
     }
 
-    public void refresh(){
+    public void refresh() {
 
         fetchCollections();
         setViewableCollections(collections);
@@ -61,6 +66,7 @@ public class CollectionOverviewCtrl {
             JOptionPane.showMessageDialog(null, errorMessage, "ERROR", JOptionPane.WARNING_MESSAGE);
         }
     }
+
     private void setViewableCollections(List<CollectionPreview> notes) {
         data = FXCollections.observableList(notes);
         table.setItems(data);

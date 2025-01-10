@@ -2,11 +2,13 @@ package client.utils;
 
 import commons.Collection;
 import commons.CollectionPreview;
-import commons.NotePreview;
 import commons.exceptions.ProcessOperationException;
 import jakarta.ws.rs.core.GenericType;
 import java.util.List;
 
+/**
+ * Utils class for collections which uses server utils to communicate with the server
+ */
 public class CollectionUtils extends ServerUtils{
 
     public Collection getCollection(long id) throws ProcessOperationException {
@@ -20,6 +22,7 @@ public class CollectionUtils extends ServerUtils{
             throw e;
         }
     }
+
     public Collection createCollection(Collection collection) throws ProcessOperationException {
         try {
             return super.post("/api/collections/", collection,

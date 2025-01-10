@@ -4,13 +4,15 @@ import client.scenes.MainCtrl;
 import client.utils.CollectionUtils;
 import commons.Collection;
 import commons.CollectionPreview;
-import commons.Note;
 import commons.exceptions.ProcessOperationException;
 import jakarta.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service class for handling the business logic of adding a collection.
+ */
 public class AddCollectionService {
 
     private final CollectionUtils server;
@@ -30,7 +32,7 @@ public class AddCollectionService {
      */
     public void addCollection(String title) {
         try {
-            server.createCollection(new Collection(title,new ArrayList<>()));
+            server.createCollection(new Collection(title, new ArrayList<>()));
         } catch (ProcessOperationException e) {
             throw new RuntimeException(e);
         }

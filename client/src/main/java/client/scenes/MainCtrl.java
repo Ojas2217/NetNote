@@ -83,11 +83,11 @@ public class MainCtrl {
         this.overview = new Scene(overview.getValue());
         this.addCtrl = add.getKey();
         this.newCtrl = title.getKey();
-        this.addCollectionCtrl=addCollections.getKey();
-        this.collectionOverviewCtrl=collections.getKey();
+        this.addCollectionCtrl = addCollections.getKey();
+        this.collectionOverviewCtrl = collections.getKey();
         this.add = new Scene(add.getValue());
         this.title = new Scene(title.getValue());
-        this.collections=new Scene(collections.getValue());
+        this.collections = new Scene(collections.getValue());
         this.addCollections = new Scene(addCollections.getValue());
 
 
@@ -164,6 +164,7 @@ public class MainCtrl {
     public NoteOverviewCtrl getOverviewCtrl() {
         return overviewCtrl;
     }
+
     public CollectionOverviewCtrl getCollectionOverviewCtrl() {
         return collectionOverviewCtrl;
     }

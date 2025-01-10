@@ -98,6 +98,6 @@ public class Main extends Application {
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         var collections = FXML.load(CollectionOverviewCtrl.class, resourceBundle, "client", "scenes", "CollectionOverview.fxml");
         var addCollections = FXML.load(AddCollectionCtrl.class, resourceBundle, "client", "scenes", "AddCollection.fxml");
-        mainCtrl.initialize(primaryStage, overview, add, searchContent, title, collections,addCollections);
+        mainCtrl.initialize(primaryStage, overview, add, searchContent, title, collections, addCollections);
     }
 }

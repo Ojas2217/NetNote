@@ -10,6 +10,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 
+/**
+ * Controller class for adding a new collection, uses addCollectionService for business logic
+ */
 public class AddCollectionCtrl {
     private final MainCtrl mainCtrl;
     @FXML

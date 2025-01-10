@@ -38,14 +38,16 @@ public class Collection {
         this.name = name;
         this.notes = notes;
     }
+
     /*
         for the default collection with id 1000
      */
-    public Collection(String name, List<Note> notes,long id){
+    public Collection(String name, List<Note> notes, long id) {
         this.name = name;
         this.notes = notes;
         this.id = id;
     }
+
     public Collection() {
         //for object mapper
     }
