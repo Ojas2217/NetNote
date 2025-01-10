@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 
+import static commons.exceptions.InternationalizationKeys.*;
+
 /**
  * Controller class for adding a new collection, uses addCollectionService for business logic
  */
@@ -23,9 +25,9 @@ public class AddCollectionCtrl {
     private AddCollectionService addCollectionService;
 
     @Inject
-    public AddCollectionCtrl(AddCollectionService addCollectionService, MainCtrl mainCtrl) {
+    public AddCollectionCtrl(AddCollectionService addCollectionService, MainCtrl mainCtrl, AlertUtils alertUtils) {
         this.mainCtrl = mainCtrl;
-        this.alertUtils = new AlertUtils();
+        this.alertUtils = alertUtils;
         this.addCollectionService = addCollectionService;
 
     }
@@ -37,11 +39,19 @@ public class AddCollectionCtrl {
 
     public void ok() {
         if (collectionTitle.getText().isEmpty()) {
-            alertUtils.showAlert(Alert.AlertType.INFORMATION, "Please add a title.");
+            alertUtils.showError(
+                    INFORMATION,
+                    EMPTY_TITLE,
+                    ENTER_VALID_COLLECTION_TITLE
+            );
             return;
         }
         if (!addCollectionService.isUnique(collectionTitle.getText())) {
-            alertUtils.showAlert(Alert.AlertType.ERROR, "Collection with this title already exists");
+            alertUtils.showError(
+                    ERROR,
+                    NOTE_WITH_TITLE_EXISTS,
+                    ENTER_VALID_COLLECTION_TITLE
+            );
             return;
         }
         try {
@@ -53,7 +63,10 @@ public class AddCollectionCtrl {
             mainCtrl.logRegular("Added new Collection: '" + title + "'");
             mainCtrl.showOverview();
         } catch (WebApplicationException e) {
-            alertUtils.showAlert(Alert.AlertType.ERROR, e.getMessage());
+            alertUtils.showError(
+                    ERROR,
+                    e.getMessage()
+            );
         }
 
     }
