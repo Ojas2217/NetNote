@@ -16,6 +16,7 @@
 package client.scenes;
 import client.MyFXML;
 import client.MyModule;
+import client.state.ResourceBundleHolder;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -28,13 +29,17 @@ import client.utils.AlertUtils;
 import com.google.inject.Injector;
 
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import static org.mockito.Mockito.*;
 
 public class MainCtrlTest {
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
+    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("language", Locale.US);
     private static final ExceptionHandler exceptionHandler =
-            new ExceptionHandler(new AlertUtils());
+            new ExceptionHandler(new AlertUtils(new ResourceBundleHolder()));
     private MainCtrl mainCtrl;
     private Stage primaryStage;
     private Stage searchContentStage;
@@ -64,10 +69,10 @@ public class MainCtrlTest {
 
         mainCtrl = new MainCtrl();
 
-        var overview = FXML.load(NoteOverviewCtrl.class, "client", "scenes", "MainScreen.fxml");
-        var add = FXML.load(AddNoteControl.class, "client", "scenes", "AddNote.fxml");
-        var title = FXML.load(NewNoteTitleCtrl.class, "client", "scenes", "newTitle.fxml");
-        var searchContent = FXML.load(SearchNoteContentCtrl.class, "client", "scenes", "SearchNoteContent.fxml"
+        var overview = FXML.load(NoteOverviewCtrl.class,resourceBundle, "client", "scenes", "MainScreen.fxml");
+        var add = FXML.load(AddNoteControl.class, resourceBundle, "scenes", "AddNote.fxml");
+        var title = FXML.load(NewNoteTitleCtrl.class,resourceBundle, "client", "scenes", "newTitle.fxml");
+        var searchContent = FXML.load(SearchNoteContentCtrl.class, resourceBundle, "client", "scenes", "SearchNoteContent.fxml"
         );
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
     }
