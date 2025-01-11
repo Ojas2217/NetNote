@@ -109,15 +109,16 @@ public class MainCtrl {
         this.title = new Scene(title.getValue());
         this.collections = new Scene(collections.getValue());
         this.addCollections = new Scene(addCollections.getValue());
+        this.isDarkMode = storage.getTheme().equals("dark");
 
-
-//        this.isDarkMode = storage.getTheme().equals("dark");
         showOverview();
         primaryStage.show();
 
         initializeSearchContentStage(searchContent);
         searchNoteContentCtrl.init();
         collectionOverviewCtrl.init();
+        
+        if (isDarkMode) overviewCtrl.changeTheme();
     }
 
     /**
