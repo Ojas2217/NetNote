@@ -28,7 +28,7 @@ public class MyStorage {
         return new File(path).getAbsolutePath();
     }
 
-    private int times = 0;
+    private int timesLoad = 0;
 
     /**
      * Load the configuration from config file
@@ -38,8 +38,8 @@ public class MyStorage {
         try {
             this.config.load(new FileInputStream(getLocation(parts)));
         } catch (IOException e) {
-            if (times == 1) throw new RuntimeException();
-            times++;
+            if (timesLoad == 1) throw new RuntimeException();
+            timesLoad++;
             loadConfig("client", "src", "main", "resources", "client", "userConfig.properties");
         }
     }
@@ -67,12 +67,25 @@ public class MyStorage {
      * Save user configuration
      */
     private void saveConfig() {
-        try (FileOutputStream fileOut = new FileOutputStream(
-                getLocation("src", "main", "resources", "client", "userConfig.properties")
-        )) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(
+                    getLocation("src", "main", "resources", "client", "userConfig.properties"));
             this.config.store(fileOut, "User Configuration");
         } catch (IOException e) {
-            throw new RuntimeException("Error saving user configuration", e);
+            saveConfigClient();
+        }
+    }
+
+    /**
+     * Save user configuration for people with different file directories
+     */
+    private void saveConfigClient() {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(
+                    getLocation("client", "src", "main", "resources", "client", "userConfig.properties"));
+            this.config.store(fileOut, "User Configuration");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
