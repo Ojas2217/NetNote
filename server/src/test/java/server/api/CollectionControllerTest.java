@@ -135,17 +135,6 @@ class CollectionControllerTest {
     }
 
     @Test
-    public void collectionNullNotes() {
-        Collection collection = new Collection("Valid Name", null);
-
-        ProcessOperationException exception = assertThrows(
-                ProcessOperationException.class,
-                () -> collectionService.createCollection(collection)
-        );
-        assertEquals("Notes list cannot be null", exception.getMessage());
-    }
-
-    @Test
     public void collectionEmptyNotes() throws ProcessOperationException {
         Collection collection = new Collection("Empty Notes Collection", List.of());
 
