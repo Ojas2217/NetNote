@@ -1,9 +1,6 @@
 package client;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Path;
 import java.util.Properties;
 
@@ -31,6 +28,7 @@ public class MyStorage {
         return new File(path).getAbsolutePath();
     }
 
+    private int times = 0;
 
     /**
      * Load the configuration from config file
@@ -40,7 +38,9 @@ public class MyStorage {
         try {
             this.config.load(new FileInputStream(getLocation(parts)));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            if (times == 1) throw new RuntimeException();
+            times++;
+            loadConfig("client", "src", "main", "resources", "client", "userConfig.properties");
         }
     }
 
