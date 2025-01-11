@@ -4,7 +4,6 @@ import client.business.AddNoteService;
 import client.utils.AlertUtils;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
-import commons.NotePreview;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -12,7 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 
-import java.util.List;
 
 import static commons.exceptions.InternationalizationKeys.*;
 
@@ -111,11 +109,6 @@ public class AddNoteControl {
         characterWarning.setVisible(false);
     }
 
-    public boolean isUnique(TextField noteTitle) {
-        List<NotePreview> notes = mainCtrl.getOverviewCtrl().getNotes();
-        if (notes == null) return true;
-        return notes.stream().noneMatch(n -> n.getTitle().equals(noteTitle.getText()));
-    }
 
     /**
      * Handles keyboard input

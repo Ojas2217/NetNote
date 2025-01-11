@@ -32,14 +32,29 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.web.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.web.WebView?>
 
-<VBox fx:id="vBoxMain" alignment="CENTER" prefHeight="646.0" prefWidth="1017.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.NoteOverviewCtrl">
+<VBox fx:id="vBoxMain" alignment="CENTER" prefHeight="646.0" prefWidth="1017.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.NoteOverviewCtrl">
   <children>
     <MenuBar VBox.vgrow="ALWAYS">
       <menus>
@@ -162,8 +177,13 @@
     </SplitPane>
       <HBox id="HBox" alignment="CENTER_LEFT" maxHeight="-Infinity" prefHeight="32.0" prefWidth="497.0" spacing="5.0" VBox.vgrow="ALWAYS">
          <children>
-            <ButtonBar maxHeight="-Infinity" maxWidth="-Infinity" nodeOrientation="RIGHT_TO_LEFT" prefHeight="25.0" prefWidth="802.0" HBox.hgrow="ALWAYS">
+            <ButtonBar centerShape="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="RIGHT_TO_LEFT" prefHeight="26.0" prefWidth="854.0" scaleShape="false" snapToPixel="false" HBox.hgrow="ALWAYS">
                <buttons>
+                  <Button mnemonicParsing="false" onAction="#showCollectionMenu" text="Collections">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Button>
                   <Button mnemonicParsing="false" onAction="#changeTheme" text="%switch.theme.button.text">
                      <font>
                         <Font name="System Bold" size="11.0" />
@@ -172,15 +192,18 @@
                   <Button fx:id="noteAddButton" mnemonicParsing="false" onAction="#addNote" style="-fx-background-color: lightgreen;" text="%add.button.text">
                      <font>
                         <Font name="System Bold" size="12.0" />
-                     </font></Button>
+                     </font>
+                  </Button>
                   <Button fx:id="noteDeleteButton" mnemonicParsing="false" onAction="#deleteNote" style="-fx-background-color: FFCCCB;" text="%delete.button.text">
                      <font>
                         <Font name="System Bold" size="12.0" />
-                     </font></Button>
+                     </font>
+                  </Button>
                   <Button fx:id="noteRefreshButton" mnemonicParsing="false" onAction="#refresh" text="%refresh.button.text">
                      <font>
                         <Font name="System Bold" size="12.0" />
-                     </font></Button>
+                     </font>
+                  </Button>
                   <Button mnemonicParsing="false" onAction="#setTitle" text="%edit.title.button.text">
                      <font>
                         <Font name="System Bold" size="12.0" />
