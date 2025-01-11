@@ -97,12 +97,13 @@ public class MainCtrl {
         this.newCtrl = title.getKey();
         this.add = new Scene(add.getValue());
         this.title = new Scene(title.getValue());
-//        this.isDarkMode = storage.getTheme().equals("dark");
+        this.isDarkMode = storage.getTheme().equals("dark");
         showOverview();
         primaryStage.show();
 
         initializeSearchContentStage(searchContent);
         searchNoteContentCtrl.init();
+        if (isDarkMode) overviewCtrl.changeTheme();
     }
 
     /**
