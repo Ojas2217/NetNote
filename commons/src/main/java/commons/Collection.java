@@ -64,6 +64,14 @@ public class Collection {
         return notes;
     }
 
+    public void addNote(Note note) {
+        notes.add(note);
+    }
+
+    public void removeNote(Note note) {
+        notes.remove(note);
+    }
+
     @Override
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
