@@ -21,17 +21,17 @@ class NoteSearchHelperTest {
     private NoteSearchHelper noteSearchHelper;
 
     @BeforeEach
-    void setUp() {
+    void before() {
         alertUtils = mock(AlertUtils.class);
         noteUtils = mock(NoteUtils.class);
         noteSearchHelper = new NoteSearchHelper(alertUtils);
     }
 
     @Test
-    void searchNoteContentEmpty() {
+    void SearchNoteContentWithoutQuery() {
         List<NotePreview> notelist = List.of(new NotePreview(111L, "yoda"));
-        List<NoteSearchResult> finals = noteSearchHelper.searchNoteContent("", notelist, noteUtils);
-        assertTrue(finals.isEmpty(), "Results should be empty for an empty query.");
+        List<NoteSearchResult> hits = noteSearchHelper.searchNoteContent("", notelist, noteUtils);
+        assertTrue(hits.isEmpty(), "Results should be empty for an empty query.");
     }
 
     @Test
@@ -41,8 +41,30 @@ class NoteSearchHelperTest {
         when(note.contentSearchQueryString("query")).thenReturn(new ArrayList<>());
         when(noteUtils.getNote(1111L)).thenReturn(note);
 
-        List<NoteSearchResult> finals = noteSearchHelper.searchNoteContent("query", noteList, noteUtils);
-        assertTrue(finals.isEmpty(), "Results should be empty if no matches are found.");
+        List<NoteSearchResult> hits = noteSearchHelper.searchNoteContent("query", noteList, noteUtils);
+        assertTrue(hits.isEmpty(), "Results should be empty if no matches are found.");
+    }
+    @Test
+    void filterNotes() {
+        List<NotePreview> list = List.of(
+                new NotePreview(21L, "jupiter Note"),
+                new NotePreview(22L, "saturn Note"),
+                new NotePreview(23L, "uranus Note")
+        );
+
+        List<NotePreview> hits = noteSearchHelper.filterNotes(list, "Note");
+        assertEquals(3, hits.size(), "All notes with 'Note' in the title should be included.");
+    }
+
+    @Test
+    void filterNoteNoMatch() {
+        List<NotePreview> noteList = List.of(
+                new NotePreview(131L, "darth vader"),
+                new NotePreview(231L, "qui gon")
+        );
+
+        List<NotePreview> hits = noteSearchHelper.filterNotes(noteList, "query");
+        assertTrue(hits.isEmpty(), "Filtered results should be empty if no titles match.");
     }
 
     @Test
@@ -57,26 +79,4 @@ class NoteSearchHelperTest {
         assertEquals("Found string 'boba', 3 times, across 2 notes", log);
     }
 
-    @Test
-    void filterNotes() {
-        List<NotePreview> list = List.of(
-                new NotePreview(21L, "jupiter Note"),
-                new NotePreview(22L, "saturn Note"),
-                new NotePreview(23L, "uranus Note")
-        );
-
-        List<NotePreview> finals = noteSearchHelper.filterNotes(list, "Note");
-        assertEquals(3, finals.size(), "All notes with 'Note' in the title should be included.");
-    }
-
-    @Test
-    void filterNoteNoMatch() {
-        List<NotePreview> noteList = List.of(
-                new NotePreview(131L, "darth vader"),
-                new NotePreview(231L, "qui gon")
-        );
-
-        List<NotePreview> finals = noteSearchHelper.filterNotes(noteList, "query");
-        assertTrue(finals.isEmpty(), "Filtered results should be empty if no titles match.");
-    }
 }

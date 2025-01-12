@@ -35,7 +35,7 @@ public class NoteOverviewServiceTest {
     }
 
     @Test
-    public void deleteNoteOption() {
+    public void deleteNoteOptionYes() {
         ResourceBundle resourceBundle = mock(ResourceBundle.class);
         ResourceBundleHolder resourceBundleHolder = mock(ResourceBundleHolder.class);
         NoteOverviewService noteOverviewService1 = new NoteOverviewService(resourceBundleHolder);
@@ -55,5 +55,10 @@ public class NoteOverviewServiceTest {
 
         int result = noteOverviewService1.promptDeleteNote();
         assertEquals(JOptionPane.YES_OPTION, result);
+    }
+
+    @Test
+    public void deleteNoteOptionNo() {
+        
     }
 }
