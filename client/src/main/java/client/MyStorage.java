@@ -18,7 +18,7 @@ public class MyStorage {
      */
     public MyStorage() {
         this.config = new Properties();
-        loadConfig("src", "main", "resources", "client", "userConfig.properties");
+        loadConfig("client", "src", "main", "resources", "client", "userConfig.properties");
     }
 
     /**
@@ -68,7 +68,7 @@ public class MyStorage {
      */
     private void saveConfig() {
         try (FileOutputStream fileOut = new FileOutputStream(
-                getLocation("src", "main", "resources", "client", "userConfig.properties")
+                getLocation("client", "src", "main", "resources", "client", "userConfig.properties")
         )) {
             this.config.store(fileOut, "User Configuration");
         } catch (IOException e) {

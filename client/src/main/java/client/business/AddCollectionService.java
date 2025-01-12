@@ -3,7 +3,6 @@ package client.business;
 import client.scenes.MainCtrl;
 import client.utils.CollectionUtils;
 import commons.Collection;
-import commons.CollectionPreview;
 import commons.exceptions.ProcessOperationException;
 import jakarta.inject.Inject;
 
@@ -28,7 +27,6 @@ public class AddCollectionService {
      * Sends a new note to the server.
      *
      * @param title the title of the note.
-     * @throws Exception if there is an error during the operation.
      */
     public void addCollection(String title) {
         try {
@@ -45,16 +43,8 @@ public class AddCollectionService {
      * @return true if the title is unique, false otherwise.
      */
     public boolean isUnique(String title) {
-        List<CollectionPreview> Collections = mainCtrl.getCollectionOverviewCtrl().getCollections();
-        if (Collections == null) {
-            return true;
-        }
-        for (CollectionPreview collection: Collections) {
-            if (collection.getName().equals(title)) {
-                return false;
-            }
-        }
-        return true;
+        List<Collection> collections = mainCtrl.getCollectionOverviewCtrl().fetchCollections();
+        return collections.stream().map(Collection::getName).noneMatch(t -> t.equals(title));
     }
 
 }

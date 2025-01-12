@@ -44,7 +44,7 @@ public class AddNoteControl {
     @FXML
     private Button cancel;
     private final AlertUtils alertUtils;
-    private AddNoteService addNoteService;
+    private final AddNoteService addNoteService;
     @FXML
     private Label characterWarning;
     private final int maxNumOfCharacters = 50;
@@ -54,7 +54,6 @@ public class AddNoteControl {
         this.mainCtrl = mainCtrl;
         this.addNoteService = addNoteService;
         this.alertUtils = alertUtils;
-
     }
 
     public void cancel() {

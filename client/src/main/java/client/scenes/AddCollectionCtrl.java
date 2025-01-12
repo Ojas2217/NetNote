@@ -17,27 +17,32 @@ import static commons.exceptions.InternationalizationKeys.*;
 public class AddCollectionCtrl {
     private final MainCtrl mainCtrl;
     @FXML
-    public TextField collectionTitle;
+    public TextField titleTextField;
     @FXML
-    private Button cancel;
-    private AlertUtils alertUtils;
-    private AddCollectionService addCollectionService;
+    private Button cancelButton;
+    private final AlertUtils alertUtils;
+    private final AddCollectionService addCollectionService;
 
     @Inject
     public AddCollectionCtrl(AddCollectionService addCollectionService, MainCtrl mainCtrl, AlertUtils alertUtils) {
         this.mainCtrl = mainCtrl;
         this.alertUtils = alertUtils;
         this.addCollectionService = addCollectionService;
-
     }
 
     public void cancel() {
         clearFields();
-        mainCtrl.showOverview();
+        mainCtrl.closeAddCollection();
     }
 
+    /**
+     * Checks whether the title contains a proper title and attempts to add a new collection onto the server.
+     * If the title is not deemed proper, the user will be informed using AlertUtils
+     *
+     * @throws WebApplicationException if an error occurs when adding the new collection to the server
+     */
     public void ok() {
-        if (collectionTitle.getText().isEmpty()) {
+        if (titleTextField.getText().isEmpty()) {
             alertUtils.showError(
                     INFORMATION,
                     EMPTY_TITLE,
@@ -45,7 +50,7 @@ public class AddCollectionCtrl {
             );
             return;
         }
-        if (!addCollectionService.isUnique(collectionTitle.getText())) {
+        if (!addCollectionService.isUnique(titleTextField.getText())) {
             alertUtils.showError(
                     ERROR,
                     NOTE_WITH_TITLE_EXISTS,
@@ -54,13 +59,14 @@ public class AddCollectionCtrl {
             return;
         }
         try {
-            String title = collectionTitle.getText();
+            String title = titleTextField.getText();
             addCollectionService.addCollection(title);
             clearFields();
-            collectionTitle.setFocusTraversable(false);
-            cancel.requestFocus();
+
+            titleTextField.setFocusTraversable(false);
+            cancelButton.requestFocus();
             mainCtrl.logRegular("Added new Collection: '" + title + "'");
-            mainCtrl.showOverview();
+            mainCtrl.closeAddCollection();
         } catch (WebApplicationException e) {
             alertUtils.showError(
                     ERROR,
@@ -71,9 +77,16 @@ public class AddCollectionCtrl {
     }
 
     public void clearFields() {
-        collectionTitle.clear();
+        titleTextField.clear();
     }
 
+    /**
+     * Handle shortcuts
+     * Enter: attempts to add a new collection with the specified title
+     * Escape: cancels the creation of a new collection
+     *
+     * @param e the information about the pressed key
+     */
     public void keyPressed(KeyEvent e) {
         switch (e.getCode()) {
             case ENTER:

@@ -103,7 +103,7 @@ public class CollectionController {
      * a bad request response if the ID is invalid, or a forbidden response if an error occurs
      */
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Collection> deleteCollectionById(@PathVariable Long id) {
+    public ResponseEntity<Boolean> deleteCollectionById(@PathVariable Long id) {
         try {
             if (id == null)
                 throw new ProcessOperationException("Collection ID is NULL", HttpStatus.BAD_REQUEST.value(),

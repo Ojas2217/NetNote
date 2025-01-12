@@ -278,7 +278,7 @@ public class NoteOverviewCtrl implements Initializable {
     }
 
     public void showCollectionMenu() {
-        mainCtrl.showCollectionOverview();
+        mainCtrl.showCollections();
     }
 
     /**

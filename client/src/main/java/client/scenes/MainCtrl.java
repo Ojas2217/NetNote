@@ -50,6 +50,8 @@ public class MainCtrl {
     private MyStorage storage;
     private Stage primaryStage;
     private Stage searchContentStage;
+    private Stage collectionsStage;
+    private Stage addCollectionStage;
 
     private NoteOverviewCtrl overviewCtrl;
     private AddNoteControl addCtrl;
@@ -61,8 +63,6 @@ public class MainCtrl {
     private Scene overview;
     private Scene add;
     private Scene title;
-    private Scene collections;
-    private Scene addCollections;
 
     private final Logger logger = new Logger();
 
@@ -103,12 +103,9 @@ public class MainCtrl {
         this.overview = new Scene(overview.getValue());
         this.addCtrl = add.getKey();
         this.newCtrl = title.getKey();
-        this.addCollectionCtrl = addCollections.getKey();
-        this.collectionOverviewCtrl = collections.getKey();
+
         this.add = new Scene(add.getValue());
         this.title = new Scene(title.getValue());
-        this.collections = new Scene(collections.getValue());
-        this.addCollections = new Scene(addCollections.getValue());
 
 
 //        this.isDarkMode = storage.getTheme().equals("dark");
@@ -117,11 +114,15 @@ public class MainCtrl {
 
         initializeSearchContentStage(searchContent);
         searchNoteContentCtrl.init();
+
+        initializeCollectionStage(collections);
         collectionOverviewCtrl.init();
+
+        initializeAddCollectionStage(addCollections);
     }
 
     /**
-     * Create an additional stage that handles the searchContent functionality
+     * Initializes an additional stage that handles the searchContent functionality
      * This class will always be shown above the mainScene
      *
      * @param searchContent the controller for the searchContentScene
@@ -133,6 +134,33 @@ public class MainCtrl {
         searchContentStage.setTitle(getResourceBundle().getString(SEARCH_CONTENT.getKey()));
         searchContentStage.setScene(searchContentScene);
         searchContentStage.setAlwaysOnTop(true);
+    }
+
+    /**
+     * Initializes an additional stage that handles the users ability to control notes using collections
+     *
+     * @param collections the controller for the collections
+     */
+    private void initializeCollectionStage(Pair<CollectionOverviewCtrl, Parent> collections) {
+        this.collectionOverviewCtrl = collections.getKey();
+        Scene collectionScene = new Scene(collections.getValue());
+        this.collectionsStage = new Stage();
+        collectionsStage.setTitle(getResourceBundle().getString(SEARCH_CONTENT.getKey()));
+        collectionsStage.setScene(collectionScene);
+    }
+
+    /**
+     * Initializes an additional stage that handles the creation of new collections
+     *
+     * @param addCollections the controller for the adding of new collections
+     */
+    private void initializeAddCollectionStage(Pair<AddCollectionCtrl, Parent> addCollections) {
+        this.addCollectionCtrl = addCollections.getKey();
+        Scene addCollectionScene = new Scene(addCollections.getValue());
+        this.addCollectionStage = new Stage();
+        addCollectionStage.setTitle(getResourceBundle().getString(SEARCH_CONTENT.getKey()));
+        addCollectionStage.setScene(addCollectionScene);
+        addCollectionScene.setOnKeyPressed(e -> addCollectionCtrl.keyPressed(e));
     }
 
     /**
@@ -229,6 +257,20 @@ public class MainCtrl {
         searchNoteContentCtrl.setSearchResult(searchResult);
     }
 
+    public void showCollections() {
+        collectionOverviewCtrl.refresh();
+        collectionsStage.show();
+    }
+
+    public void showAddCollection() {
+        addCollectionStage.show();
+    }
+
+    public void closeAddCollection() {
+        addCollectionStage.hide();
+        collectionOverviewCtrl.refresh();
+    }
+
     /**
      * Get the size and position of a scene
      *
@@ -261,18 +303,4 @@ public class MainCtrl {
     public MyStorage getStorage() {
         return this.storage;
     }
-
-    public void showCollectionOverview() {
-        primaryStage.setTitle("Collection Menu");
-        collectionOverviewCtrl.refresh();
-        primaryStage.setScene(collections);
-    }
-
-    public void showAddCollection() {
-        primaryStage.setTitle("Collections: Adding Collection");
-        primaryStage.setScene(addCollections);
-        addCollections.setOnKeyPressed(e -> addCollectionCtrl.keyPressed(e));
-
-    }
-
 }

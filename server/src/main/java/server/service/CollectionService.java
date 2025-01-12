@@ -83,14 +83,14 @@ public class CollectionService {
      * @return the deleted collection
      * @throws ProcessOperationException if the collection does not exist
      */
-    public Collection deleteCollectionById(Long id) throws ProcessOperationException {
+    public boolean deleteCollectionById(Long id) throws ProcessOperationException {
         Optional<Collection> optionalCollection = repo.findById(id);
         if (optionalCollection.isEmpty()) {
             throw new ProcessOperationException(
                     "Collection not found", HttpStatus.NOT_FOUND.value(), ExceptionType.INVALID_REQUEST);
         }
         repo.delete(optionalCollection.get());
-        return optionalCollection.get();
+        return true;
     }
 
     /**
@@ -114,7 +114,7 @@ public class CollectionService {
     public List<CollectionPreview> getIdsAndNames() {
         List<Object[]> result = repo.findIdAndName();
         return result.stream()
-                .map(e -> CollectionPreview.of((Long) e[0], (String) e[1]))
+                .map(e -> new CollectionPreview((Long) e[0], (String) e[1]))
                 .toList();
     }
 
