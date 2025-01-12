@@ -1,9 +1,6 @@
 package client;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Path;
 import java.util.Properties;
 
@@ -31,6 +28,7 @@ public class MyStorage {
         return new File(path).getAbsolutePath();
     }
 
+    private int timesLoad = 0;
 
     /**
      * Load the configuration from config file
@@ -40,7 +38,9 @@ public class MyStorage {
         try {
             this.config.load(new FileInputStream(getLocation(parts)));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            if (timesLoad == 1) throw new RuntimeException();
+            timesLoad++;
+            loadConfig("client", "src", "main", "resources", "client", "userConfig.properties");
         }
     }
 
@@ -72,7 +72,20 @@ public class MyStorage {
         )) {
             this.config.store(fileOut, "User Configuration");
         } catch (IOException e) {
-            throw new RuntimeException("Error saving user configuration", e);
+            saveConfigClient();
+        }
+    }
+
+    /**
+     * Save user configuration for people with different file directories
+     */
+    private void saveConfigClient() {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(
+                    getLocation("client", "src", "main", "resources", "client", "userConfig.properties"));
+            this.config.store(fileOut, "User Configuration");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

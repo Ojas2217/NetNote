@@ -106,9 +106,8 @@ public class MainCtrl {
 
         this.add = new Scene(add.getValue());
         this.title = new Scene(title.getValue());
+        this.isDarkMode = storage.getTheme().equals("dark");
 
-
-//        this.isDarkMode = storage.getTheme().equals("dark");
         showOverview();
         primaryStage.show();
 
@@ -119,6 +118,8 @@ public class MainCtrl {
         collectionOverviewCtrl.init();
 
         initializeAddCollectionStage(addCollections);
+        
+        if (isDarkMode) overviewCtrl.changeTheme();
     }
 
     /**
