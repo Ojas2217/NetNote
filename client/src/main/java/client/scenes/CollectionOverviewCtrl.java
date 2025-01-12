@@ -9,6 +9,7 @@ import commons.Collection;
 import commons.Note;
 import commons.exceptions.ProcessOperationException;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 
@@ -91,35 +92,50 @@ public class CollectionOverviewCtrl {
         event.consume();
     }
 
+
+    private void treeViewOnDragDropped(DragEvent event) {
+        boolean success = dropTreeItem(event);
+        onDragDropEnd(event, success);
+    }
+
     /**
      * On TreeView dropped, checks whether the target is a collection.
+     * If not, cycles through all available Node parents to see whether one is a collection.
      * If so, moves the item from the dragged collection to the target collection.
      *
      * @param event the drop information
      */
-    private void treeViewOnDragDropped(DragEvent event) {
+    private boolean dropTreeItem(DragEvent event) {
         Dragboard dragboard = event.getDragboard();
-        boolean success = false;
+        if (!dragboard.hasString()) return false;
 
         Object target = event.getTarget();
-        if (dragboard.hasString()) {
-            if (target instanceof TreeCell<?> treeCell) {
-                TreeItem<CollectionTreeItem> targetItem = (TreeItem<CollectionTreeItem>) treeCell.getTreeItem();
-                TreeItem<CollectionTreeItem> draggedItem = treeView.getSelectionModel().getSelectedItem();
 
-                if (targetItem.getValue().getNote() == null && draggedItem != null && draggedItem != targetItem) {
-                    Collection targetCollection = targetItem.getValue().getCollection();
-                    Collection draggedCollection = draggedItem.getParent().getValue().getCollection();
-                    Note note = draggedItem.getValue().getNote();
+        if (target instanceof Node targetNode) {
+            while (targetNode != null && !(targetNode instanceof TreeCell<?>)) {
+                targetNode = targetNode.getParent();
+            }
+            if (targetNode == null) return false;
 
-                    draggedCollection.removeNote(note);
-                    targetCollection.addNote(note);
+            TreeCell<?> treeCell = (TreeCell<?>) targetNode;
+            TreeItem<CollectionTreeItem> targetItem = (TreeItem<CollectionTreeItem>) treeCell.getTreeItem();
+            TreeItem<CollectionTreeItem> draggedItem = treeView.getSelectionModel().getSelectedItem();
 
-                    //Comment this and uncomment the part below to update the collection to the server
-                    // (which is not working)
-                    draggedItem.getParent().getChildren().remove(draggedItem);
-                    targetItem.getChildren().add(draggedItem);
-                    success = true;
+            if (targetItem.getValue().getNote() != null || draggedItem == null || draggedItem == targetItem)
+                return false;
+
+            Collection targetCollection = targetItem.getValue().getCollection();
+            Collection draggedCollection = draggedItem.getParent().getValue().getCollection();
+            Note note = draggedItem.getValue().getNote();
+
+            draggedCollection.removeNote(note);
+            targetCollection.addNote(note);
+
+            //Comment this and uncomment the part below to update the collection to the server
+            // (which is not working)
+            draggedItem.getParent().getChildren().remove(draggedItem);
+            targetItem.getChildren().add(draggedItem);
+            return true;
 
 //                    try {
 //                        collectionUtils.updateCollection(targetCollection);
@@ -137,9 +153,12 @@ public class CollectionOverviewCtrl {
 //                                NOTE_MAY_BE_DELETED
 //                        );
 //                    }
-                }
-            }
         }
+
+        return false;
+    }
+
+    private void onDragDropEnd(DragEvent event, boolean success) {
         event.setDropCompleted(success);
         event.consume();
     }
