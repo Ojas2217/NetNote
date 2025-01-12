@@ -31,7 +31,7 @@
      - Collections implementation on the UI (the theme needs to switch, it could replace the current noteList on the MainScreen)
    - Discuss the Usability/accessibiliy feedback (10 min)
      - Passed the following parts: 'accesibilty' and 'User feedback'
-     - Failed Navigation quite badly, what specific things need improvments or revision?
+     - Failed Navigation quite badly, what specific things need improvements or revision?
    - Discuss/Create issues for next week according to the discussion (5 min)
    - Decide the chair and minute-taker for the next meeting (1 min)
 9. **Summarize Action Points**: Who, what, when? (2 min)
