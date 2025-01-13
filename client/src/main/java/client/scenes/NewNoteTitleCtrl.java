@@ -84,6 +84,14 @@ public class NewNoteTitleCtrl {
             alertUtils.showError(INFORMATION, NOTE_MAY_BE_DELETED);
             return;
         }
+        if (!newNoteTitleService.isUnique(newNoteTitle.getText())) {
+            alertUtils.showError(
+                    ERROR,
+                    NOTE_WITH_TITLE_EXISTS,
+                    ENTER_VALID_NOTE_TITLE
+            );
+            return;
+        }
         String oldTitle = note.get().getTitle();
         try {
             String title = newNoteTitle.getText();
