@@ -16,6 +16,7 @@ import javafx.scene.input.*;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static commons.exceptions.InternationalizationKeys.*;
 
@@ -131,28 +132,22 @@ public class CollectionOverviewCtrl {
             draggedCollection.removeNote(note);
             targetCollection.addNote(note);
 
-            //Comment this and uncomment the part below to update the collection to the server
-            // (which is not working)
-            draggedItem.getParent().getChildren().remove(draggedItem);
-            targetItem.getChildren().add(draggedItem);
-            return true;
+            try {
+                collectionUtils.updateCollection(draggedCollection);
+                collectionUtils.updateCollection(targetCollection);
 
-//                    try {
-//                        collectionUtils.updateCollection(targetCollection);
-//                        collectionUtils.updateCollection(draggedCollection);
-//
-//                        draggedItem.getParent().getChildren().remove(draggedItem);
-//                        targetItem.getChildren().add(draggedItem);
-//                        success = true;
-//                    }  catch (ProcessOperationException ex) {
-//                        System.out.println(ex.getMessage());
-//
-//                        alertUtils.showError(
-//                                ERROR,
-//                                UNABLE_TO_RETRIEVE_DATA,
-//                                NOTE_MAY_BE_DELETED
-//                        );
-//                    }
+                draggedItem.getParent().getChildren().remove(draggedItem);
+                targetItem.getChildren().add(draggedItem);
+                return true;
+            } catch (ProcessOperationException ex) {
+                System.out.println(ex.getMessage());
+
+                alertUtils.showError(
+                        ERROR,
+                        UNABLE_TO_RETRIEVE_DATA,
+                        NOTE_MAY_BE_DELETED
+                );
+            }
         }
 
         return false;
@@ -216,10 +211,7 @@ public class CollectionOverviewCtrl {
         TreeItem<CollectionTreeItem> root = new TreeItem<>();
 
         try {
-            List<Note> allNotes = noteUtils.getAllNotes();
-            List<Note> alreadyDefinedNotes = collections.stream().flatMap(c -> c.getNotes().stream()).toList();
-            allNotes.removeAll(alreadyDefinedNotes);
-            collections.add(new Collection("default", allNotes));
+            updateDefaultCollection(collections);
 
             collections.forEach(collection -> {
                 TreeItem<CollectionTreeItem> treeItem = new TreeItem<>(new CollectionTreeItem(collection));
@@ -241,5 +233,21 @@ public class CollectionOverviewCtrl {
                     NOTE_MAY_BE_DELETED
             );
         }
+    }
+
+    /**
+     * Updates the default collection by filling the notes with all notes that can not be found in any
+     * other collection.
+     *
+     * @param collections all collections
+     * @throws ProcessOperationException if the server cannot be reached or throws an error
+     */
+    private void updateDefaultCollection(List<Collection> collections) throws ProcessOperationException {
+        List<Note> allNotes = noteUtils.getAllNotes();
+        List<Note> alreadyDefinedNotes = collections.stream().flatMap(c -> c.getNotes().stream()).toList();
+        allNotes.removeAll(alreadyDefinedNotes);
+
+        Optional<Collection> defaultCollection = collections.stream().filter(c -> c.getId() == 0).findFirst();
+        defaultCollection.ifPresent(collection -> collection.setNotes(allNotes));
     }
 }
