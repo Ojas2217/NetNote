@@ -231,10 +231,10 @@ public class NoteOverviewCtrl implements Initializable {
         int choice = noteOverviewService.promptDeleteNote();
         if (choice == JOptionPane.YES_OPTION) {
             server.send("/app/delete", note.get().getId());
-            clear();
+            table.getSelectionModel().clearSelection();
             enableContent(false);
+            clear();
             mainCtrl.logRegular("Deleted note '" + note.get().getTitle() + "'");
-
             refresh(); // This is needed to prevent two notes from being removed from the table
         }
     }
