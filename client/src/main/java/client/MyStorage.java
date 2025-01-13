@@ -70,7 +70,7 @@ public class MyStorage {
      */
     private void saveConfig() {
         try {
-            FileOutputStream fileOut = new FileOutputStream(getLocation("src", "main", "resources", "client", "userConfig.properties"));
+            FileOutputStream fileOut = new FileOutputStream(getLocation("client","src", "main", "resources", "client", "userConfig.properties"));
             if (saveTimes == 1) {
                 fileOut = new FileOutputStream(getLocation("client", "src", "main", "resources", "client", "userConfig.properties"));
             }
