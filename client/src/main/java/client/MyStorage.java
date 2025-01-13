@@ -15,7 +15,7 @@ public class MyStorage {
      */
     public MyStorage() {
         this.config = new Properties();
-        loadConfig("client", "src", "main", "resources", "client", "userConfig.properties");
+        loadConfig("src", "main", "resources", "client", "userConfig.properties");
     }
 
     /**
@@ -38,7 +38,7 @@ public class MyStorage {
         try {
             this.config.load(new FileInputStream(getLocation(parts)));
         } catch (IOException e) {
-            if (timesLoad == 1) throw new RuntimeException();
+            if (timesLoad == 1) throw new RuntimeException(e);
             timesLoad++;
             loadConfig("client", "src", "main", "resources", "client", "userConfig.properties");
         }
@@ -63,15 +63,22 @@ public class MyStorage {
         saveConfig();
     }
 
+    private int saveTimes = 0;
+
     /**
      * Save user configuration
      */
     private void saveConfig() {
-        try (FileOutputStream fileOut = new FileOutputStream(
-                getLocation("client", "src", "main", "resources", "client", "userConfig.properties")
-        )) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(getLocation("src", "main", "resources", "client", "userConfig.properties"));
+            if (saveTimes == 1) {
+                fileOut = new FileOutputStream(getLocation("client", "src", "main", "resources", "client", "userConfig.properties"));
+            }
+
             this.config.store(fileOut, "User Configuration");
         } catch (IOException e) {
+            if (saveTimes == 1) throw new RuntimeException(e);
+            saveTimes++;
             saveConfigClient();
         }
     }
