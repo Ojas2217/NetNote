@@ -64,6 +64,10 @@ public class Collection {
         return notes;
     }
 
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
+    }
+
     public void addNote(Note note) {
         notes.add(note);
     }
