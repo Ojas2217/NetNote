@@ -67,6 +67,8 @@ public class NoteOverviewCtrl implements Initializable {
     private ObservableList<NotePreview> data;
     private List<NotePreview> notes;
 
+    private final int charUpdateThreshold = 3;
+
     @FXML
     private TableView<NotePreview> table;
     @FXML
@@ -155,14 +157,34 @@ public class NoteOverviewCtrl implements Initializable {
             if (selectedNoteTitle.getText().equals(note.getTitle())) selectedNoteTitle.setText(q.title);
         });
         server.registerForMessages("/topic/delete", q -> noteOverviewService.initializeServerDelete(data, q, notes));
-        server.registerForMessages("/topic/update", q -> {
-            if (selectedNoteId == q.id) selectedNoteContent.setText(q.content);
-        });
+        server.registerForMessages("/topic/update", this::updateSelectedNoteContent);
 
         languageHelper.initializeLanguageComboBox(languageComboBox);
 //        if (mainCtrl.isDarkMode()) changeTheme();
 //        System.err.println(mainCtrl.isDarkMode());
 //        System.err.println(mainCtrl.getStorage().getTheme());
+    }
+
+    /**
+     * Updates the content of the SelectedNoteContent.
+     * In this case busy waiting is needed for the server to process all incoming data without overflowing it.
+     * In other words, the user can spam characters without any issues.
+     *
+     * @param note the note of which the content should be shown
+     */
+    private void updateSelectedNoteContent(Note note) {
+        selectedNoteContent.setEditable(false);
+        try {
+            Thread.sleep(charUpdateThreshold);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        int cursorIndex = selectedNoteContent.getCaretPosition();
+        if (selectedNoteId == note.id) selectedNoteContent.setText(note.content);
+        selectedNoteContent.setEditable(true);
+
+        selectedNoteContent.positionCaret(cursorIndex);
     }
 
     public void initIcons(boolean isLightMode) {
@@ -416,10 +438,12 @@ public class NoteOverviewCtrl implements Initializable {
             note.get().content = selectedNoteContentBuffer;
             server.send("/app/update", note.get());
         }
+
     }
 
     public void updateContentBuffer() {
         selectedNoteContentBuffer = selectedNoteContent.getText();
+        System.out.println("Read text");
     }
 
     public boolean wantsToSearch() {
