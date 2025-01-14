@@ -101,5 +101,7 @@ public class LanguageHelper {
             mainCtrl.getPrimaryStage().setTitle(resourceBundle.getString(EDIT_TITLE.getKey()));
         if (currentSceneParent.equals(searchContent))
             mainCtrl.getPrimaryStage().setTitle(resourceBundle.getString(SEARCH_CONTENT.getKey()));
+
+        mainCtrl.getOverviewCtrl().refresh();
     }
 }
