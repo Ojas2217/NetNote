@@ -8,9 +8,11 @@ import client.handlers.ThemeViewHandler;
 import client.services.NoteOverviewService;
 import client.Helpers.NoteSearchHelper;
 import java.util.*;
+import java.util.Timer;
 
 import client.model.LanguageOption;
 import client.utils.AlertUtils;
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -100,6 +102,9 @@ public class NoteOverviewCtrl implements Initializable {
     private Button noteDeleteButton;
     @FXML
     private Button noteRefreshButton;
+    private String pendingContent;
+    private Timer timer;
+    private final int delay = 300;
 
     /**
      * Instatiate the class using injected parameters
@@ -157,7 +162,10 @@ public class NoteOverviewCtrl implements Initializable {
             if (selectedNoteTitle.getText().equals(note.getTitle())) selectedNoteTitle.setText(q.title);
         });
         server.registerForMessages("/topic/delete", q -> noteOverviewService.initializeServerDelete(data, q, notes));
-        server.registerForMessages("/topic/update", this::updateSelectedNoteContent);
+
+        server.registerForMessages("/topic/update", q -> {
+            if (selectedNoteId == q.id) updateText(q.content);
+        });
 
         languageHelper.initializeLanguageComboBox(languageComboBox);
 //        if (mainCtrl.isDarkMode()) changeTheme();
@@ -165,26 +173,24 @@ public class NoteOverviewCtrl implements Initializable {
 //        System.err.println(mainCtrl.getStorage().getTheme());
     }
 
-    /**
-     * Updates the content of the SelectedNoteContent.
-     * In this case busy waiting is needed for the server to process all incoming data without overflowing it.
-     * In other words, the user can spam characters without any issues.
-     *
-     * @param note the note of which the content should be shown
-     */
-    private void updateSelectedNoteContent(Note note) {
-        selectedNoteContent.setEditable(false);
-        try {
-            Thread.sleep(charUpdateThreshold);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+    public void updateText(String newContent) {
+        pendingContent = newContent;
+        if (timer != null) {
+            timer.cancel();
         }
-
-        int cursorIndex = selectedNoteContent.getCaretPosition();
-        if (selectedNoteId == note.id) selectedNoteContent.setText(note.content);
-        selectedNoteContent.setEditable(true);
-
-        selectedNoteContent.positionCaret(cursorIndex);
+        timer = new Timer(true);
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    if (!selectedNoteContent.getText().equals(pendingContent)) {
+                        int caretPosition = selectedNoteContent.getCaretPosition();
+                        selectedNoteContent.setText(pendingContent);
+                        selectedNoteContent.positionCaret(caretPosition);
+                    }
+                });
+            }
+        }, delay);
     }
 
     public void initIcons(boolean isLightMode) {
