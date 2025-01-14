@@ -1,5 +1,6 @@
 package client.business;
 
+import client.scenes.MainCtrl;
 import client.utils.NoteUtils;
 import commons.Note;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +16,8 @@ public class NewNoteTitleServiceTest {
     @BeforeEach
     public void setUp() {
         NoteUtils server = mock(NoteUtils.class);  // Create the mock for NoteUtils
-        service = new NewNoteTitleService(server);  // Instantiate the service with the mock
+        MainCtrl mainCtrl = mock(MainCtrl.class);
+        service = new NewNoteTitleService(server, mainCtrl);  // Instantiate the service with the mock
     }
 
     @Test
@@ -48,9 +50,10 @@ public class NewNoteTitleServiceTest {
     public void noNewTitleServerFail() throws Exception {
         Note note = new Note("Old Title", "Some content");
         NoteUtils mockNoteUtils = mock(NoteUtils.class);
+        MainCtrl mainCtrl = mock(MainCtrl.class);
 
         doThrow(new RuntimeException("Server error")).when(mockNoteUtils).send(eq("/app/title"), eq(note));
-        NewNoteTitleService service = new NewNoteTitleService(mockNoteUtils);
+        NewNoteTitleService service = new NewNoteTitleService(mockNoteUtils, mainCtrl);
         Exception exception = assertThrows(Exception.class, () -> {
             service.newTitle(note, "New Title");
         });

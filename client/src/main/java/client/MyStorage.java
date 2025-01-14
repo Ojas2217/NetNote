@@ -9,38 +9,43 @@ import java.util.Properties;
  */
 public class MyStorage {
     private final Properties config;
+    private final Path pathDefault = Path.of("src", "main", "resources", "client", "userConfig.properties");
+    private final Path pathClient = Path.of("client", "src", "main", "resources", "client", "userConfig.properties");
+    private boolean useClient = false;
 
     /**
      * Constructor
      */
     public MyStorage() {
         this.config = new Properties();
-        loadConfig("client", "src", "main", "resources", "client", "userConfig.properties");
+        loadConfig(getPath());
+
     }
 
     /**
      * Return the path given multiple directories
-     * @param parts the directories
      * @return the path
      */
-    private String getLocation(String... parts) {
-        var path = Path.of("", parts).toString();
-        return new File(path).getAbsolutePath();
+    private String getLocation(Path path) {
+        return new File(path.toString()).getAbsolutePath();
     }
 
-    private int timesLoad = 0;
+    public Path getPath() {
+        if (useClient) return pathClient;
+        else return pathDefault;
+    }
 
     /**
      * Load the configuration from config file
-     * @param parts the directories
+     * @param path the directories
      */
-    public void loadConfig(String... parts) {
+    public void loadConfig(Path path) {
         try {
-            this.config.load(new FileInputStream(getLocation(parts)));
+            this.config.load(new FileInputStream(getLocation(path)));
         } catch (IOException e) {
-            if (timesLoad == 1) throw new RuntimeException();
-            timesLoad++;
-            loadConfig("client", "src", "main", "resources", "client", "userConfig.properties");
+            if (useClient) throw new RuntimeException(e);
+            useClient = true;
+            loadConfig(pathClient);
         }
     }
 
@@ -67,22 +72,24 @@ public class MyStorage {
      * Save user configuration
      */
     private void saveConfig() {
-        try (FileOutputStream fileOut = new FileOutputStream(
-                getLocation("client", "src", "main", "resources", "client", "userConfig.properties")
-        )) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(getLocation(getPath()));
             this.config.store(fileOut, "User Configuration");
-        } catch (IOException e) {
-            saveConfigClient();
+        } catch (Exception e) {
+            if (useClient) throw new RuntimeException(e);
+            useClient = true;
+            saveConfig();
         }
     }
 
     /**
      * Save user configuration for people with different file directories
      */
+    @Deprecated
     private void saveConfigClient() {
         try {
             FileOutputStream fileOut = new FileOutputStream(
-                    getLocation("client", "src", "main", "resources", "client", "userConfig.properties"));
+                    getLocation(pathClient));
             this.config.store(fileOut, "User Configuration");
         } catch (IOException e) {
             throw new RuntimeException(e);
