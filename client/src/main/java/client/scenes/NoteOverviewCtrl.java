@@ -183,7 +183,7 @@ public class NoteOverviewCtrl implements Initializable {
             @Override
             public void run() {
                 Platform.runLater(() -> {
-                    if (!selectedNoteContent.getText().equals(pendingContent)) {
+                    if (selectedNoteContent.getText()!=null&&!selectedNoteContent.getText().equals(pendingContent)) {
                         int caretPosition = selectedNoteContent.getCaretPosition();
                         selectedNoteContent.setText(pendingContent);
                         selectedNoteContent.positionCaret(caretPosition);
