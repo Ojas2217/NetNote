@@ -560,6 +560,16 @@ public class NoteOverviewCtrl implements Initializable {
         String theme = mainCtrl.changeTheme() ? themeViewHandler.getDarkWebview() : themeViewHandler.getLightWebView();
         webViewLogger.getEngine().executeScript(theme);
         webView.getEngine().executeScript(theme);
+        webView.getEngine().documentProperty().addListener((obs, oldDoc, newDoc) -> {
+            if (newDoc != null) {
+                webView.getEngine().executeScript(theme);
+            }
+        });
+        webViewLogger.getEngine().documentProperty().addListener((obs, oldDoc, newDoc) -> {
+            if (newDoc != null) {
+                webViewLogger.getEngine().executeScript(theme);
+            }
+        });
         if (!mainCtrl.isDarkMode()) {
             initIcons(true);
             noteAddButton.setStyle("-fx-background-color: lightgreen;");
