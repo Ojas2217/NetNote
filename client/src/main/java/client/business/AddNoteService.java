@@ -4,6 +4,7 @@ import client.scenes.MainCtrl;
 import client.utils.NoteUtils;
 import commons.Note;
 import commons.NotePreview;
+import commons.exceptions.ProcessOperationException;
 import jakarta.inject.Inject;
 
 import java.util.List;
@@ -29,7 +30,8 @@ public class AddNoteService {
      * @throws Exception if there is an error during the operation.
      */
     public void addNote(String title) {
-        server.send("/app/add", new Note(title, "empty 123 testing 123 format"));
+        Note toAdd = new Note(title, "empty 123 testing 123 format");
+        server.send("/app/add",toAdd );
     }
 
     /**

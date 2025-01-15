@@ -1,12 +1,14 @@
 package client.scenes;
 
 import client.handlers.CollectionTreeItem;
+import client.services.CollectionOverviewService;
 import client.utils.AlertUtils;
 import client.utils.CollectionUtils;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.Collection;
 import commons.Note;
+import commons.NotePreview;
 import commons.exceptions.ProcessOperationException;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -27,11 +29,11 @@ public class CollectionOverviewCtrl {
     private final NoteUtils noteUtils;
     private final AlertUtils alertUtils;
     private final CollectionUtils collectionUtils;
-
+    private final CollectionOverviewService collectionOverviewService;
     private final MainCtrl mainCtrl;
     @FXML
     private TreeView<CollectionTreeItem> treeView;
-
+    private Collection defaultCollection;
     /**
      * Gets the required mainCtrl and utils
      *
@@ -44,11 +46,14 @@ public class CollectionOverviewCtrl {
     public CollectionOverviewCtrl(MainCtrl mainCtrl,
                                   NoteUtils noteUtils,
                                   AlertUtils alertUtils,
-                                  CollectionUtils collectionUtils) {
+                                  CollectionUtils collectionUtils,
+                                  CollectionOverviewService collectionOverviewService) {
         this.mainCtrl = mainCtrl;
         this.noteUtils = noteUtils;
         this.alertUtils = alertUtils;
         this.collectionUtils = collectionUtils;
+        this.collectionOverviewService = collectionOverviewService;
+
     }
 
     /**
@@ -59,6 +64,7 @@ public class CollectionOverviewCtrl {
         treeView.setOnDragDetected(this::treeViewOnDrag);
         treeView.setOnDragOver(this::treeViewOnDragOver);
         treeView.setOnDragDropped(this::treeViewOnDragDropped);
+        initializeDefaultCollection();
     }
 
     /**
@@ -158,6 +164,22 @@ public class CollectionOverviewCtrl {
         event.consume();
     }
 
+    public void selectCollection(){
+        if(treeView.getSelectionModel().isEmpty()) return;
+        TreeItem<CollectionTreeItem> selectedCollection = treeView.getSelectionModel().getSelectedItem();
+        if (selectedCollection.getParent() != treeView.getRoot()) return;
+        if(selectedCollection.getValue().getCollection() == null) return;
+
+        Collection collection = selectedCollection.getValue().getCollection();
+        List<Note> notes = collection.getNotes();
+        List<NotePreview> notePreviews = new ArrayList<>();
+        for (Note note : notes) {
+            notePreviews.add(NotePreview.of(note.getId(),note.getTitle()));
+        }
+        mainCtrl.getOverviewCtrl().setCurrentCollectionNoteList(notePreviews);
+        refresh();
+        mainCtrl.getOverviewCtrl().refresh();
+    }
     public void showAdd() {
         mainCtrl.showAddCollection();
         refresh();
@@ -174,9 +196,17 @@ public class CollectionOverviewCtrl {
         if (selectedCollection.getParent() != treeView.getRoot()) return;
 
         Collection collection = selectedCollection.getValue().getCollection();
+        String title = collection.getName();
         if (collection.getName().equals("default")) return;
-
-        collectionUtils.deleteCollection(selectedCollection.getValue().getCollection().getId());
+        int choice = collectionOverviewService.promptDeleteNote();
+        if (choice == JOptionPane.YES_OPTION) {
+            List<Note> notesToMove = collection.getNotes();
+            for (Note note : notesToMove) {
+                defaultCollection.getNotes().add(note);
+            }
+            collectionUtils.deleteCollection(selectedCollection.getValue().getCollection().getId());
+            mainCtrl.logRegular("Deleted Collection: '" + title + "'");
+        }
         refresh();
     }
 
@@ -185,6 +215,26 @@ public class CollectionOverviewCtrl {
         setViewableCollections(collections);
     }
 
+
+    public void initializeDefaultCollection() {
+        List<Collection> existingCollections = fetchCollections();
+        if(existingCollections.stream().filter(c->c.getName().equals("default")).count() == 0){
+            defaultCollection = new Collection("default");
+            try {
+                collectionUtils.createCollection(defaultCollection);
+                updateDefaultCollection(fetchCollections());
+
+            } catch (ProcessOperationException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try {
+            updateDefaultCollection(fetchCollections());
+        } catch (ProcessOperationException e) {
+            throw new RuntimeException(e);
+
+        }
+    }
     /**
      * Attempts to fetch all collections from the server
      *
@@ -211,8 +261,8 @@ public class CollectionOverviewCtrl {
         TreeItem<CollectionTreeItem> root = new TreeItem<>();
 
         try {
-            updateDefaultCollection(collections);
 
+            updateDefaultCollection(collections);
             collections.forEach(collection -> {
                 TreeItem<CollectionTreeItem> treeItem = new TreeItem<>(new CollectionTreeItem(collection));
                 collection.getNotes().forEach(n -> {
@@ -224,13 +274,14 @@ public class CollectionOverviewCtrl {
             });
 
             treeView.setRoot(root);
+
         } catch (ProcessOperationException ex) {
             System.out.println(ex.getMessage());
 
             alertUtils.showError(
-                    ERROR,
-                    UNABLE_TO_RETRIEVE_DATA,
-                    NOTE_MAY_BE_DELETED
+                    "error",
+                    "unable to retrieve data",
+                    "collection may be deleted"
             );
         }
     }
@@ -244,10 +295,18 @@ public class CollectionOverviewCtrl {
      */
     private void updateDefaultCollection(List<Collection> collections) throws ProcessOperationException {
         List<Note> allNotes = noteUtils.getAllNotes();
-        List<Note> alreadyDefinedNotes = collections.stream().flatMap(c -> c.getNotes().stream()).toList();
-        allNotes.removeAll(alreadyDefinedNotes);
-
-        Optional<Collection> defaultCollection = collections.stream().filter(c -> c.getId() == 0).findFirst();
-        defaultCollection.ifPresent(collection -> collection.setNotes(allNotes));
+        Optional<Collection> defaultCollection = collections.stream().filter(c -> c.getName().equals("default")).findFirst();
+        collections.stream().filter(c->!c.getName().equals("default")).toList();
+        for(Note note : allNotes){
+            int check =0;
+            for(Collection collection : collections){
+                if(collection.getNotes().contains(note)){
+                    check++;
+                }
+            }
+            if(check == 0){
+                defaultCollection.get().getNotes().add(note);
+            }
+        }
     }
 }

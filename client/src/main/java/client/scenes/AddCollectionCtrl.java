@@ -44,17 +44,17 @@ public class AddCollectionCtrl {
     public void ok() {
         if (titleTextField.getText().isEmpty()) {
             alertUtils.showError(
-                    INFORMATION,
-                    EMPTY_TITLE,
-                    ENTER_VALID_COLLECTION_TITLE
+                    "Information",
+                    "The title is empty",
+                    "Please enter a valid title"
             );
             return;
         }
         if (!addCollectionService.isUnique(titleTextField.getText())) {
             alertUtils.showError(
-                    ERROR,
-                    NOTE_WITH_TITLE_EXISTS,
-                    ENTER_VALID_COLLECTION_TITLE
+                    "error",
+                    "Collection with this title exists",
+                    "Please enter a valid title"
             );
             return;
         }
