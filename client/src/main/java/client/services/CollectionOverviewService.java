@@ -4,6 +4,7 @@ import javax.swing.*;
 /**
  * Service class for Collection Overview controller, responsible for business logic
  */
+
 public class CollectionOverviewService {
 
     public int promptDeleteNote() {

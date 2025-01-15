@@ -42,6 +42,7 @@ public class CollectionOverviewCtrl {
      * @param alertUtils utils to alert the user
      * @param collectionUtils utils for collections
      */
+
     @Inject
     public CollectionOverviewCtrl(MainCtrl mainCtrl,
                                   NoteUtils noteUtils,
@@ -164,22 +165,23 @@ public class CollectionOverviewCtrl {
         event.consume();
     }
 
-    public void selectCollection(){
-        if(treeView.getSelectionModel().isEmpty()) return;
+    public void selectCollection() {
+        if (treeView.getSelectionModel().isEmpty()) return;
         TreeItem<CollectionTreeItem> selectedCollection = treeView.getSelectionModel().getSelectedItem();
         if (selectedCollection.getParent() != treeView.getRoot()) return;
-        if(selectedCollection.getValue().getCollection() == null) return;
+        if (selectedCollection.getValue().getCollection() == null) return;
 
         Collection collection = selectedCollection.getValue().getCollection();
         List<Note> notes = collection.getNotes();
         List<NotePreview> notePreviews = new ArrayList<>();
         for (Note note : notes) {
-            notePreviews.add(NotePreview.of(note.getId(),note.getTitle()));
+            notePreviews.add(NotePreview.of(note.getId(), note.getTitle()));
         }
         mainCtrl.getOverviewCtrl().setCurrentCollectionNoteList(notePreviews);
         refresh();
         mainCtrl.getOverviewCtrl().refresh();
     }
+
     public void showAdd() {
         mainCtrl.showAddCollection();
         refresh();
@@ -218,7 +220,7 @@ public class CollectionOverviewCtrl {
 
     public void initializeDefaultCollection() {
         List<Collection> existingCollections = fetchCollections();
-        if(existingCollections.stream().filter(c->c.getName().equals("default")).count() == 0){
+        if (existingCollections.stream().filter(c -> c.getName().equals("default")).count() == 0) {
             defaultCollection = new Collection("default");
             try {
                 collectionUtils.createCollection(defaultCollection);
@@ -240,6 +242,7 @@ public class CollectionOverviewCtrl {
      *
      * @return the list of all found collections
      */
+
     public List<Collection> fetchCollections() {
         try {
             return collectionUtils.getAllCollections();
@@ -296,15 +299,15 @@ public class CollectionOverviewCtrl {
     private void updateDefaultCollection(List<Collection> collections) throws ProcessOperationException {
         List<Note> allNotes = noteUtils.getAllNotes();
         Optional<Collection> defaultCollection = collections.stream().filter(c -> c.getName().equals("default")).findFirst();
-        collections.stream().filter(c->!c.getName().equals("default")).toList();
-        for(Note note : allNotes){
-            int check =0;
-            for(Collection collection : collections){
-                if(collection.getNotes().contains(note)){
+        collections.stream().filter(c -> !c.getName().equals("default")).toList();
+        for (Note note : allNotes) {
+            int check = 0;
+            for (Collection collection : collections) {
+                if (collection.getNotes().contains(note)) {
                     check++;
                 }
             }
-            if(check == 0){
+            if (check == 0) {
                 defaultCollection.get().getNotes().add(note);
             }
         }

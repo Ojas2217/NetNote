@@ -21,7 +21,6 @@ import client.services.Markdown;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.Note;
-import commons.Collection;
 import commons.NotePreview;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -289,9 +288,9 @@ public class NoteOverviewCtrl implements Initializable {
         fetchNotes();
 
         if (wantsToSearch()) search();
-        if(currentCollectionNoteList !=null){
+        if (currentCollectionNoteList != null) {
             setViewableNotes(currentCollectionNoteList);
-        }else{
+        } else {
             setViewableNotes(notes);
         }
     }
