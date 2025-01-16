@@ -16,13 +16,14 @@
 
 package client;
 
+import client.scenes.AddNoteControl;
+import client.scenes.MainCtrl;
 import client.scenes.NoteOverviewCtrl;
 import client.scenes.SearchNoteContentCtrl;
 import client.state.ResourceBundleHolder;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
-import client.scenes.MainCtrl;
 
 /**
  * Guice module for configuring dependency bindings in the application.
@@ -45,6 +46,7 @@ public class MyModule implements Module {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
         binder.bind(NoteOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(SearchNoteContentCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(AddNoteControl.class).in(Scopes.SINGLETON);
         binder.bind(ResourceBundleHolder.class).in(Scopes.SINGLETON);
     }
 }
