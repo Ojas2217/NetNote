@@ -9,7 +9,7 @@
 ## Issues to be created:
 1. **Splitting up the server tests (Sander, Kaan)**, making sure the inferred tests are explicitly tested first
 2. **Saving the content of a note when changing language (Vilius)**
-3. **When the program starts the user should be able to select a language using icons (Vilius)**
+3. **When the program starts the user should be able to select a language using icons (Vilius)**, these icons should also be visible during the regular overview
 
 ## Bugs:
 1. Switching languages still messes up the colours of the theme.
