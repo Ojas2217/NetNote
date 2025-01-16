@@ -11,7 +11,7 @@
             <TreeView fx:id="treeView" prefHeight="336.0" prefWidth="602.0" />
             <ButtonBar maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="RIGHT_TO_LEFT" prefHeight="34.0" prefWidth="602.0" VBox.vgrow="ALWAYS">
               <buttons>
-                <Button alignment="CENTER" mnemonicParsing="false" text="Rename" />
+                <Button alignment="CENTER" mnemonicParsing="false" onAction="#selectCollection" text="Select" />
                   <Button mnemonicParsing="false" onAction="#deleteCollection" text="Delete" />
                   <Button mnemonicParsing="false" onAction="#showAdd" text="Add" />
                   <Button alignment="CENTER" mnemonicParsing="false" onAction="#seeAll" text="See All" />

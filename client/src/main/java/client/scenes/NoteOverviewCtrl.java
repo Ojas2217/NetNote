@@ -76,6 +76,7 @@ public class NoteOverviewCtrl implements Initializable {
 
     private final int charUpdateThreshold = 3;
 
+    private List<NotePreview> currentCollectionNoteList;
     @FXML
     private TableView<NotePreview> table;
     @FXML
@@ -297,7 +298,11 @@ public class NoteOverviewCtrl implements Initializable {
         fetchNotes();
 
         if (wantsToSearch()) search();
-        setViewableNotes(notes);
+        if (currentCollectionNoteList != null) {
+            setViewableNotes(currentCollectionNoteList);
+        } else {
+            setViewableNotes(notes);
+        }
     }
 
     /**
@@ -488,7 +493,7 @@ public class NoteOverviewCtrl implements Initializable {
     /**
      * Lists supplied {@link List} of {@link NotePreview} in the {@link TableView}.
      */
-    private void setViewableNotes(List<NotePreview> notes) {
+    public void setViewableNotes(List<NotePreview> notes) {
         data = FXCollections.observableList(notes);
         table.setItems(data);
     }
@@ -590,6 +595,14 @@ public class NoteOverviewCtrl implements Initializable {
 
     public List<NotePreview> getNotes() {
         return notes;
+    }
+
+    public void setNotes(List<NotePreview> notes) {
+        this.notes = notes;
+    }
+
+    public void setCurrentCollectionNoteList(List<NotePreview> currentCollectionNoteList) {
+        this.currentCollectionNoteList = currentCollectionNoteList;
     }
 
     public NoteOverviewService getNoteOverviewService() {
