@@ -1,42 +1,42 @@
 package client.scenes;
 
-import java.io.InputStream;
-import java.net.URL;
-
 import client.Helpers.LanguageHelper;
-import client.handlers.ThemeViewHandler;
-import client.services.NoteOverviewService;
 import client.Helpers.NoteSearchHelper;
-import java.util.*;
-import java.util.Timer;
-
+import client.handlers.NoteSearchResult;
+import client.handlers.ThemeViewHandler;
 import client.model.LanguageOption;
+import client.services.Markdown;
+import client.services.NoteOverviewService;
 import client.utils.AlertUtils;
 import client.utils.CollectionUtils;
-import commons.CollectionPreview;
-import commons.exceptions.ProcessOperationException;
-import javafx.application.Platform;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
-import client.handlers.NoteSearchResult;
-import client.services.Markdown;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
+import commons.CollectionPreview;
 import commons.Note;
 import commons.NotePreview;
+import commons.exceptions.ProcessOperationException;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.web.WebView;
-import javafx.scene.input.KeyEvent;
 
 import javax.swing.*;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Timer;
+import java.util.*;
+import java.util.function.Consumer;
 
 import static commons.exceptions.InternationalizationKeys.*;
 import static java.util.Objects.isNull;
@@ -111,6 +111,12 @@ public class NoteOverviewCtrl implements Initializable {
     private String pendingContent;
     private Timer timer;
     private final int delay = 300;
+    private final ChangeListener<String> textChangeListener = (_, _, _) -> {
+        doSend = true;
+        sendSelectedNoteContentToServer();
+    };
+    private boolean doSend = true;
+    private final Consumer<Boolean> doSendConsumer = (bool) -> doSend = bool;
 
     /**
      * Instatiate the class using injected parameters
@@ -153,7 +159,7 @@ public class NoteOverviewCtrl implements Initializable {
                 });
 
         // NEED TO ADD DELAY
-        selectedNoteContent.textProperty().addListener((_, _, _) -> sendSelectedNoteContentToServer());
+        selectedNoteContent.textProperty().addListener(textChangeListener);
 
         selectedNoteContent.textProperty().addListener((_, _, newValue) -> markdownView(newValue));
 
@@ -175,10 +181,21 @@ public class NoteOverviewCtrl implements Initializable {
             if (selectedNoteId == q.id) updateText(q.content);
         });
 
-        languageHelper.initializeLanguageComboBox(languageComboBox);
+        languageHelper
+                .initializeLanguageComboBox(languageComboBox, getUninitializeTextAreaSendingRunnable(), doSendConsumer);
 //        if (mainCtrl.isDarkMode()) changeTheme();
 //        System.err.println(mainCtrl.isDarkMode());
 //        System.err.println(mainCtrl.getStorage().getTheme());
+    }
+
+    /**
+     * This method exists to hopefully prevent an issue similar to #99 where a change is detected after a new scene
+     * has loaded and then a message is sent to the server from a scene that isn't even visible.
+     */
+    public Runnable getUninitializeTextAreaSendingRunnable() {
+        return () -> {
+            selectedNoteContent.textProperty().removeListener(textChangeListener);
+        };
     }
 
     public void updateText(String newContent) {
@@ -450,18 +467,18 @@ public class NoteOverviewCtrl implements Initializable {
      * </p>
      */
     public void sendSelectedNoteContentToServer() {
+        if (!doSend) return;
         Optional<Note> note = fetchSelected();
         if (note.isPresent()) {
             updateContentBuffer();
             note.get().content = selectedNoteContentBuffer;
             server.send("/app/update", note.get());
         }
-
+        doSend = false;
     }
 
     public void updateContentBuffer() {
         selectedNoteContentBuffer = selectedNoteContent.getText();
-        System.out.println("Read text");
     }
 
     public boolean wantsToSearch() {
