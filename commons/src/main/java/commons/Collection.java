@@ -40,12 +40,10 @@ public class Collection {
     }
 
     /*
-        for the default collection with id 1000
+        for the default collection
      */
-    public Collection(String name, List<Note> notes, long id) {
+    public Collection(String name) {
         this.name = name;
-        this.notes = notes;
-        this.id = id;
     }
 
     public Collection() {
