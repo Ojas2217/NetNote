@@ -250,4 +250,8 @@ public class CollectionOverviewCtrl {
         Optional<Collection> defaultCollection = collections.stream().filter(c -> c.getId() == 0).findFirst();
         defaultCollection.ifPresent(collection -> collection.setNotes(allNotes));
     }
+
+    public void seeAll() {
+        mainCtrl.getOverviewCtrl().seeAllCollections();
+    }
 }
