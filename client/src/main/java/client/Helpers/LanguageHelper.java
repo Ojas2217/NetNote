@@ -2,7 +2,7 @@ package client.Helpers;
 
 import client.MyFXML;
 import client.model.LanguageOption;
-import client.scenes.*;
+import client.scenes.MainCtrl;
 import client.state.ResourceBundleHolder;
 import client.utils.LanguageOptionCreator;
 import com.google.common.collect.ImmutableList;
@@ -13,6 +13,7 @@ import javafx.scene.control.ListCell;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import static commons.exceptions.InternationalizationKeys.*;
 
@@ -43,7 +44,9 @@ public class LanguageHelper {
     /**
      * Initializes language combo box
      **/
-    public void initializeLanguageComboBox(ComboBox<LanguageOption> languageComboBox) {
+    public void initializeLanguageComboBox(ComboBox<LanguageOption> languageComboBox,
+                                           Runnable uninitializer,
+                                           Consumer<Boolean> doSendConsumer) {
         supportedLanguages.forEach(lang -> languageComboBox.getItems().add(LanguageOptionCreator.create(lang)));
         languageComboBox.setCellFactory(param -> new ListCell<LanguageOption>() {
             @Override
@@ -66,12 +69,15 @@ public class LanguageHelper {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    setGraphic(item.getHBox());
-                    setText("");
-                    mainCtrl.getStorage().setLanguage(item.getLocale().getLanguage());
-                    ResourceBundle resourceBundle = ResourceBundle.getBundle("language", item.getLocale());
-                    resourceBundleHolder.setResourceBundle(resourceBundle);
-                    reloadWithNewLanguage();
+                    var newLanguage = item.getLocale().getLanguage();
+                    if (!mainCtrl.getStorage().getLanguage().equals(newLanguage)) {
+                        mainCtrl.getStorage().setLanguage(newLanguage);
+                        ResourceBundle resourceBundle = ResourceBundle.getBundle("language", item.getLocale());
+                        resourceBundleHolder.setResourceBundle(resourceBundle);
+                        uninitializer.run();
+                        doSendConsumer.accept(false);
+                        reloadWithNewLanguage();
+                    }
                 }
             }
         });
