@@ -46,7 +46,8 @@ public class LanguageHelper {
      **/
     public void initializeLanguageComboBox(ComboBox<LanguageOption> languageComboBox,
                                            Runnable uninitializer,
-                                           Consumer<Boolean> doSendConsumer) {
+                                           Consumer<Boolean> doSendConsumer,
+                                           Runnable showCurrentNote) {
         supportedLanguages.forEach(lang -> languageComboBox.getItems().add(LanguageOptionCreator.create(lang)));
         languageComboBox.setCellFactory(param -> new ListCell<LanguageOption>() {
             @Override
@@ -77,6 +78,7 @@ public class LanguageHelper {
                         uninitializer.run();
                         doSendConsumer.accept(false);
                         reloadWithNewLanguage();
+                        showCurrentNote.run();
                     }
                 }
             }
