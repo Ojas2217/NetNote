@@ -12,6 +12,9 @@ import java.util.Timer;
 
 import client.model.LanguageOption;
 import client.utils.AlertUtils;
+import client.utils.CollectionUtils;
+import commons.CollectionPreview;
+import commons.exceptions.ProcessOperationException;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -65,9 +68,14 @@ public class NoteOverviewCtrl implements Initializable {
     private final LanguageHelper languageHelper;
     private final NoteSearchHelper noteSearchHelper;
     private final AlertUtils alertUtils;
+    private final CollectionUtils collectionUtils;
 
     private ObservableList<NotePreview> data;
     private List<NotePreview> notes;
+    private CollectionPreview currentCollection;
+
+    private final int charUpdateThreshold = 3;
+
     private List<NotePreview> currentCollectionNoteList;
     @FXML
     private TableView<NotePreview> table;
@@ -118,6 +126,7 @@ public class NoteOverviewCtrl implements Initializable {
                             LanguageHelper languageHelper,
                             NoteSearchHelper noteSearchHelper,
                             AlertUtils alertUtils,
+                            CollectionUtils collectionUtils,
                             Markdown markdown) {
         this.server = server;
         this.mainCtrl = mainCtrl;
@@ -126,6 +135,7 @@ public class NoteOverviewCtrl implements Initializable {
         this.languageHelper = languageHelper;
         this.noteSearchHelper = noteSearchHelper;
         this.alertUtils = alertUtils;
+        this.collectionUtils = collectionUtils;
         this.markdown = markdown;
     }
 
@@ -597,5 +607,18 @@ public class NoteOverviewCtrl implements Initializable {
 
     public NoteOverviewService getNoteOverviewService() {
         return noteOverviewService;
+    }
+
+    public void seeAllCollections() {
+        currentCollection = null;
+        try {
+            List<NotePreview> notes = collectionUtils.getAllCollections()
+                    .stream().flatMap(x -> x.getNotes().stream())
+                    .map(x -> x.toNotePreview())
+                    .toList();
+            setViewableNotes(notes);
+        } catch (ProcessOperationException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

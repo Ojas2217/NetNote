@@ -312,4 +312,8 @@ public class CollectionOverviewCtrl {
             }
         }
     }
+
+    public void seeAll() {
+        mainCtrl.getOverviewCtrl().seeAllCollections();
+    }
 }

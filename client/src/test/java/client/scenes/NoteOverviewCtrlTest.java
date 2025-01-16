@@ -5,6 +5,7 @@ import client.handlers.ThemeViewHandler;
 import client.services.Markdown;
 import client.services.NoteOverviewService;
 import client.utils.AlertUtils;
+import client.utils.CollectionUtils;
 import client.utils.NoteUtils;
 import commons.Note;
 import commons.NotePreview;
@@ -32,6 +33,7 @@ public class NoteOverviewCtrlTest {
     private AlertUtils alertUtils;
     private NoteUtils noteUtils;
     private MainCtrl mainCtrl;
+    private CollectionUtils collectionUtils;
     private Markdown markdown;
     private Note note;
     private NoteOverviewCtrl noteOverviewCtrl;
@@ -47,11 +49,12 @@ public class NoteOverviewCtrlTest {
         themeViewHandler = mock(ThemeViewHandler.class);
         noteSearchHelper = mock(NoteSearchHelper.class);
         alertUtils = mock(AlertUtils.class);
+        collectionUtils = mock(CollectionUtils.class);
         noteOverviewService = mock(NoteOverviewService.class);
         markdown = mock(Markdown.class);
         languageHelper = mock(LanguageHelper.class);
         note = new Note("new", "note");
-        noteOverviewCtrl = new NoteOverviewCtrl(noteUtils, mainCtrl,noteOverviewService,themeViewHandler,languageHelper,noteSearchHelper,alertUtils,markdown);
+        noteOverviewCtrl = new NoteOverviewCtrl(noteUtils, mainCtrl,noteOverviewService,themeViewHandler,languageHelper,noteSearchHelper,alertUtils,collectionUtils,markdown);
         noteOverviewCtrl2 = mock(NoteOverviewCtrl.class);
     }
 
@@ -63,7 +66,7 @@ public class NoteOverviewCtrlTest {
 
     @Test
     void fetchNotesFailureTest() throws ProcessOperationException {
-        NoteOverviewCtrl controller = new NoteOverviewCtrl(noteUtils, mainCtrl,noteOverviewService,themeViewHandler,languageHelper,noteSearchHelper,alertUtils,markdown);
+        NoteOverviewCtrl controller = new NoteOverviewCtrl(noteUtils, mainCtrl,noteOverviewService,themeViewHandler,languageHelper,noteSearchHelper,alertUtils,collectionUtils,markdown);
         when(noteUtils.getIdsAndTitles())
                 .thenThrow(new RuntimeException("Server Error"));
         controller.fetchNotes();
@@ -72,7 +75,7 @@ public class NoteOverviewCtrlTest {
 
     @Test
     void fetchNotesTest() throws ProcessOperationException {
-        NoteOverviewCtrl controller = new NoteOverviewCtrl(noteUtils, mainCtrl,noteOverviewService,themeViewHandler,languageHelper,noteSearchHelper,alertUtils,markdown);
+        NoteOverviewCtrl controller = new NoteOverviewCtrl(noteUtils, mainCtrl,noteOverviewService,themeViewHandler,languageHelper,noteSearchHelper,alertUtils,collectionUtils,markdown);
         List<NotePreview> mockNotes = List.of(
                 new NotePreview(1L, "Note 1"),
                 new NotePreview(2L, "Note 2")
@@ -85,7 +88,7 @@ public class NoteOverviewCtrlTest {
 
     @Test
     void searchNotesTest() {
-        noteOverviewCtrl = new NoteOverviewCtrl(noteUtils, mainCtrl,noteOverviewService,themeViewHandler,languageHelper,noteSearchHelper,alertUtils,markdown);
+        noteOverviewCtrl = new NoteOverviewCtrl(noteUtils, mainCtrl,noteOverviewService,themeViewHandler,languageHelper,noteSearchHelper,alertUtils,collectionUtils,markdown);
         List<NotePreview> notes = List.of(
                 new NotePreview(1L, "title1"),
                 new NotePreview(2L, "title2"),
