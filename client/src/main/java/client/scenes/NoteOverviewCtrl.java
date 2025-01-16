@@ -109,6 +109,7 @@ public class NoteOverviewCtrl implements Initializable {
     @FXML
     private Button noteRefreshButton;
     private String pendingContent;
+    private int caretPosition = 0;
     private Timer timer;
     private final int delay = 300;
     private final ChangeListener<String> textChangeListener = (_, _, _) -> {
@@ -116,7 +117,14 @@ public class NoteOverviewCtrl implements Initializable {
         sendSelectedNoteContentToServer();
     };
     private boolean doSend = true;
+    private boolean clearCalled = false;
     private final Consumer<Boolean> doSendConsumer = (bool) -> doSend = bool;
+    private final Runnable showCurrentNoteRunnable = () -> {
+        select(selectedNoteId);
+        moveCaret = true;
+        showSelectedNote();
+    };
+    private boolean moveCaret = false;
 
     /**
      * Instatiate the class using injected parameters
@@ -181,8 +189,11 @@ public class NoteOverviewCtrl implements Initializable {
             if (selectedNoteId == q.id) updateText(q.content);
         });
 
-        languageHelper
-                .initializeLanguageComboBox(languageComboBox, getUninitializeTextAreaSendingRunnable(), doSendConsumer);
+        languageHelper.initializeLanguageComboBox(
+                languageComboBox,
+                getUninitializeTextAreaSendingRunnable(),
+                doSendConsumer,
+                showCurrentNoteRunnable);
 //        if (mainCtrl.isDarkMode()) changeTheme();
 //        System.err.println(mainCtrl.isDarkMode());
 //        System.err.println(mainCtrl.getStorage().getTheme());
@@ -209,7 +220,7 @@ public class NoteOverviewCtrl implements Initializable {
             public void run() {
                 Platform.runLater(() -> {
                     if (selectedNoteContent.getText() != null && !selectedNoteContent.getText().equals(pendingContent)) {
-                        int caretPosition = selectedNoteContent.getCaretPosition();
+                        caretPosition = selectedNoteContent.getCaretPosition();
                         selectedNoteContent.setText(pendingContent);
                         selectedNoteContent.positionCaret(caretPosition);
                     }
@@ -297,6 +308,7 @@ public class NoteOverviewCtrl implements Initializable {
     }
 
     private void clear() {
+        clearCalled = true;
         selectedNoteTitle.setText(null);
         selectedNoteContent.setText(null);
     }
@@ -374,19 +386,19 @@ public class NoteOverviewCtrl implements Initializable {
     public void show(Note note) {
         selectedNoteTitle.setText(note.getTitle());
         selectedNoteContent.setText(note.getContent());
+        if (moveCaret) selectedNoteContent.positionCaret(caretPosition);
     }
 
     /**
      * If a note is selected, shows the title and content in the overview.
      */
     public void showSelectedNote() {
-        updateSelection();
-        enableContent(getSelectedNoteId().isEmpty());
-
         if (getSelectedNoteId().isEmpty()) {
             clear();
             return;
         }
+
+        enableContent(getSelectedNoteId().isEmpty());
 
         Optional<Note> note = fetchSelected();
         if (note.isEmpty()) return;
@@ -467,7 +479,10 @@ public class NoteOverviewCtrl implements Initializable {
      * </p>
      */
     public void sendSelectedNoteContentToServer() {
-        if (!doSend) return;
+        if (!doSend || clearCalled) {
+            clearCalled = false;
+            return;
+        }
         Optional<Note> note = fetchSelected();
         if (note.isPresent()) {
             updateContentBuffer();
