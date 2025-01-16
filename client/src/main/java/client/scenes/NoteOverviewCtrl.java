@@ -13,7 +13,6 @@ import java.util.Timer;
 import client.model.LanguageOption;
 import client.utils.AlertUtils;
 import client.utils.CollectionUtils;
-import commons.Collection;
 import commons.CollectionPreview;
 import commons.exceptions.ProcessOperationException;
 import javafx.application.Platform;
