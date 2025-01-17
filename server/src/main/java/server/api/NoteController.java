@@ -11,7 +11,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import server.database.NoteRepository;
-import server.service.CollectionService;
 import server.service.NoteService;
 
 import java.util.List;
@@ -41,11 +40,9 @@ import java.util.List;
 public class NoteController {
 
     private final NoteService service;
-    private final CollectionService collectionService;
 
-    public NoteController(NoteService service, CollectionService collectionService) {
+    public NoteController(NoteService service) {
         this.service = service;
-        this.collectionService = collectionService;
     }
 
     @GetMapping(path = {"", "/"})
