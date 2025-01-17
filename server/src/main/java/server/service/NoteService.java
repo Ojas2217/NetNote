@@ -28,7 +28,42 @@ public class NoteService {
     }
 
     public List<Note> getAllNotes() {
-        return repo.findAll();
+        var notes = repo.findAll();
+
+        if (notes.isEmpty()) return notes;
+
+        // invalid if a note is not assigned to a collection
+        var invalid = notes.stream()
+                .anyMatch(note -> {
+                    return note.getCollection() == null;
+                });
+        if (invalid) {
+            var collections = collectionRepo.findAll();
+            if (collections.isEmpty()) System.out.println("""
+                    No collections found, to assign loose notes.
+                    This is bad! Create an issue for this!
+                    """);
+
+            // Sets loose notes to be assigned to the first collection in the server.
+            // Since the server doesn't know what the client has set as default, this
+            // should be fine for handling loose notes, which will mess up the logic
+            // in other parts of the code.
+            else {
+                notes.forEach(note -> {
+                    if (note.getCollection() == null) {
+                        System.out.println(note);
+                        note.setCollection(collections.getFirst());
+                        repo.save(note);
+                    }
+                });
+
+                // In case new notes get added while invalid ones get fixed, this should
+                // make sure that they get fixed as well. May cause issues though if
+                // many notes get spam created.
+                notes = getAllNotes();
+            }
+        }
+        return notes;
     }
 
     /**
