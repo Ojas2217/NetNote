@@ -1,9 +1,9 @@
 package client.utils;
 
 import commons.Collection;
-//import commons.CollectionPreview;
 import commons.exceptions.ProcessOperationException;
 import jakarta.ws.rs.core.GenericType;
+
 import java.util.List;
 
 /**
@@ -35,9 +35,9 @@ public class CollectionUtils extends ServerUtils{
      * @throws ProcessOperationException when the server is unreachable,
      *                                      throws an error or the collectionId already exists
      */
-    public void createCollection(Collection collection) throws ProcessOperationException {
+    public Collection createCollection(Collection collection) throws ProcessOperationException {
         try {
-            super.post("/api/collections/", collection,
+            return super.post("/api/collections/", collection,
                     new GenericType<>() {
                     });
         } catch (Exception e) {

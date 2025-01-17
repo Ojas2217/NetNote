@@ -1,12 +1,16 @@
 package client.utils;
 
+import commons.Collection;
 import commons.Note;
 import commons.NoteCollectionPair;
 import commons.NotePreview;
 import commons.exceptions.ProcessOperationException;
 import jakarta.ws.rs.core.GenericType;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.simp.stomp.*;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
@@ -28,7 +32,7 @@ import java.util.function.Consumer;
  * <ul>
  *     <li>{@link #getNote(long)}: Fetches a specific note by ID.</li>
  *     <li>{@link #getAllNotes()}: Fetches all notes.</li>
- *     <li>{@link #createNote(Note)}: Creates a new note.</li>
+ *     <li>{@link #createNote(Note, Collection)}: Creates a new note.</li>
  *     <li>{@link #editNote(Note)}: A placeholder method for editing notes (to be implemented with WebSockets).</li>
  *     <li>{@link #deleteNote(long)}: Deletes a note by its ID.</li>
  * </ul>

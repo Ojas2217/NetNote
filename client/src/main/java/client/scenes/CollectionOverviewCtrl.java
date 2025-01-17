@@ -13,15 +13,15 @@ import commons.NotePreview;
 import commons.exceptions.ProcessOperationException;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.input.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static commons.exceptions.InternationalizationKeys.*;
 
 /**
  * Overview controller class for the collections menu
@@ -209,19 +209,19 @@ public class CollectionOverviewCtrl {
 
 
     public void initializeDefaultCollection() {
-        List<Collection> existingCollections = fetchCollections();
-        if (existingCollections.stream().filter(c -> c.getName().equals("default")).count() == 0) {
-            defaultCollection = new Collection("default");
+        var existingCollections = fetchCollections();
+        if (existingCollections.isEmpty()) {
+            var collection = new Collection("default");
             try {
-                collectionUtils.createCollection(defaultCollection);
-                updateDefaultCollection(fetchCollections());
-
+                var newCollection = collectionUtils.createCollection(collection);
+                setDefaultCollection(newCollection);
+                existingCollections = fetchCollections();
             } catch (ProcessOperationException e) {
                 throw new RuntimeException(e);
             }
         }
         try {
-            updateDefaultCollection(fetchCollections());
+            updateDefaultCollection(existingCollections);
         } catch (ProcessOperationException e) {
             throw new RuntimeException(e);
 
@@ -305,5 +305,13 @@ public class CollectionOverviewCtrl {
 
     public void seeAll() {
         mainCtrl.getOverviewCtrl().seeAllCollections();
+    }
+
+    public Collection getDefaultCollection() {
+        return defaultCollection;
+    }
+
+    public void setDefaultCollection(Collection collection) {
+        this.defaultCollection = collection;
     }
 }
