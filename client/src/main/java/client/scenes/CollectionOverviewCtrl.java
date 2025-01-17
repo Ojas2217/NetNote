@@ -8,6 +8,7 @@ import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.Collection;
 import commons.Note;
+import commons.NoteCollectionPair;
 import commons.NotePreview;
 import commons.exceptions.ProcessOperationException;
 import javafx.fxml.FXML;
@@ -66,6 +67,9 @@ public class CollectionOverviewCtrl {
         treeView.setOnDragOver(this::treeViewOnDragOver);
         treeView.setOnDragDropped(this::treeViewOnDragDropped);
         initializeDefaultCollection();
+
+        // Not sure if it is needed.
+        noteUtils.registerForMessages("/topic/transfer", System.out::println);
     }
 
     /**
@@ -136,25 +140,11 @@ public class CollectionOverviewCtrl {
             Collection draggedCollection = draggedItem.getParent().getValue().getCollection();
             Note note = draggedItem.getValue().getNote();
 
-            draggedCollection.removeNote(note);
-            targetCollection.addNote(note);
-
-            try {
-                collectionUtils.updateCollection(draggedCollection);
-                collectionUtils.updateCollection(targetCollection);
-
-                draggedItem.getParent().getChildren().remove(draggedItem);
-                targetItem.getChildren().add(draggedItem);
-                return true;
-            } catch (ProcessOperationException ex) {
-                System.out.println(ex.getMessage());
-
-                alertUtils.showError(
-                        ERROR,
-                        UNABLE_TO_RETRIEVE_DATA,
-                        NOTE_MAY_BE_DELETED
-                );
-            }
+            var pair = NoteCollectionPair.of(note, targetCollection);
+            noteUtils.send("/app/transfer", pair);
+            draggedItem.getParent().getChildren().remove(draggedItem);
+            targetItem.getChildren().add(draggedItem);
+            return true;
         }
 
         return false;
