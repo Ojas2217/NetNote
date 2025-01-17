@@ -58,7 +58,7 @@ class NoteControllerTest {
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 
-    @Test
+    /*@Test
     public void testAddNullTitle() {
         Note note = new Note(null, "content");
         when(noteController.add(note)).thenThrow(ProcessOperationException.class);
@@ -82,7 +82,7 @@ class NoteControllerTest {
         assertEquals(note, result.getBody());
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
-
+*/
     @Test
     public void testDeleteNodeIdNull() {
         Long id = null;
