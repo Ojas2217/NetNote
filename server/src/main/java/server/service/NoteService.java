@@ -1,11 +1,13 @@
 package server.service;
 
-import commons.exceptions.ExceptionType;
 import commons.Note;
+import commons.NoteCollectionPair;
 import commons.NotePreview;
+import commons.exceptions.ExceptionType;
 import commons.exceptions.ProcessOperationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import server.database.CollectionRepository;
 import server.database.NoteRepository;
 
 import java.util.List;
@@ -18,9 +20,11 @@ import java.util.Optional;
 public class NoteService {
 
     private final NoteRepository repo;
+    private final CollectionRepository collectionRepo;
 
-    public NoteService(NoteRepository repo) {
+    public NoteService(NoteRepository repo, CollectionRepository collectionRepo) {
         this.repo = repo;
+        this.collectionRepo = collectionRepo;
     }
 
     public List<Note> getAllNotes() {
@@ -121,5 +125,31 @@ public class NoteService {
         return result.stream()
                 .map(e -> NotePreview.of((Long) e[0], (String) e[1]))
                 .toList();
+    }
+
+    /**
+     * Assigns a note to a collection.
+     */
+    public NoteCollectionPair assignNoteToCollection(NoteCollectionPair pair) throws ProcessOperationException {
+        if (pair.getCollection() == null || pair.getNote() == null) {
+            throw new ProcessOperationException(
+                    "Something was Null.",
+                    HttpStatus.BAD_REQUEST.value(),
+                    ExceptionType.SERVER_ERROR);
+        };
+        var collectionOptional = collectionRepo.findById(pair.getCollection().getId());
+        var noteOptional = repo.findById(pair.getNote().getId());
+        if (collectionOptional.isEmpty() || noteOptional.isEmpty()) {
+            throw new ProcessOperationException(
+                    "Collection or note not found.",
+                    HttpStatus.NOT_FOUND.value(),
+                    ExceptionType.INVALID_REQUEST
+            );
+        }
+        var collection = collectionOptional.get();
+        var note = noteOptional.get();
+        note.setCollection(collection);
+        repo.save(note);
+        return pair;
     }
 }

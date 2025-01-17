@@ -3,6 +3,7 @@ package client.business;
 import client.scenes.MainCtrl;
 import client.utils.NoteUtils;
 import commons.Note;
+import commons.NoteCollectionPair;
 import commons.NotePreview;
 import jakarta.inject.Inject;
 
@@ -29,8 +30,10 @@ public class AddNoteService {
      * @throws Exception if there is an error during the operation.
      */
     public void addNote(String title) {
-        Note toAdd = new Note(title, "empty 123 testing 123 format");
-        server.send("/app/add", toAdd );
+        var note = new Note(title, "");
+        var collection = mainCtrl.getCollectionOverviewCtrl().getDefaultCollection();
+        var pair = NoteCollectionPair.of(note, collection);
+        server.send("/app/add", pair);
     }
 
     /**

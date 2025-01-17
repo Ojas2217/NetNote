@@ -102,8 +102,8 @@ public class NoteOverviewCtrlTest {
         doThrow(new ProcessOperationException("Error creating note",
                 HttpStatus.BAD_REQUEST.value(),
                 ExceptionType.INVALID_REQUEST))
-                .when(noteUtils).createNote(any(Note.class));
+                .when(noteUtils).createNote(any(Note.class), any(Collection.class));
 
-        assertThrows(ProcessOperationException.class, () -> noteUtils.createNote(invalidNote));
+        assertThrows(ProcessOperationException.class, () -> noteUtils.createNote(invalidNote, new Collection()));
     }
 }
