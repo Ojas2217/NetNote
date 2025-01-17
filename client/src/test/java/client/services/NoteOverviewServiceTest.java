@@ -43,7 +43,7 @@ public class NoteOverviewServiceTest {
         when(resourceBundle.getString("delete.message")).thenReturn("Are you sure?");
         when(resourceBundle.getString("delete.confirm")).thenReturn("Confirm Delete");
         when(resourceBundleHolder.getResourceBundle()).thenReturn(resourceBundle);
-        mockStatic(JOptionPane.class);
+        mock(JOptionPane.class);
 
         when(JOptionPane.showConfirmDialog(
                 null,
@@ -59,6 +59,24 @@ public class NoteOverviewServiceTest {
 
     @Test
     public void deleteNoteOptionNo() {
-        
+        ResourceBundle resourceBundle = mock(ResourceBundle.class);
+        ResourceBundleHolder resourceBundleHolder = mock(ResourceBundleHolder.class);
+        NoteOverviewService noteOverviewService1 = new NoteOverviewService(resourceBundleHolder);
+
+        when(resourceBundle.getString("delete.message")).thenReturn("Are you sure?");
+        when(resourceBundle.getString("delete.confirm")).thenReturn("Confirm Delete");
+        when(resourceBundleHolder.getResourceBundle()).thenReturn(resourceBundle);
+        mockStatic(JOptionPane.class);
+
+        when(JOptionPane.showConfirmDialog(
+                null,
+                "Are you sure?",
+                "Confirm Delete",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        )).thenReturn(JOptionPane.NO_OPTION);
+
+        int result = noteOverviewService1.promptDeleteNote();
+        assertEquals(JOptionPane.NO_OPTION, result);
     }
 }
