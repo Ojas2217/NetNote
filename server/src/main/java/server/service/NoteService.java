@@ -7,6 +7,7 @@ import commons.exceptions.ExceptionType;
 import commons.exceptions.ProcessOperationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import server.database.CollectionRepository;
 import server.database.NoteRepository;
 
@@ -51,7 +52,6 @@ public class NoteService {
             else {
                 notes.forEach(note -> {
                     if (note.getCollection() == null) {
-                        System.out.println(note);
                         note.setCollection(collections.getFirst());
                         repo.save(note);
                     }
@@ -165,6 +165,7 @@ public class NoteService {
     /**
      * Assigns a note to a collection.
      */
+    @Transactional
     public NoteCollectionPair assignNoteToCollection(NoteCollectionPair pair) throws ProcessOperationException {
         if (pair.getCollection() == null || pair.getNote() == null) {
             throw new ProcessOperationException(

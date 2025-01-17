@@ -75,8 +75,9 @@ public class NoteController {
     @PostMapping(path = {"", "/"})
     public ResponseEntity<Note> add(@RequestBody NoteCollectionPair pair) {
         try {
-            var note = service.createNote(pair.getNote());
-
+            var noteWithNullCollection = service.createNote(pair.getNote());
+            var note = service.assignNoteToCollection(NoteCollectionPair.of(
+                    noteWithNullCollection, pair.getCollection())).getNote();
             return ResponseEntity.ok(note);
         } catch (ProcessOperationException e) {
             return ResponseEntity.badRequest().build();
