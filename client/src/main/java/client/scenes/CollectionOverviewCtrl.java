@@ -252,30 +252,15 @@ public class CollectionOverviewCtrl {
     private void setViewableCollections(List<Collection> collections) {
         TreeItem<CollectionTreeItem> root = new TreeItem<>();
 
-        try {
-
-            updateDefaultCollection(collections);
-            collections.forEach(collection -> {
-                TreeItem<CollectionTreeItem> treeItem = new TreeItem<>(new CollectionTreeItem(collection));
-                collection.getNotes().forEach(n -> {
-                    TreeItem<CollectionTreeItem> noteTreeItem = new TreeItem<>(new CollectionTreeItem(n));
-                    treeItem.getChildren().add(noteTreeItem);
-                });
-
-                root.getChildren().add(treeItem);
+        collections.forEach(collection -> {
+            TreeItem<CollectionTreeItem> treeItem = new TreeItem<>(new CollectionTreeItem(collection));
+            collection.getNotes().forEach(n -> {
+                TreeItem<CollectionTreeItem> noteTreeItem = new TreeItem<>(new CollectionTreeItem(n));
+                treeItem.getChildren().add(noteTreeItem);
             });
-
-            treeView.setRoot(root);
-
-        } catch (ProcessOperationException ex) {
-            System.out.println(ex.getMessage());
-
-            alertUtils.showError(
-                    "error",
-                    "unable to retrieve data",
-                    "collection may be deleted"
-            );
-        }
+            root.getChildren().add(treeItem);
+        });
+        treeView.setRoot(root);
     }
 
     /**
