@@ -213,8 +213,7 @@ public class CollectionOverviewCtrl {
         if (existingCollections.isEmpty()) {
             var collection = new Collection("default");
             try {
-                var newCollection = collectionUtils.createCollection(collection);
-                setDefaultCollection(newCollection);
+                collectionUtils.createCollection(collection);
                 existingCollections = fetchCollections();
             } catch (ProcessOperationException e) {
                 throw new RuntimeException(e);
@@ -287,6 +286,7 @@ public class CollectionOverviewCtrl {
      * @throws ProcessOperationException if the server cannot be reached or throws an error
      */
     private void updateDefaultCollection(List<Collection> collections) throws ProcessOperationException {
+        setDefaultCollection(collections.getFirst());
         List<Note> allNotes = noteUtils.getAllNotes();
         Optional<Collection> defaultCollection = collections.stream().filter(c -> c.getName().equals("default")).findFirst();
         collections.stream().filter(c -> !c.getName().equals("default")).toList();
