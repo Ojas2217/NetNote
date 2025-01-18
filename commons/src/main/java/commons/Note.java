@@ -119,4 +119,8 @@ public class Note {
     public void setCollection(Collection collection) {
         this.collection = collection;
     }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }

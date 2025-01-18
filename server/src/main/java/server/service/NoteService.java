@@ -101,15 +101,23 @@ public class NoteService {
     /**
      * Updates an existing note in the repository.
      *
-     * @param note the note to update
+     * @param noteWithChanges the note to update
      * @return the updated note
      * @throws ProcessOperationException if the note ID is invalid or the title is missing
      */
-    public Note updateNote(Note note) throws ProcessOperationException {
-        if (isNullOrEmpty(note.title) || !repo.existsById(note.id)) {
+    @Transactional
+    public Note updateNote(Note noteWithChanges) throws ProcessOperationException {
+        if (isNullOrEmpty(noteWithChanges.title) || !repo.existsById(noteWithChanges.id)) {
             throw new ProcessOperationException(
                     "Invalid Note ID or missing title", HttpStatus.BAD_REQUEST.value(), ExceptionType.INVALID_REQUEST);
         }
+        var noteFromRepoOptional = repo.findById(noteWithChanges.id);
+        if (noteFromRepoOptional.isEmpty())
+            throw new ProcessOperationException(
+                    "Invalid Note doesn't exist", HttpStatus.BAD_REQUEST.value(), ExceptionType.INVALID_REQUEST);
+        var note = noteFromRepoOptional.get();
+        note.setTitle(noteWithChanges.title);
+        note.setContent(noteWithChanges.content);
         return repo.save(note);
     }
 
