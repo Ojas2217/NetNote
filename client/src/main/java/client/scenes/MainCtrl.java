@@ -226,11 +226,21 @@ public class MainCtrl {
     public boolean changeTheme() {
         if (overview.getStylesheets().isEmpty()) {
             overview.getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
+            add.getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
+            title.getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
+            searchContentStage.getScene().getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
+            collectionsStage.getScene().getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
+            addCollectionStage.getScene().getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
             isDarkMode = true;
             storage.setTheme("dark");
             return true;
         } else {
             overview.getStylesheets().clear();
+            add.getStylesheets().clear();
+            title.getStylesheets().clear();
+            searchContentStage.getScene().getStylesheets().clear();
+            collectionsStage.getScene().getStylesheets().clear();
+            addCollectionStage.getScene().getStylesheets().clear();
             isDarkMode = false;
             storage.setTheme("light");
             return false;
