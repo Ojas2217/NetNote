@@ -68,8 +68,7 @@ public class CollectionOverviewCtrl {
         treeView.setOnDragDropped(this::treeViewOnDragDropped);
         initializeDefaultCollection();
 
-        // Not sure if it is needed.
-        noteUtils.registerForMessages("/topic/transfer", System.out::println);
+        noteUtils.registerForMessages("/topic/transfer", _ -> refresh());
     }
 
     /**
@@ -200,6 +199,7 @@ public class CollectionOverviewCtrl {
             mainCtrl.logRegular("Deleted Collection: '" + title + "'");
         }
         refresh();
+        mainCtrl.getOverviewCtrl().refresh();
     }
 
     public void refresh() {

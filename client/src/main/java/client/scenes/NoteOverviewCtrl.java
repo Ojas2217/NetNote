@@ -40,6 +40,7 @@ import java.util.function.Consumer;
 
 import static commons.exceptions.InternationalizationKeys.*;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * Controller for the Note Overview view.
@@ -332,6 +333,8 @@ public class NoteOverviewCtrl implements Initializable {
         } else {
             setViewableNotes(notes);
         }
+        var collectionCtrl = mainCtrl.getCollectionOverviewCtrl();
+        if (nonNull(collectionCtrl)) collectionCtrl.refresh();
     }
 
     /**
