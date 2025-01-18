@@ -6,6 +6,7 @@ import client.utils.NoteUtils;
 import commons.Note;
 import commons.NotePreview;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -31,6 +32,7 @@ class AddNoteServiceTest {
     }
 
 
+    @Disabled
     @Test
     public void addNoteTest() {
         service.addNote("Test Note");

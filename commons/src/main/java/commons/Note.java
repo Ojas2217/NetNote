@@ -1,9 +1,7 @@
 package commons;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -36,6 +34,11 @@ public class Note {
     public long id;
     public String title;
     public String content;
+
+    @ManyToOne
+    @JoinColumn(name = "collection_id", unique = false)
+    @JsonBackReference
+    public Collection collection;
 
 
     public Note() {
@@ -107,5 +110,17 @@ public class Note {
 
     public NotePreview toNotePreview() {
         return new NotePreview(id, title);
+    }
+
+    public Collection getCollection() {
+        return collection;
+    }
+
+    public void setCollection(Collection collection) {
+        this.collection = collection;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

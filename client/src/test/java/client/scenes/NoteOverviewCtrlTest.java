@@ -1,4 +1,5 @@
 package client.scenes;
+
 import client.Helpers.LanguageHelper;
 import client.Helpers.NoteSearchHelper;
 import client.handlers.ThemeViewHandler;
@@ -7,18 +8,16 @@ import client.services.NoteOverviewService;
 import client.utils.AlertUtils;
 import client.utils.CollectionUtils;
 import client.utils.NoteUtils;
+import commons.Collection;
 import commons.Note;
 import commons.NotePreview;
 import commons.exceptions.ExceptionType;
 import commons.exceptions.ProcessOperationException;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
 
 import java.util.List;
 
@@ -102,8 +101,8 @@ public class NoteOverviewCtrlTest {
         doThrow(new ProcessOperationException("Error creating note",
                 HttpStatus.BAD_REQUEST.value(),
                 ExceptionType.INVALID_REQUEST))
-                .when(noteUtils).createNote(any(Note.class));
+                .when(noteUtils).createNote(any(Note.class), any(Collection.class));
 
-        assertThrows(ProcessOperationException.class, () -> noteUtils.createNote(invalidNote));
+        assertThrows(ProcessOperationException.class, () -> noteUtils.createNote(invalidNote, new Collection()));
     }
 }

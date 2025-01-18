@@ -24,3 +24,8 @@ to the `lib`(!) directory (not just the directory that you unzipped)...
 
 *Tip:* Double-check that the path is correct. If you receive abstract error messages, like `Module javafx.web not found`
 or a segmentation fault, you are likely not pointing to the right folder
+
+If the client doesn't start due to SQL errors on the server change
+
+    spring.jpa.hibernate.ddl-auto=update -> spring.jpa.hibernate.ddl-auto=create
+in server/src/main/resources/application.properties
