@@ -11,6 +11,9 @@
                 <TableColumn fx:id="titleColumn" prefWidth="134.0" text="%note.title.column.text" />
                 <TableColumn fx:id="indexColumn" prefWidth="65.0" text="%index.column.text" />
             </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
         </TableView>
     </children>
 </AnchorPane>

@@ -146,7 +146,7 @@ public class MainCtrl {
         this.collectionOverviewCtrl = collections.getKey();
         Scene collectionScene = new Scene(collections.getValue());
         this.collectionsStage = new Stage();
-        collectionsStage.setTitle(getResourceBundle().getString(SEARCH_CONTENT.getKey()));
+        collectionsStage.setTitle(getResourceBundle().getString(COLLECTIONS.getKey()));
         collectionsStage.setScene(collectionScene);
     }
 
@@ -159,7 +159,7 @@ public class MainCtrl {
         this.addCollectionCtrl = addCollections.getKey();
         Scene addCollectionScene = new Scene(addCollections.getValue());
         this.addCollectionStage = new Stage();
-        addCollectionStage.setTitle(getResourceBundle().getString(SEARCH_CONTENT.getKey()));
+        addCollectionStage.setTitle(getResourceBundle().getString(COLLECTIONS.getKey()));
         addCollectionStage.setScene(addCollectionScene);
         addCollectionScene.setOnKeyPressed(e -> addCollectionCtrl.keyPressed(e));
     }
@@ -263,6 +263,7 @@ public class MainCtrl {
 
         applySceneInfo(searchContentStage, searchContentSceneInfo);
         searchContentStage.show();
+        searchContentStage.sizeToScene();
         Platform.runLater(() -> primaryStage.requestFocus());
 
         searchNoteContentCtrl.setSearchResult(searchResult);
@@ -271,6 +272,7 @@ public class MainCtrl {
     public void showCollections() {
         collectionOverviewCtrl.refresh();
         collectionsStage.show();
+        collectionsStage.toFront();
     }
 
     public void showAddCollection() {
