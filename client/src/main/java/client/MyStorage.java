@@ -5,6 +5,7 @@ import commons.Collection;
 
 import java.io.*;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -15,6 +16,8 @@ public class MyStorage {
     private final Properties config;
     private final Path pathDefault = Path.of("src", "main", "resources", "client", "userConfig.properties");
     private final Path pathClient = Path.of("client", "src", "main", "resources", "client", "userConfig.properties");
+    private final String pathDefaultCollection = "src/main/resources/client/collections";
+    private final String pathClientCollection = "client/src/main/resources/client/collections";
     private boolean useClient = false;
     ObjectMapper objectMapper = new ObjectMapper();
 
@@ -138,12 +141,16 @@ public class MyStorage {
      * @return the collections
      */
     public List<Collection> getCollections() {
-        try {
-            return objectMapper.readValue(getConfigValue("collections"),
+        String path = pathDefaultCollection;
+        if (useClient) path = pathClientCollection;
+        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
+            String jsonString = reader.readLine();
+            if (jsonString != null) return objectMapper.readValue(jsonString,
                     objectMapper.getTypeFactory().constructCollectionType(List.class, Collection.class));
-        } catch (Exception e) {
-            System.err.println("error with reading collection output");
-            return List.of();
+            else return new ArrayList<>();
+        } catch (IOException e) {
+            System.err.println("error reading collection file");
+            return new ArrayList<>();
         }
     }
 
@@ -152,12 +159,13 @@ public class MyStorage {
      * @param collections
      */
     public void setCollections(List<Collection> collections) {
-        try {
+        String path = pathDefaultCollection;
+        if (useClient) path = pathClientCollection;
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path))) {
             String jsonString = objectMapper.writeValueAsString(collections);
-            System.out.println(jsonString);
-            setItemConfig("collections", jsonString);
-        } catch (Exception e) {
-            System.err.println("Error with writing collection to config");
+            writer.write(jsonString);
+        } catch (IOException e) {
+            System.err.println("error reading collection file");
         }
     }
 }

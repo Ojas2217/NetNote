@@ -65,7 +65,7 @@ public class CollectionOverviewCtrl {
         treeView.setOnDragOver(this::treeViewOnDragOver);
         treeView.setOnDragDropped(this::treeViewOnDragDropped);
 
-        collections = new ArrayList<>(mainCtrl.getStorage().getCollections());
+        getConfigCollection();
         initializeDefaultCollection();
 
         noteUtils.registerForMessages("/topic/transfer", _ -> refresh());
@@ -207,10 +207,15 @@ public class CollectionOverviewCtrl {
         mainCtrl.getOverviewCtrl().refresh();
     }
 
+    private boolean firstTime = true;
+
     public void refresh() {
         updateCollections();
         setViewableCollections(collections);
-        setConfigCollection();
+        if (firstTime) {
+            getConfigCollection();
+            firstTime = false;
+        } else setConfigCollection();
     }
 
     /**
@@ -220,7 +225,7 @@ public class CollectionOverviewCtrl {
         collections = new ArrayList<>(collections.stream().map(x -> {
                 try {
                     if (collectionUtils.getAllCollections().contains(x)) return x;
-                    else return collectionUtils.getCollectionById(x.getId());
+                    else return null;
                 } catch (ProcessOperationException e) {
                     System.err.println("error when updating collections occurred.");
                     return null;
@@ -230,8 +235,8 @@ public class CollectionOverviewCtrl {
     }
 
     public void initializeDefaultCollection() {
-        if (collections != null && collections.isEmpty()) {
-            var collection = new Collection("default");
+        if (collections.isEmpty()) {
+            var collection = new Collection("default", new ArrayList<>());
             try {
                 collectionUtils.createCollection(collection);
                 collections.add(collection);
@@ -243,7 +248,6 @@ public class CollectionOverviewCtrl {
             updateDefaultCollection(collections);
         } catch (ProcessOperationException e) {
             throw new RuntimeException(e);
-
         }
     }
     /**
@@ -327,5 +331,9 @@ public class CollectionOverviewCtrl {
         if (collections != null) {
             mainCtrl.getStorage().setCollections(collections);
         }
+    }
+
+    public void getConfigCollection() {
+        collections = mainCtrl.getStorage().getCollections();
     }
 }
