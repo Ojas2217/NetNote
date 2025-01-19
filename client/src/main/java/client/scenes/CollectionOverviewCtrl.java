@@ -299,4 +299,8 @@ public class CollectionOverviewCtrl {
     public void setDefaultCollection(Collection collection) {
         this.defaultCollection = collection;
     }
+
+    public void setTreeView(TreeView<CollectionTreeItem> treeView) {
+        this.treeView = treeView;
+    }
 }
