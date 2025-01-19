@@ -30,7 +30,9 @@ public class AddCollectionService {
      */
     public void addCollection(String title) {
         try {
-            server.createCollection(new Collection(title, new ArrayList<>()));
+            Collection collection = new Collection(title, new ArrayList<>());
+            collection = server.createCollection(collection);
+            mainCtrl.getCollectionOverviewCtrl().addToCollection(collection);
         } catch (ProcessOperationException e) {
             throw new RuntimeException(e);
         }

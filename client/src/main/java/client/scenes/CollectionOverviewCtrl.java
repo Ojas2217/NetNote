@@ -6,10 +6,7 @@ import client.utils.AlertUtils;
 import client.utils.CollectionUtils;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
-import commons.Collection;
-import commons.Note;
-import commons.NoteCollectionPair;
-import commons.NotePreview;
+import commons.*;
 import commons.exceptions.ProcessOperationException;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -35,6 +32,7 @@ public class CollectionOverviewCtrl {
     @FXML
     private TreeView<CollectionTreeItem> treeView;
     private Collection defaultCollection;
+    private List<Collection> collections;
     /**
      * Gets the required mainCtrl and utils
      *
@@ -66,6 +64,8 @@ public class CollectionOverviewCtrl {
         treeView.setOnDragDetected(this::treeViewOnDrag);
         treeView.setOnDragOver(this::treeViewOnDragOver);
         treeView.setOnDragDropped(this::treeViewOnDragDropped);
+
+        collections = mainCtrl.getStorage().getCollections();
         initializeDefaultCollection();
 
         noteUtils.registerForMessages("/topic/transfer", _ -> refresh());
@@ -176,6 +176,11 @@ public class CollectionOverviewCtrl {
         refresh();
     }
 
+    public void addToCollection(Collection collection) {
+        System.out.println(collection);
+        collections.add(collection);
+    }
+
     /**
      * Checks whether the selectedItem is a collection.
      * If so, deletes the selected collection on the server.
@@ -203,24 +208,37 @@ public class CollectionOverviewCtrl {
     }
 
     public void refresh() {
-        List<Collection> collections = fetchCollections();
+        updateCollections();
         setViewableCollections(collections);
+        setConfigCollection();
     }
 
+    /**
+     * This function makes sure that the collections we have do have the updated notes
+     */
+    public void updateCollections() {
+        collections = new ArrayList<>(collections.stream().map(x -> {
+                try {
+                    return collectionUtils.getCollectionById(x.getId());
+                } catch (ProcessOperationException e) {
+                    return x;
+                }
+            }
+        ).toList());
+    }
 
     public void initializeDefaultCollection() {
-        var existingCollections = fetchCollections();
-        if (existingCollections.isEmpty()) {
+        if (collections != null && collections.isEmpty()) {
             var collection = new Collection("default");
             try {
                 collectionUtils.createCollection(collection);
-                existingCollections = fetchCollections();
+                collections.add(collection);
             } catch (ProcessOperationException e) {
-                throw new RuntimeException(e);
+                System.err.println(e);
             }
         }
         try {
-            updateDefaultCollection(existingCollections);
+            updateDefaultCollection(collections);
         } catch (ProcessOperationException e) {
             throw new RuntimeException(e);
 
@@ -298,5 +316,14 @@ public class CollectionOverviewCtrl {
 
     public void setDefaultCollection(Collection collection) {
         this.defaultCollection = collection;
+    }
+
+    /**
+     * sets the collections to the config
+     */
+    public void setConfigCollection() {
+        if (collections != null) {
+            mainCtrl.getStorage().setCollections(collections);
+        }
     }
 }
