@@ -288,8 +288,8 @@ public class CollectionOverviewCtrl {
             var collection = new Collection("default");
             return collectionUtils.createCollection(collection);
         } catch (ProcessOperationException e) {
-            System.err.println(e);
-            return null;
+            throw new RuntimeException(e);
+
         }
     }
 
@@ -360,5 +360,9 @@ public class CollectionOverviewCtrl {
         if (collections != null) {
             mainCtrl.getStorage().setCollections(collections);
         }
+    }
+
+    public void getConfigCollection() {
+        collections = mainCtrl.getStorage().getCollections();
     }
 }
