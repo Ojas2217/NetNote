@@ -12,13 +12,11 @@ import commons.NotePreview;
  */
 public class NoteSearchResult {
     private final NotePreview note;
-    private final int startIndex;
-    private final int endIndex;
+    private final SearchIndices searchIndices;
 
-    public NoteSearchResult(NotePreview note, int startIndexResult, int wordLength) {
+    public NoteSearchResult(NotePreview note, SearchIndices searchIndices) {
         this.note = note;
-        this.startIndex = startIndexResult;
-        this.endIndex = startIndex + wordLength;
+        this.searchIndices = searchIndices;
     }
 
     public NotePreview getNotePreview() {
@@ -26,10 +24,18 @@ public class NoteSearchResult {
     }
 
     public int getStartIndex() {
-        return startIndex;
+        return searchIndices.getStartIndex();
     }
 
     public int getEndIndex() {
-        return endIndex;
+        return searchIndices.getEndIndex();
+    }
+
+    public Integer getLineNr() {
+        return searchIndices.getLineNr();
+    }
+
+    public Integer getLineOffset() {
+        return searchIndices.getLineOffset();
     }
 }
