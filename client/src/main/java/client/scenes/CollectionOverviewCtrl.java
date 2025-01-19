@@ -65,7 +65,7 @@ public class CollectionOverviewCtrl {
         treeView.setOnDragOver(this::treeViewOnDragOver);
         treeView.setOnDragDropped(this::treeViewOnDragDropped);
 
-        collections = mainCtrl.getStorage().getCollections();
+        collections = new ArrayList<>(mainCtrl.getStorage().getCollections());
         initializeDefaultCollection();
 
         noteUtils.registerForMessages("/topic/transfer", _ -> refresh());
