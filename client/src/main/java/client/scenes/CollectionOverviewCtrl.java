@@ -267,6 +267,9 @@ public class CollectionOverviewCtrl {
                     .filter(Objects::nonNull)
                     .toList());
 
+            // This should probably be loaded from and saved in the config.
+            setDefaultCollection(collections.getFirst());
+
         } catch (ProcessOperationException e) {
             System.err.println(e);
         }
