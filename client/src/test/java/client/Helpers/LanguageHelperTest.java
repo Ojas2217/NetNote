@@ -63,8 +63,6 @@ class LanguageHelperTest extends ApplicationTest {
         when(mockTitleScene.rootProperty()).thenReturn(mockTitleRoot);
         when(mockSearchContentScene.rootProperty()).thenReturn(mockSearchContentRoot);
 
-        Platform.runLater(() -> {
-        });
     }
 
     @Test
