@@ -21,6 +21,7 @@ import javafx.scene.input.*;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -253,7 +254,11 @@ public class CollectionOverviewCtrl {
         TreeItem<CollectionTreeItem> root = new TreeItem<>();
 
         collections.forEach(collection -> {
-            TreeItem<CollectionTreeItem> treeItem = new TreeItem<>(new CollectionTreeItem(collection));
+            boolean isDefault = false;
+            if (Objects.equals(defaultCollection.getName(), collection.getName())) {
+                isDefault = true;
+            }
+            TreeItem<CollectionTreeItem> treeItem = new TreeItem<>(new CollectionTreeItem(collection, isDefault));
             collection.getNotes().forEach(n -> {
                 TreeItem<CollectionTreeItem> noteTreeItem = new TreeItem<>(new CollectionTreeItem(n));
                 treeItem.getChildren().add(noteTreeItem);
