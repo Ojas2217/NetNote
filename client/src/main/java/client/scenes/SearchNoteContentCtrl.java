@@ -2,13 +2,13 @@ package client.scenes;
 
 import client.handlers.NoteSearchResult;
 import com.google.inject.Inject;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.util.List;
 
@@ -23,7 +23,9 @@ public class SearchNoteContentCtrl {
     @FXML
     private TableColumn<NoteSearchResult, String> titleColumn;
     @FXML
-    private TableColumn<NoteSearchResult, Integer> indexColumn;
+    private TableColumn<NoteSearchResult, Integer> lineNrColumn;
+    @FXML
+    private TableColumn<NoteSearchResult, Integer> lineOffsetColumn;
 
     private List<NoteSearchResult> searchResult;
 
@@ -56,7 +58,10 @@ public class SearchNoteContentCtrl {
 
         titleColumn.setCellValueFactory(cellData ->
                 new ReadOnlyStringWrapper(cellData.getValue().getNotePreview().getTitle()));
-        indexColumn.setCellValueFactory(new PropertyValueFactory<>("startIndex"));
+        lineNrColumn.setCellValueFactory(cellData ->
+                new ReadOnlyIntegerWrapper(cellData.getValue().getLineNr()).asObject());
+        lineOffsetColumn.setCellValueFactory(cellData ->
+                new ReadOnlyIntegerWrapper(cellData.getValue().getLineOffset()).asObject());
 
         ObservableList<NoteSearchResult> data = FXCollections.observableArrayList(searchResults);
         tableViewResult.setItems(data);
