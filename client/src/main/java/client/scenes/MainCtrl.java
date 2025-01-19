@@ -63,7 +63,8 @@ public class MainCtrl {
     private Scene overview;
     private Scene add;
     private Scene title;
-
+    private final int xCoordinate = 950;
+    private final int yCoordinate = 400;
     private final Logger logger = new Logger();
 
     public Scene getOverviewScene() { return overview; }
@@ -264,8 +265,8 @@ public class MainCtrl {
         applySceneInfo(searchContentStage, searchContentSceneInfo);
         searchContentStage.show();
         searchContentStage.sizeToScene();
-        searchContentStage.setX(950);
-        searchContentStage.setY(400);
+        searchContentStage.setX(xCoordinate);
+        searchContentStage.setY(yCoordinate);
         Platform.runLater(() -> primaryStage.requestFocus());
 
         searchNoteContentCtrl.setSearchResult(searchResult);
