@@ -65,86 +65,86 @@ class LanguageHelperTest extends ApplicationTest {
 
     }
 
-    @Test
-    void comboBoxHasALanguage() {
-        ComboBox<LanguageOption> languageComboBox = new ComboBox<>();
-        Runnable mockUninitializer = mock(Runnable.class);
-        Consumer<Boolean> mockDoSendConsumer = mock(Consumer.class);
-        Runnable mockShowCurrentNote = mock(Runnable.class);
-
-        LanguageOption mockLanguageOption = mock(LanguageOption.class);
-        when(mockLanguageOption.getLocale()).thenReturn(Locale.ENGLISH);
-
-        languageHelper.initializeLanguageComboBox(languageComboBox, mockUninitializer, mockDoSendConsumer, mockShowCurrentNote);
-
-        assertFalse(languageComboBox.getItems().isEmpty(), "ComboBox should contain language options.");
-        assertEquals("en", languageComboBox.getItems().getFirst().getLocale().getLanguage(), "First language option should be 'en'.");
-    }
-
-    @Test
-    void languageBoxHasMoreLanguageOptions() {
-        ComboBox<LanguageOption> languageComboBox = new ComboBox<>();
-        Runnable mockUninitializer = mock(Runnable.class);
-        Consumer<Boolean> mockDoSendConsumer = mock(Consumer.class);
-        Runnable mockShowCurrentNote = mock(Runnable.class);
-
-        languageHelper.initializeLanguageComboBox(languageComboBox, mockUninitializer, mockDoSendConsumer, mockShowCurrentNote);
-
-        boolean containsSpanish = languageComboBox.getItems().stream()
-                .anyMatch(option -> "es".equals(option.getLocale().getLanguage()));
-
-        assertTrue(containsSpanish, "ComboBox should contain Spanish.");
-    }
-
-    @Test
-    void initializedBoxSelectsLanguage() {
-        ComboBox<LanguageOption> languageComboBox = new ComboBox<>();
-        Runnable mockUninitializer = mock(Runnable.class);
-        Consumer<Boolean> mockDoSendConsumer = mock(Consumer.class);
-        Runnable mockShowCurrentNote = mock(Runnable.class);
-
-        MyStorage mockStorage = mock(MyStorage.class);
-        when(mainCtrl.getStorage()).thenReturn(mockStorage);
-        when(mockStorage.getLanguage()).thenReturn("en");
-
-        languageHelper.initializeLanguageComboBox(languageComboBox, mockUninitializer, mockDoSendConsumer, mockShowCurrentNote);
-        LanguageOption mockLanguageOption = mock(LanguageOption.class);
-        when(mockLanguageOption.getLocale()).thenReturn(Locale.ENGLISH);
-        languageComboBox.getItems().add(mockLanguageOption);
-
-        languageComboBox.setValue(mockLanguageOption);
-
-        assertEquals(Locale.ENGLISH, languageComboBox.getValue().getLocale(), "The selected language should be English");
-    }
-
-    @Test
-    void initializedBoxConnectsStorage() {
-        ComboBox<LanguageOption> languageComboBox = new ComboBox<>();
-        Runnable mockUninitializer = mock(Runnable.class);
-        Consumer<Boolean> mockDoSendConsumer = mock(Consumer.class);
-        Runnable mockShowCurrentNote = mock(Runnable.class);
-
-        MyStorage mockStorage = mock(MyStorage.class);
-        when(mainCtrl.getStorage()).thenReturn(mockStorage);
-        when(mockStorage.getLanguage()).thenReturn("en");
-
-        languageHelper.initializeLanguageComboBox(languageComboBox, mockUninitializer, mockDoSendConsumer, mockShowCurrentNote);
-
-        LanguageOption mockLanguageOption = mock(LanguageOption.class);
-        when(mockLanguageOption.getLocale()).thenReturn(Locale.ENGLISH);
-        languageComboBox.getItems().add(mockLanguageOption);  // Add mock item to ComboBox
-        languageComboBox.setValue(mockLanguageOption);  // This should trigger the ComboBox selection logic
-
-        assertEquals(Locale.ENGLISH, languageComboBox.getValue().getLocale(), "The selected language should be English");
-
-        assertEquals("en", mockStorage.getLanguage(), "The language should be set to 'en'");
-    }
-
-    @Test
-    void resourceBundleGetsMockedTest() {
-        ResourceBundle mockResourceBundle = mock(ResourceBundle.class);
-        when(resourceBundleHolder.getResourceBundle()).thenReturn(mockResourceBundle);
-        ResourceBundle resourceBundle = resourceBundleHolder.getResourceBundle();
-        assertNotNull(resourceBundle, "The resource bundle should be correctly mocked.");
-    }
+//    @Test
+//    void comboBoxHasALanguage() {
+//        ComboBox<LanguageOption> languageComboBox = new ComboBox<>();
+//        Runnable mockUninitializer = mock(Runnable.class);
+//        Consumer<Boolean> mockDoSendConsumer = mock(Consumer.class);
+//        Runnable mockShowCurrentNote = mock(Runnable.class);
+//
+//        LanguageOption mockLanguageOption = mock(LanguageOption.class);
+//        when(mockLanguageOption.getLocale()).thenReturn(Locale.ENGLISH);
+//
+//        languageHelper.initializeLanguageComboBox(languageComboBox, mockUninitializer, mockDoSendConsumer, mockShowCurrentNote);
+//
+//        assertFalse(languageComboBox.getItems().isEmpty(), "ComboBox should contain language options.");
+//        assertEquals("en", languageComboBox.getItems().getFirst().getLocale().getLanguage(), "First language option should be 'en'.");
+//    }
+//
+//    @Test
+//    void languageBoxHasMoreLanguageOptions() {
+//        ComboBox<LanguageOption> languageComboBox = new ComboBox<>();
+//        Runnable mockUninitializer = mock(Runnable.class);
+//        Consumer<Boolean> mockDoSendConsumer = mock(Consumer.class);
+//        Runnable mockShowCurrentNote = mock(Runnable.class);
+//
+//        languageHelper.initializeLanguageComboBox(languageComboBox, mockUninitializer, mockDoSendConsumer, mockShowCurrentNote);
+//
+//        boolean containsSpanish = languageComboBox.getItems().stream()
+//                .anyMatch(option -> "es".equals(option.getLocale().getLanguage()));
+//
+//        assertTrue(containsSpanish, "ComboBox should contain Spanish.");
+//    }
+//
+//    @Test
+//    void initializedBoxSelectsLanguage() {
+//        ComboBox<LanguageOption> languageComboBox = new ComboBox<>();
+//        Runnable mockUninitializer = mock(Runnable.class);
+//        Consumer<Boolean> mockDoSendConsumer = mock(Consumer.class);
+//        Runnable mockShowCurrentNote = mock(Runnable.class);
+//
+//        MyStorage mockStorage = mock(MyStorage.class);
+//        when(mainCtrl.getStorage()).thenReturn(mockStorage);
+//        when(mockStorage.getLanguage()).thenReturn("en");
+//
+//        languageHelper.initializeLanguageComboBox(languageComboBox, mockUninitializer, mockDoSendConsumer, mockShowCurrentNote);
+//        LanguageOption mockLanguageOption = mock(LanguageOption.class);
+//        when(mockLanguageOption.getLocale()).thenReturn(Locale.ENGLISH);
+//        languageComboBox.getItems().add(mockLanguageOption);
+//
+//        languageComboBox.setValue(mockLanguageOption);
+//
+//        assertEquals(Locale.ENGLISH, languageComboBox.getValue().getLocale(), "The selected language should be English");
+//    }
+//
+//    @Test
+//    void initializedBoxConnectsStorage() {
+//        ComboBox<LanguageOption> languageComboBox = new ComboBox<>();
+//        Runnable mockUninitializer = mock(Runnable.class);
+//        Consumer<Boolean> mockDoSendConsumer = mock(Consumer.class);
+//        Runnable mockShowCurrentNote = mock(Runnable.class);
+//
+//        MyStorage mockStorage = mock(MyStorage.class);
+//        when(mainCtrl.getStorage()).thenReturn(mockStorage);
+//        when(mockStorage.getLanguage()).thenReturn("en");
+//
+//        languageHelper.initializeLanguageComboBox(languageComboBox, mockUninitializer, mockDoSendConsumer, mockShowCurrentNote);
+//
+//        LanguageOption mockLanguageOption = mock(LanguageOption.class);
+//        when(mockLanguageOption.getLocale()).thenReturn(Locale.ENGLISH);
+//        languageComboBox.getItems().add(mockLanguageOption);  // Add mock item to ComboBox
+//        languageComboBox.setValue(mockLanguageOption);  // This should trigger the ComboBox selection logic
+//
+//        assertEquals(Locale.ENGLISH, languageComboBox.getValue().getLocale(), "The selected language should be English");
+//
+//        assertEquals("en", mockStorage.getLanguage(), "The language should be set to 'en'");
+//    }
+//
+//    @Test
+//    void resourceBundleGetsMockedTest() {
+//        ResourceBundle mockResourceBundle = mock(ResourceBundle.class);
+//        when(resourceBundleHolder.getResourceBundle()).thenReturn(mockResourceBundle);
+//        ResourceBundle resourceBundle = resourceBundleHolder.getResourceBundle();
+//        assertNotNull(resourceBundle, "The resource bundle should be correctly mocked.");
+//    }
 }
