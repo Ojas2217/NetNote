@@ -140,11 +140,11 @@ class LanguageHelperTest extends ApplicationTest {
 //        assertEquals("en", mockStorage.getLanguage(), "The language should be set to 'en'");
 //    }
 //
-//    @Test
-//    void resourceBundleGetsMockedTest() {
-//        ResourceBundle mockResourceBundle = mock(ResourceBundle.class);
-//        when(resourceBundleHolder.getResourceBundle()).thenReturn(mockResourceBundle);
-//        ResourceBundle resourceBundle = resourceBundleHolder.getResourceBundle();
-//        assertNotNull(resourceBundle, "The resource bundle should be correctly mocked.");
-//    }
+    @Test
+    void resourceBundleGetsMockedTest() {
+        ResourceBundle mockResourceBundle = mock(ResourceBundle.class);
+        when(resourceBundleHolder.getResourceBundle()).thenReturn(mockResourceBundle);
+        ResourceBundle resourceBundle = resourceBundleHolder.getResourceBundle();
+        assertNotNull(resourceBundle, "The resource bundle should be correctly mocked.");
+    }
 }
