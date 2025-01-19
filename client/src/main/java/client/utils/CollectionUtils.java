@@ -29,6 +29,24 @@ public class CollectionUtils extends ServerUtils{
     }
 
     /**
+     * Gets a collection by its specific id
+     * @param id id
+     * @return collection
+     * @throws ProcessOperationException e
+     */
+    public Collection getCollectionById(Long id) throws ProcessOperationException {
+        try {
+            return super.get("/api/collections/" + id,
+                    new GenericType<>() {
+                    });
+        } catch (Exception e) {
+            if (e instanceof ProcessOperationException)
+                throw (ProcessOperationException) e;
+            throw e;
+        }
+    }
+
+    /**
      * Attempts to create a new collection on the server
      *
      * @param collection the new collection

@@ -1,7 +1,11 @@
 package client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import commons.Collection;
+
 import java.io.*;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -12,6 +16,7 @@ public class MyStorage {
     private final Path pathDefault = Path.of("src", "main", "resources", "client", "userConfig.properties");
     private final Path pathClient = Path.of("client", "src", "main", "resources", "client", "userConfig.properties");
     private boolean useClient = false;
+    ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Constructor
@@ -126,5 +131,33 @@ public class MyStorage {
      */
     public void setTheme(String theme) {
         setItemConfig("theme", theme);
+    }
+
+    /**
+     * Get the collections
+     * @return the collections
+     */
+    public List<Collection> getCollections() {
+        try {
+            return objectMapper.readValue(getConfigValue("collections"),
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, Collection.class));
+        } catch (Exception e) {
+            System.err.println("error with reading collection output");
+            return List.of();
+        }
+    }
+
+    /**
+     * Set the collections
+     * @param collections
+     */
+    public void setCollections(List<Collection> collections) {
+        try {
+            String jsonString = objectMapper.writeValueAsString(collections);
+            System.out.println(jsonString);
+            setItemConfig("collections", jsonString);
+        } catch (Exception e) {
+            System.err.println("Error with writing collection to config");
+        }
     }
 }
