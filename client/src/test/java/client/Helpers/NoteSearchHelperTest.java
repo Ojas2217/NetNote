@@ -1,11 +1,13 @@
 package client.Helpers;
 
 import client.handlers.NoteSearchResult;
+import client.handlers.SearchIndices;
 import client.utils.AlertUtils;
 import client.utils.NoteUtils;
 import commons.Note;
 import commons.NotePreview;
 import commons.exceptions.ProcessOperationException;
+import javafx.util.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
@@ -70,13 +72,12 @@ class NoteSearchHelperTest {
     @Test
     void getSearchLogString() {
         List<NoteSearchResult> hits = List.of(
-                new NoteSearchResult(new NotePreview(11L, "elephant"), 0, 5),
-                new NoteSearchResult(new NotePreview(11L, "elephant"), 10, 5),
-                new NoteSearchResult(new NotePreview(12L, "in da room"), 0, 5)
+                new NoteSearchResult(new NotePreview(11L, "elephant"), new SearchIndices(-1, -1, new Pair<>(-1, -1))),
+                new NoteSearchResult(new NotePreview(11L, "elephant"), new SearchIndices(10, 5, new Pair<>(3, 1))),
+                new NoteSearchResult(new NotePreview(12L, "in da room"), new SearchIndices(-1, -1, new Pair<>(-1, -1)))
         );
 
         String log = noteSearchHelper.getSearchLogString(hits, "boba");
         assertEquals("Found string 'boba', 3 times, across 2 notes", log);
     }
-
 }
