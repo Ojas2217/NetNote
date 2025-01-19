@@ -95,6 +95,7 @@ public class LanguageHelper {
         var add = FXML.loadParent(resourceBundle, "client", "scenes", "AddNote.fxml");
         var title = FXML.loadParent(resourceBundle, "client", "scenes", "newTitle.fxml");
         var searchContent = FXML.loadParent(resourceBundle, "client", "scenes", "SearchNoteContent.fxml");
+
         mainCtrl.getOverviewScene().rootProperty().setValue(overview);
         mainCtrl.getAddScene().rootProperty().setValue(add);
         mainCtrl.getTitleScene().rootProperty().setValue(title);

@@ -11,6 +11,7 @@ public enum InternationalizationKeys {
     ADD_NOTE("add.note"),
     EDIT_TITLE("edit.text"),
     SEARCH_CONTENT("search.content"),
+    COLLECTIONS("collections"),
 
 
     // Delete prompt

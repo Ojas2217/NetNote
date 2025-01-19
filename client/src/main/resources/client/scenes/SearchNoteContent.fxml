@@ -12,6 +12,9 @@
                 <TableColumn fx:id="lineNrColumn" text="%lineNr.column.text" />
             <TableColumn fx:id="lineOffsetColumn" prefWidth="68.0" text="%index.column.text" />
             </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
         </TableView>
     </children>
 </AnchorPane>
