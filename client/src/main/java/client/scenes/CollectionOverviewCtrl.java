@@ -219,9 +219,11 @@ public class CollectionOverviewCtrl {
     public void updateCollections() {
         collections = new ArrayList<>(collections.stream().map(x -> {
                 try {
-                    return collectionUtils.getCollectionById(x.getId());
+                    if (collectionUtils.getAllCollections().contains(x)) return x;
+                    else return collectionUtils.getCollectionById(x.getId());
                 } catch (ProcessOperationException e) {
-                    return x;
+                    System.err.println("error when updating collections occurred.");
+                    return null;
                 }
             }
         ).toList());
