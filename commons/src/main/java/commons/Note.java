@@ -75,9 +75,9 @@ public class Note {
      */
     public List<Integer> contentSearchQueryString(String queryString) {
         List<Integer> indices = new ArrayList<>();
-        if (queryString.isEmpty()) return indices;
+        if (content == null || queryString.isEmpty()) return indices;
 
-        String contentToSearch = String.valueOf(content);
+        String contentToSearch = content;
 
         int startIndex = content.indexOf(queryString);
         int previousIndex = 0;

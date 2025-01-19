@@ -421,17 +421,10 @@ public class NoteOverviewCtrl implements Initializable {
         Optional<Note> note = fetch(notePreview);
         if (note.isEmpty()) return;
 
-        show(note.get());
-        select(notePreview);
+        select(notePreview.getId());
+        showSelectedNote();
 
         selectedNoteContent.selectRange(searchResult.getStartIndex(), searchResult.getEndIndex());
-    }
-
-    /**
-     * Select a {@link Note} in the table by its NotePreview
-     */
-    public void select(NotePreview note) {
-        select(note.getId());
     }
 
     /**
@@ -517,6 +510,7 @@ public class NoteOverviewCtrl implements Initializable {
             setViewableNotes(foundInNotes.stream().map(NoteSearchResult::getNotePreview).distinct().toList());
             mainCtrl.logRegular(noteSearchHelper.getSearchLogString(foundInNotes, queryString));
             mainCtrl.showSearchContent(foundInNotes);
+            System.out.println("Found " + input + " " + foundInNotes.size() + " times");
         } else {
             searchAllNotes(input);
         }
