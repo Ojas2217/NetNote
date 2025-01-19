@@ -43,7 +43,7 @@ public class NoteOverviewServiceTest {
         when(resourceBundle.getString("delete.message")).thenReturn("Are you sure?");
         when(resourceBundle.getString("delete.confirm")).thenReturn("Confirm Delete");
         when(resourceBundleHolder.getResourceBundle()).thenReturn(resourceBundle);
-        mockStatic(JOptionPane.class);
+        mock(JOptionPane.class);
 
         when(JOptionPane.showConfirmDialog(
                 null,
@@ -59,6 +59,6 @@ public class NoteOverviewServiceTest {
 
     @Test
     public void deleteNoteOptionNo() {
-        
+
     }
 }

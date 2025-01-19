@@ -1,8 +1,9 @@
 package server.api;
 
-import commons.exceptions.ExceptionType;
 import commons.Note;
+import commons.NoteCollectionPair;
 import commons.NotePreview;
+import commons.exceptions.ExceptionType;
 import commons.exceptions.ProcessOperationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,13 +69,16 @@ public class NoteController {
     /**
      * Handles a POST request to add a new Note.
      *
-     * @param note the Note to be added, provided in the request body
+     * @param pair the Note to be added, provided in the request body
      * @return a ResponseEntity containing the saved Note if valid, or a bad request response if the Note is invalid
      */
     @PostMapping(path = {"", "/"})
-    public ResponseEntity<Note> add(@RequestBody Note note) {
+    public ResponseEntity<Note> add(@RequestBody NoteCollectionPair pair) {
         try {
-            return ResponseEntity.ok(service.createNote(note));
+            var noteWithNullCollection = service.createNote(pair.getNote());
+            var note = service.assignNoteToCollection(NoteCollectionPair.of(
+                    noteWithNullCollection, pair.getCollection())).getNote();
+            return ResponseEntity.ok(note);
         } catch (ProcessOperationException e) {
             return ResponseEntity.badRequest().build();
         }
@@ -124,13 +128,34 @@ public class NoteController {
 
     /**
      * Adds a note via ws
-     * @param note the note that needs to be added
+     * @param pair the note that needs to be added
      * @return the added note
      */
     @MessageMapping("/add")
     @SendTo("/topic/add")
-    public Note addMessage(Note note) {
-        return add(note).getBody();
+    public Note addMessage(NoteCollectionPair pair) {
+        return add(pair).getBody();
+    }
+
+    /**
+     * Adds a note via ws
+     * @param pair the note that needs to be added
+     * @return the added note
+     */
+    @MessageMapping("/transfer")
+    @SendTo("/topic/transfer")
+    public NoteCollectionPair transferMessage(NoteCollectionPair pair) {
+        return transfer(pair).getBody();
+    }
+
+    /***/
+    public ResponseEntity<NoteCollectionPair> transfer(@RequestBody NoteCollectionPair pair) {
+        try {
+            var result = service.assignNoteToCollection(pair);
+            return ResponseEntity.ok(result);
+        } catch (ProcessOperationException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     /**

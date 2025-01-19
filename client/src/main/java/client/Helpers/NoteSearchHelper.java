@@ -1,14 +1,17 @@
 package client.Helpers;
 
 import client.handlers.NoteSearchResult;
+import client.handlers.SearchIndices;
 import client.utils.AlertUtils;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.Note;
 import commons.NotePreview;
 import commons.exceptions.ProcessOperationException;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static commons.exceptions.InternationalizationKeys.*;
@@ -40,9 +43,11 @@ public class NoteSearchHelper {
                 Note note = server.getNote(n.getId());
                 List<Integer> foundIndices = note.contentSearchQueryString(query);
                 if (!foundIndices.isEmpty()) {
-                    // Indexes should be recalculated when a user clicks on the note
-                    // since the note gets updated and could change!!!
-                    foundIndices.forEach(i -> foundInNotes.add(new NoteSearchResult(n, i, query.length())));
+                    foundIndices.forEach(i -> {
+                        Pair<Integer, Integer> lineNrOffset = getLineNrOffset(note.getContent(), i);
+                        SearchIndices searchIndices = new SearchIndices(i, i + query.length(), lineNrOffset);
+                        foundInNotes.add(new NoteSearchResult(n, searchIndices));
+                    });
                 }
             } catch (ProcessOperationException e) {
                 System.out.println(e.getMessage());
@@ -56,6 +61,28 @@ public class NoteSearchHelper {
         });
 
         return foundInNotes;
+    }
+
+    /**
+     * Gets the lineNr and lineOffset of the given index inside the given content
+     *
+     * @param content the content to search through
+     * @param index the index of the character to search for
+     * @return a pair containing the found lineNr and lineOffset
+     */
+    private Pair<Integer, Integer> getLineNrOffset(String content, int index) {
+        List<String> lines = Arrays.stream(content.split("\n")).toList();
+
+        int currentIndex = 0;
+        for (int i = 0; i < lines.size(); i++) {
+            int newIndex = currentIndex + lines.get(i).length();
+            if (index < newIndex) {
+                return new Pair<>(i + 1, index - currentIndex + 1 - i);
+            }
+            currentIndex = newIndex;
+        }
+
+        return new Pair<>(-1, -1);
     }
 
     public String getSearchLogString(List<NoteSearchResult> foundInNotes, String queryString) {

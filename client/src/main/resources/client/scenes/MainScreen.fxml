@@ -48,6 +48,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -177,7 +178,7 @@
     </SplitPane>
       <HBox id="HBox" alignment="CENTER_LEFT" maxHeight="-Infinity" prefHeight="32.0" prefWidth="497.0" spacing="5.0" VBox.vgrow="ALWAYS">
          <children>
-            <ButtonBar centerShape="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="RIGHT_TO_LEFT" prefHeight="26.0" prefWidth="854.0" scaleShape="false" snapToPixel="false" HBox.hgrow="ALWAYS">
+            <ButtonBar centerShape="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="RIGHT_TO_LEFT" prefHeight="26.0" prefWidth="808.0" scaleShape="false" snapToPixel="false" HBox.hgrow="ALWAYS">
                <buttons>
                   <Button mnemonicParsing="false" onAction="#showCollectionMenu" text="Collections">
                      <font>
@@ -212,6 +213,7 @@
                </buttons>
             </ButtonBar>
             <ComboBox fx:id="languageComboBox" prefWidth="150.0" promptText="%languages.combo.box.text" />
+            <ImageView fx:id="flagIcon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" />
          </children>
          <padding>
             <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />

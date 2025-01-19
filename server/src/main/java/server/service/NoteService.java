@@ -1,11 +1,14 @@
 package server.service;
 
-import commons.exceptions.ExceptionType;
 import commons.Note;
+import commons.NoteCollectionPair;
 import commons.NotePreview;
+import commons.exceptions.ExceptionType;
 import commons.exceptions.ProcessOperationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import server.database.CollectionRepository;
 import server.database.NoteRepository;
 
 import java.util.List;
@@ -18,13 +21,49 @@ import java.util.Optional;
 public class NoteService {
 
     private final NoteRepository repo;
+    private final CollectionRepository collectionRepo;
 
-    public NoteService(NoteRepository repo) {
+    public NoteService(NoteRepository repo, CollectionRepository collectionRepo) {
         this.repo = repo;
+        this.collectionRepo = collectionRepo;
     }
 
     public List<Note> getAllNotes() {
-        return repo.findAll();
+        var notes = repo.findAll();
+
+        if (notes.isEmpty()) return notes;
+
+        // invalid if a note is not assigned to a collection
+        var invalid = notes.stream()
+                .anyMatch(note -> {
+                    return note.getCollection() == null;
+                });
+        if (invalid) {
+            var collections = collectionRepo.findAll();
+            if (collections.isEmpty()) System.out.println("""
+                    No collections found, to assign loose notes.
+                    This is bad! Create an issue for this!
+                    """);
+
+            // Sets loose notes to be assigned to the first collection in the server.
+            // Since the server doesn't know what the client has set as default, this
+            // should be fine for handling loose notes, which will mess up the logic
+            // in other parts of the code.
+            else {
+                notes.forEach(note -> {
+                    if (note.getCollection() == null) {
+                        note.setCollection(collections.getFirst());
+                        repo.save(note);
+                    }
+                });
+
+                // In case new notes get added while invalid ones get fixed, this should
+                // make sure that they get fixed as well. May cause issues though if
+                // many notes get spam created.
+                notes = getAllNotes();
+            }
+        }
+        return notes;
     }
 
     /**
@@ -62,15 +101,23 @@ public class NoteService {
     /**
      * Updates an existing note in the repository.
      *
-     * @param note the note to update
+     * @param noteWithChanges the note to update
      * @return the updated note
      * @throws ProcessOperationException if the note ID is invalid or the title is missing
      */
-    public Note updateNote(Note note) throws ProcessOperationException {
-        if (isNullOrEmpty(note.title) || !repo.existsById(note.id)) {
+    @Transactional
+    public Note updateNote(Note noteWithChanges) throws ProcessOperationException {
+        if (isNullOrEmpty(noteWithChanges.title) || !repo.existsById(noteWithChanges.id)) {
             throw new ProcessOperationException(
                     "Invalid Note ID or missing title", HttpStatus.BAD_REQUEST.value(), ExceptionType.INVALID_REQUEST);
         }
+        var noteFromRepoOptional = repo.findById(noteWithChanges.id);
+        if (noteFromRepoOptional.isEmpty())
+            throw new ProcessOperationException(
+                    "Invalid Note doesn't exist", HttpStatus.BAD_REQUEST.value(), ExceptionType.INVALID_REQUEST);
+        var note = noteFromRepoOptional.get();
+        note.setTitle(noteWithChanges.title);
+        note.setContent(noteWithChanges.content);
         return repo.save(note);
     }
 
@@ -121,5 +168,32 @@ public class NoteService {
         return result.stream()
                 .map(e -> NotePreview.of((Long) e[0], (String) e[1]))
                 .toList();
+    }
+
+    /**
+     * Assigns a note to a collection.
+     */
+    @Transactional
+    public NoteCollectionPair assignNoteToCollection(NoteCollectionPair pair) throws ProcessOperationException {
+        if (pair.getCollection() == null || pair.getNote() == null) {
+            throw new ProcessOperationException(
+                    "Something was Null.",
+                    HttpStatus.BAD_REQUEST.value(),
+                    ExceptionType.SERVER_ERROR);
+        };
+        var collectionOptional = collectionRepo.findById(pair.getCollection().getId());
+        var noteOptional = repo.findById(pair.getNote().getId());
+        if (collectionOptional.isEmpty() || noteOptional.isEmpty()) {
+            throw new ProcessOperationException(
+                    "Collection or note not found.",
+                    HttpStatus.NOT_FOUND.value(),
+                    ExceptionType.INVALID_REQUEST
+            );
+        }
+        var collection = collectionOptional.get();
+        var note = noteOptional.get();
+        note.setCollection(collection);
+        repo.save(note);
+        return pair;
     }
 }

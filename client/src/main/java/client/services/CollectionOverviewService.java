@@ -7,6 +7,9 @@ import javax.swing.*;
 
 public class CollectionOverviewService {
 
+    public CollectionOverviewService() {
+    }
+
     public int promptDeleteNote() {
         return JOptionPane.showConfirmDialog(
                 null,

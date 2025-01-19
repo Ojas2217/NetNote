@@ -40,6 +40,7 @@ import java.util.function.Consumer;
 
 import static commons.exceptions.InternationalizationKeys.*;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * Controller for the Note Overview view.
@@ -74,8 +75,6 @@ public class NoteOverviewCtrl implements Initializable {
     private List<NotePreview> notes;
     private CollectionPreview currentCollection;
 
-    private final int charUpdateThreshold = 3;
-
     private List<NotePreview> currentCollectionNoteList;
     @FXML
     private TableView<NotePreview> table;
@@ -83,7 +82,8 @@ public class NoteOverviewCtrl implements Initializable {
     private TableColumn<NotePreview, String> noteTitle;
     @FXML
     private TextField searchText;
-
+    @FXML
+    private ImageView flagIcon;
     @FXML
     private WebView webView;
     @FXML
@@ -151,6 +151,7 @@ public class NoteOverviewCtrl implements Initializable {
         this.alertUtils = alertUtils;
         this.collectionUtils = collectionUtils;
         this.markdown = markdown;
+
     }
 
     @Override
@@ -321,6 +322,7 @@ public class NoteOverviewCtrl implements Initializable {
      * Responsible for refreshing all content in the overview screen.
      */
     public void refresh() {
+        changeFlagIcon(mainCtrl.getStorage().getLanguage());
         enableContent(fetchSelected().isEmpty());
 
         sendSelectedNoteContentToServer();
@@ -332,6 +334,8 @@ public class NoteOverviewCtrl implements Initializable {
         } else {
             setViewableNotes(notes);
         }
+        var collectionCtrl = mainCtrl.getCollectionOverviewCtrl();
+        if (nonNull(collectionCtrl)) collectionCtrl.refresh();
     }
 
     /**
@@ -417,17 +421,10 @@ public class NoteOverviewCtrl implements Initializable {
         Optional<Note> note = fetch(notePreview);
         if (note.isEmpty()) return;
 
-        show(note.get());
-        select(notePreview);
+        select(notePreview.getId());
+        showSelectedNote();
 
         selectedNoteContent.selectRange(searchResult.getStartIndex(), searchResult.getEndIndex());
-    }
-
-    /**
-     * Select a {@link Note} in the table by its NotePreview
-     */
-    public void select(NotePreview note) {
-        select(note.getId());
     }
 
     /**
@@ -513,6 +510,7 @@ public class NoteOverviewCtrl implements Initializable {
             setViewableNotes(foundInNotes.stream().map(NoteSearchResult::getNotePreview).distinct().toList());
             mainCtrl.logRegular(noteSearchHelper.getSearchLogString(foundInNotes, queryString));
             mainCtrl.showSearchContent(foundInNotes);
+            System.out.println("Found " + input + " " + foundInNotes.size() + " times");
         } else {
             searchAllNotes(input);
         }
@@ -651,6 +649,17 @@ public class NoteOverviewCtrl implements Initializable {
             setViewableNotes(notes);
         } catch (ProcessOperationException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void changeFlagIcon(String language) {
+        switch (language) {
+            case "nl" -> flagIcon.setImage(new Image(getClass().getResourceAsStream("/flags/small/nl.png")));
+            case "pi" -> flagIcon.setImage(new Image(getClass().getResourceAsStream("/flags/small/gb.png")));
+            case "fr" -> flagIcon.setImage(new Image(getClass().getResourceAsStream("/flags/small/fr.png")));
+            case "de" -> flagIcon.setImage(new Image(getClass().getResourceAsStream("/flags/small/de.png")));
+            case "es" -> flagIcon.setImage(new Image(getClass().getResourceAsStream("/flags/small/es.png")));
+            case "en" -> flagIcon.setImage(new Image(getClass().getResourceAsStream("/flags/small/us.png")));
         }
     }
 }

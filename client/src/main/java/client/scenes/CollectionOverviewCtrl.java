@@ -8,19 +8,20 @@ import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.Collection;
 import commons.Note;
+import commons.NoteCollectionPair;
 import commons.NotePreview;
 import commons.exceptions.ProcessOperationException;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.input.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static commons.exceptions.InternationalizationKeys.*;
 
 /**
  * Overview controller class for the collections menu
@@ -66,6 +67,8 @@ public class CollectionOverviewCtrl {
         treeView.setOnDragOver(this::treeViewOnDragOver);
         treeView.setOnDragDropped(this::treeViewOnDragDropped);
         initializeDefaultCollection();
+
+        noteUtils.registerForMessages("/topic/transfer", _ -> refresh());
     }
 
     /**
@@ -136,25 +139,11 @@ public class CollectionOverviewCtrl {
             Collection draggedCollection = draggedItem.getParent().getValue().getCollection();
             Note note = draggedItem.getValue().getNote();
 
-            draggedCollection.removeNote(note);
-            targetCollection.addNote(note);
-
-            try {
-                collectionUtils.updateCollection(draggedCollection);
-                collectionUtils.updateCollection(targetCollection);
-
-                draggedItem.getParent().getChildren().remove(draggedItem);
-                targetItem.getChildren().add(draggedItem);
-                return true;
-            } catch (ProcessOperationException ex) {
-                System.out.println(ex.getMessage());
-
-                alertUtils.showError(
-                        ERROR,
-                        UNABLE_TO_RETRIEVE_DATA,
-                        NOTE_MAY_BE_DELETED
-                );
-            }
+            var pair = NoteCollectionPair.of(note, targetCollection);
+            noteUtils.send("/app/transfer", pair);
+            draggedItem.getParent().getChildren().remove(draggedItem);
+            targetItem.getChildren().add(draggedItem);
+            return true;
         }
 
         return false;
@@ -210,6 +199,7 @@ public class CollectionOverviewCtrl {
             mainCtrl.logRegular("Deleted Collection: '" + title + "'");
         }
         refresh();
+        mainCtrl.getOverviewCtrl().refresh();
     }
 
     public void refresh() {
@@ -219,19 +209,18 @@ public class CollectionOverviewCtrl {
 
 
     public void initializeDefaultCollection() {
-        List<Collection> existingCollections = fetchCollections();
-        if (existingCollections.stream().filter(c -> c.getName().equals("default")).count() == 0) {
-            defaultCollection = new Collection("default");
+        var existingCollections = fetchCollections();
+        if (existingCollections.isEmpty()) {
+            var collection = new Collection("default");
             try {
-                collectionUtils.createCollection(defaultCollection);
-                updateDefaultCollection(fetchCollections());
-
+                collectionUtils.createCollection(collection);
+                existingCollections = fetchCollections();
             } catch (ProcessOperationException e) {
                 throw new RuntimeException(e);
             }
         }
         try {
-            updateDefaultCollection(fetchCollections());
+            updateDefaultCollection(existingCollections);
         } catch (ProcessOperationException e) {
             throw new RuntimeException(e);
 
@@ -263,30 +252,15 @@ public class CollectionOverviewCtrl {
     private void setViewableCollections(List<Collection> collections) {
         TreeItem<CollectionTreeItem> root = new TreeItem<>();
 
-        try {
-
-            updateDefaultCollection(collections);
-            collections.forEach(collection -> {
-                TreeItem<CollectionTreeItem> treeItem = new TreeItem<>(new CollectionTreeItem(collection));
-                collection.getNotes().forEach(n -> {
-                    TreeItem<CollectionTreeItem> noteTreeItem = new TreeItem<>(new CollectionTreeItem(n));
-                    treeItem.getChildren().add(noteTreeItem);
-                });
-
-                root.getChildren().add(treeItem);
+        collections.forEach(collection -> {
+            TreeItem<CollectionTreeItem> treeItem = new TreeItem<>(new CollectionTreeItem(collection));
+            collection.getNotes().forEach(n -> {
+                TreeItem<CollectionTreeItem> noteTreeItem = new TreeItem<>(new CollectionTreeItem(n));
+                treeItem.getChildren().add(noteTreeItem);
             });
-
-            treeView.setRoot(root);
-
-        } catch (ProcessOperationException ex) {
-            System.out.println(ex.getMessage());
-
-            alertUtils.showError(
-                    "error",
-                    "unable to retrieve data",
-                    "collection may be deleted"
-            );
-        }
+            root.getChildren().add(treeItem);
+        });
+        treeView.setRoot(root);
     }
 
     /**
@@ -297,6 +271,7 @@ public class CollectionOverviewCtrl {
      * @throws ProcessOperationException if the server cannot be reached or throws an error
      */
     private void updateDefaultCollection(List<Collection> collections) throws ProcessOperationException {
+        setDefaultCollection(collections.getFirst());
         List<Note> allNotes = noteUtils.getAllNotes();
         Optional<Collection> defaultCollection = collections.stream().filter(c -> c.getName().equals("default")).findFirst();
         collections.stream().filter(c -> !c.getName().equals("default")).toList();
@@ -315,5 +290,13 @@ public class CollectionOverviewCtrl {
 
     public void seeAll() {
         mainCtrl.getOverviewCtrl().seeAllCollections();
+    }
+
+    public Collection getDefaultCollection() {
+        return defaultCollection;
+    }
+
+    public void setDefaultCollection(Collection collection) {
+        this.defaultCollection = collection;
     }
 }
