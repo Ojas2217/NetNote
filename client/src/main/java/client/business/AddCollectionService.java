@@ -29,6 +29,9 @@ public class AddCollectionService {
      * @param title the title of the note.
      */
     public void addCollection(String title) {
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be null or empty.");
+        }
         try {
             server.createCollection(new Collection(title, new ArrayList<>()));
         } catch (ProcessOperationException e) {
