@@ -6,7 +6,6 @@ import commons.Collection;
 import commons.exceptions.ProcessOperationException;
 import jakarta.inject.Inject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,9 +29,9 @@ public class AddCollectionService {
      */
     public void addCollection(String title) {
         try {
-            Collection collection = new Collection(title, new ArrayList<>());
+            Collection collection = new Collection(title);
             collection = server.createCollection(collection);
-            mainCtrl.getCollectionOverviewCtrl().addToCollection(collection);
+            mainCtrl.getCollectionOverviewCtrl().addToCollections(collection);
         } catch (ProcessOperationException e) {
             throw new RuntimeException(e);
         }
