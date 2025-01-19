@@ -189,7 +189,7 @@ public class NoteOverviewCtrl implements Initializable {
         server.registerForMessages("/topic/update", q -> {
             if (selectedNoteId == q.id) updateText(q.content);
         });
-
+        selectedNoteContent.setWrapText(true);
         languageHelper.initializeLanguageComboBox(
                 languageComboBox,
                 getUninitializeTextAreaSendingRunnable(),

@@ -264,6 +264,8 @@ public class MainCtrl {
         applySceneInfo(searchContentStage, searchContentSceneInfo);
         searchContentStage.show();
         searchContentStage.sizeToScene();
+        searchContentStage.setX(950);
+        searchContentStage.setY(400);
         Platform.runLater(() -> primaryStage.requestFocus());
 
         searchNoteContentCtrl.setSearchResult(searchResult);
