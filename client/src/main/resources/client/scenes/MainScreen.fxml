@@ -213,7 +213,7 @@
                </buttons>
             </ButtonBar>
             <ComboBox fx:id="languageComboBox" prefWidth="150.0" promptText="%languages.combo.box.text" HBox.hgrow="ALWAYS" />
-            <ImageView fx:id="flagIcon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS" />
+            <ImageView fx:id="flagIcon" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#showLanguageOptions" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS" />
          </children>
          <padding>
             <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />

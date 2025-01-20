@@ -308,6 +308,10 @@ public class NoteOverviewCtrl implements Initializable {
         selectedNoteContent.setDisable(b);
     }
 
+    public void showLanguageOptions() {
+        languageComboBox.show();
+    }
+
     private void clear() {
         clearCalled = true;
         selectedNoteTitle.setText(null);
