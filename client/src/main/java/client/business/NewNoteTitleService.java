@@ -3,7 +3,6 @@ package client.business;
 import client.scenes.MainCtrl;
 import client.utils.NoteUtils;
 import commons.Note;
-import commons.NotePreview;
 import jakarta.inject.Inject;
 
 import java.util.List;

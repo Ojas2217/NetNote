@@ -144,7 +144,7 @@ public class CollectionOverviewCtrl {
             Collection targetCollection = targetItem.getValue().getCollection();
             Collection draggedCollection = draggedItem.getParent().getValue().getCollection();
             Note note = draggedItem.getValue().getNote();
-            if(targetCollection.getNotes().stream().anyMatch(n -> n.getTitle().equals(note.getTitle()) && n.getId() != note.getId())){
+            if (targetCollection.getNotes().stream().anyMatch(n -> n.getTitle().equals(note.getTitle()) && n.getId() != note.getId())) {
                 alertUtils.showError(
                         "error",
                         "Note with this title already exists in target collection",

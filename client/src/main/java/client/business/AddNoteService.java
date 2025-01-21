@@ -4,7 +4,6 @@ import client.scenes.MainCtrl;
 import client.utils.NoteUtils;
 import commons.Note;
 import commons.NoteCollectionPair;
-import commons.NotePreview;
 import jakarta.inject.Inject;
 
 import java.util.List;
