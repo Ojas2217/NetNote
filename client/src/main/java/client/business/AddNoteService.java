@@ -31,7 +31,7 @@ public class AddNoteService {
      */
     public void addNote(String title) {
         var note = new Note(title, "");
-        var collection = mainCtrl.getCollectionOverviewCtrl().getDefaultCollection();
+        var collection = mainCtrl.getOverviewCtrl().getSelectedCollection();
         var pair = NoteCollectionPair.of(note, collection);
         server.send("/app/add", pair);
     }

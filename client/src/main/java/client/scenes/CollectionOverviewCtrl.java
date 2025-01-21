@@ -60,6 +60,7 @@ public class CollectionOverviewCtrl {
         this.collectionUtils = collectionUtils;
         this.collectionOverviewService = collectionOverviewService;
 
+
     }
 
     /**
@@ -172,6 +173,7 @@ public class CollectionOverviewCtrl {
             notePreviews.add(NotePreview.of(note.getId(), note.getTitle()));
         }
         mainCtrl.getOverviewCtrl().setCurrentCollectionNoteList(notePreviews);
+        mainCtrl.getOverviewCtrl().setSelectedCollection(collection);
         refresh();
         mainCtrl.getOverviewCtrl().refresh();
     }

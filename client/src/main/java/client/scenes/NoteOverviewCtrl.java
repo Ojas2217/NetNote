@@ -11,6 +11,7 @@ import client.utils.AlertUtils;
 import client.utils.CollectionUtils;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
+import commons.Collection;
 import commons.CollectionPreview;
 import commons.Note;
 import commons.NotePreview;
@@ -74,7 +75,7 @@ public class NoteOverviewCtrl implements Initializable {
     private ObservableList<NotePreview> data;
     private List<NotePreview> notes;
     private CollectionPreview currentCollection;
-
+    private Collection selectedCollection;
     private List<NotePreview> currentCollectionNoteList;
     @FXML
     private TableView<NotePreview> table;
@@ -654,6 +655,14 @@ public class NoteOverviewCtrl implements Initializable {
         } catch (ProcessOperationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Collection getSelectedCollection() {
+        return selectedCollection;
+    }
+
+    public void setSelectedCollection(Collection selectedCollection) {
+        this.selectedCollection = selectedCollection;
     }
 
     public void changeFlagIcon(String language) {
