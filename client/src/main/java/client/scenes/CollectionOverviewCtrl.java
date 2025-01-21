@@ -144,7 +144,14 @@ public class CollectionOverviewCtrl {
             Collection targetCollection = targetItem.getValue().getCollection();
             Collection draggedCollection = draggedItem.getParent().getValue().getCollection();
             Note note = draggedItem.getValue().getNote();
-
+            if(targetCollection.getNotes().stream().anyMatch(n -> n.getTitle().equals(note.getTitle()) && n.getId() != note.getId())){
+                alertUtils.showError(
+                        "error",
+                        "Note with this title already exists in target collection",
+                        "Please change note title to continue"
+                );
+                return false;
+            }
             var pair = NoteCollectionPair.of(note, targetCollection);
             noteUtils.send("/app/transfer", pair);
             draggedItem.getParent().getChildren().remove(draggedItem);

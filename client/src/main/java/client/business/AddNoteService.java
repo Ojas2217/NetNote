@@ -43,11 +43,11 @@ public class AddNoteService {
      * @return true if the title is unique, false otherwise.
      */
     public boolean isUnique(String title) {
-        List<NotePreview> notes = mainCtrl.getOverviewCtrl().getNotes();
+        List<Note> notes = mainCtrl.getOverviewCtrl().getSelectedCollection().getNotes();
         if (notes == null) {
             return true;
         }
-        for (NotePreview note: notes) {
+        for (Note note: notes) {
             if (note.getTitle().equals(title)) {
                 return false;
             }
