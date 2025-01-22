@@ -203,10 +203,15 @@ public class CollectionOverviewCtrl {
         for (Note note : notes) {
             notePreviews.add(NotePreview.of(note.getId(), note.getTitle()));
         }
+        mainCtrl.getOverviewCtrl().setCurrentCollectionNoteList(new ArrayList<>(notePreviews));
         mainCtrl.getOverviewCtrl().setCurrentCollectionNoteList(notePreviews);
         mainCtrl.getOverviewCtrl().setSelectedCollection(collection);
         refresh();
         mainCtrl.getOverviewCtrl().refresh();
+    }
+
+    public CollectionUtils getCollectionUtils() {
+        return collectionUtils;
     }
 
     public void showAdd() {

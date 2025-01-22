@@ -5,6 +5,7 @@ import client.business.NewNoteTitleService;
 import client.utils.AlertUtils;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
+import commons.Collection;
 import commons.Note;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -96,22 +97,34 @@ public class NewNoteTitleCtrl {
         String oldTitle = note.get().getTitle();
         try {
             if (mainCtrl.getOverviewCtrl().getSelectedCollection() != null) {
+                note.get().collection = mainCtrl.getOverviewCtrl().getSelectedCollection();
+
                 mainCtrl.getOverviewCtrl().getSelectedCollection().getNotes().remove(note.get());
+
                 String title = newNoteTitle.getText();
                 newNoteTitleService.newTitle(note.get(), title);
                 clearFields();
                 mainCtrl.logRegular("Changed the title of note '" + oldTitle + "' to '" + title + "'");
+
+                note.get().collection = mainCtrl.getOverviewCtrl().getSelectedCollection();
                 mainCtrl.getOverviewCtrl().getSelectedCollection().getNotes().add(note.get());
+
                 mainCtrl.getCollectionOverviewCtrl().selectCollection(mainCtrl.getOverviewCtrl().getSelectedCollection());
                 mainCtrl.showOverview();
             } else {
-                mainCtrl.getCollectionOverviewCtrl().getDefaultCollection().getNotes().remove(note.get());
+                Collection noteCollection = mainCtrl.getCollectionOverviewCtrl().getDefaultCollection();
+                note.get().collection = null;
+                noteCollection.getNotes().remove(note.get());
+
                 String title = newNoteTitle.getText();
                 newNoteTitleService.newTitle(note.get(), title);
                 clearFields();
                 mainCtrl.logRegular("Changed the title of note '" + oldTitle + "' to '" + title + "'");
-                mainCtrl.getCollectionOverviewCtrl().getDefaultCollection().getNotes().add(note.get());
-                mainCtrl.getCollectionOverviewCtrl().selectCollection(mainCtrl.getCollectionOverviewCtrl().getDefaultCollection());
+
+                note.get().collection = noteCollection;
+                noteCollection.getNotes().add(note.get());
+
+                mainCtrl.getCollectionOverviewCtrl().selectCollection(noteCollection);
                 mainCtrl.showOverview();
             }
         } catch (Exception e) {
