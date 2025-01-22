@@ -174,6 +174,7 @@ public class MainCtrl {
         overview.setOnKeyPressed(e -> overviewCtrl.keyPressed(e));
         overviewCtrl.emptySearchText();
         overviewCtrl.refresh();
+        overviewCtrl.getWebView().getStylesheets().add(getClass().getResource("webView.css").toExternalForm());
     }
 
     public void showOverview(NoteSearchResult searchResult) {
@@ -225,8 +226,9 @@ public class MainCtrl {
      */
 
     public boolean changeTheme() {
-        if (overview.getStylesheets().isEmpty()) {
+        if (add.getStylesheets().isEmpty()) {
             overview.getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
+            overviewCtrl.getWebView().getStylesheets().add(getClass().getResource("webView.css").toExternalForm());
             add.getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
             title.getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
             searchContentStage.getScene().getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());

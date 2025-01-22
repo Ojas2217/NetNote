@@ -3,6 +3,7 @@ package client.business;
 import client.scenes.MainCtrl;
 import client.scenes.NoteOverviewCtrl;
 import client.utils.NoteUtils;
+import commons.Collection;
 import commons.Note;
 import commons.NotePreview;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +48,9 @@ class AddNoteServiceTest {
 
     @Test
     void isUniqueEmptyListTest() {
-        when(mainCtrl.getOverviewCtrl().getNotes()).thenReturn(null);
+        Collection collection = mock(Collection.class);
+        when(mainCtrl.getOverviewCtrl().getSelectedCollection()).thenReturn(collection);
+        when(mainCtrl.getOverviewCtrl().getSelectedCollection().getNotes()).thenReturn(null);
 
         boolean result = service.isUnique("Test Title");
 
@@ -56,12 +59,14 @@ class AddNoteServiceTest {
 
     @Test
     public void isUniqueFalseTest() {
-        List<NotePreview> notes = List.of(
-                new NotePreview(1L, "Existing Note"),
-                new NotePreview(2L, "Another Note")
-        );
-        when(mainCtrl.getOverviewCtrl().getNotes()).thenReturn(notes);
 
+        List<Note> notes = List.of(
+                new Note("Existing Note", "Existing Note"),
+                new Note("Another Note", "Another Note")
+        );
+        Collection collection = mock(Collection.class);
+        when(mainCtrl.getOverviewCtrl().getSelectedCollection()).thenReturn(collection);
+        when(mainCtrl.getOverviewCtrl().getSelectedCollection().getNotes()).thenReturn(notes);
         boolean result = service.isUnique("Existing Note");
 
         assertFalse(result);
@@ -69,11 +74,13 @@ class AddNoteServiceTest {
 
     @Test
     public void isUniqueTrueTest() {
-        List<NotePreview> notes = List.of(
-                new NotePreview(1L, "Existing Note"),
-                new NotePreview(2L, "Another Note")
+        List<Note> notes = List.of(
+                new Note("Existing Note",""),
+                new Note("Another Note","")
         );
-        when(mainCtrl.getOverviewCtrl().getNotes()).thenReturn(notes);
+        Collection collection = mock(Collection.class);
+        when(mainCtrl.getOverviewCtrl().getSelectedCollection()).thenReturn(collection);
+        when(mainCtrl.getOverviewCtrl().getSelectedCollection().getNotes()).thenReturn(notes);
 
         boolean result = service.isUnique("Unique Note");
 
