@@ -8,8 +8,8 @@
 
 <AnchorPane prefHeight="201.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddCollectionCtrl">
    <children>
-      <Button layoutX="16.0" layoutY="139.0" mnemonicParsing="false" onAction="#ok" prefHeight="34.0" prefWidth="82.0" text="Ok" />
-      <Button fx:id="cancelButton" layoutX="503.0" layoutY="139.0" mnemonicParsing="false" onAction="#cancel" prefHeight="34.0" prefWidth="82.0" text="Cancel" />
+      <Button layoutX="503.0" layoutY="139.0" mnemonicParsing="false" onAction="#ok" prefHeight="34.0" prefWidth="82.0" text="Ok" />
+      <Button fx:id="cancelButton" layoutX="16.0" layoutY="139.0" mnemonicParsing="false" onAction="#cancel" prefHeight="34.0" prefWidth="82.0" text="Cancel" />
       <TextField fx:id="titleTextField" layoutX="53.0" layoutY="87.0" prefHeight="26.0" prefWidth="494.0" />
       <Label layoutX="183.0" layoutY="32.0" prefHeight="42.0" prefWidth="233.0" text="Please enter a title" textAlignment="JUSTIFY">
          <font>
