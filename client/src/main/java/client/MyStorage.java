@@ -14,10 +14,10 @@ import java.util.Properties;
  */
 public class MyStorage {
     private final Properties config;
-    private final Path pathDefault = Path.of("src", "main", "resources", "client", "userConfig.properties");
-    private final Path pathClient = Path.of("client", "src", "main", "resources", "client", "userConfig.properties");
-    private final String pathDefaultCollection = "src/main/resources/client/collections";
-    private final String pathClientCollection = "client/src/main/resources/client/collections";
+    private final Path pathDefault = Path.of("config", "userConfig.properties");
+    private final Path pathClient = Path.of("config", "userConfig.properties");
+    private final String pathDefaultCollection = "config/collections";
+    private final String pathClientCollection = "config/collections";
     private boolean useClient = false;
     ObjectMapper objectMapper = new ObjectMapper();
 

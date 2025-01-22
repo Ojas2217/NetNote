@@ -31,7 +31,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.web.WebView;
-
 import javax.swing.*;
 import java.io.InputStream;
 import java.net.URL;
@@ -153,6 +152,7 @@ public class NoteOverviewCtrl implements Initializable {
         this.collectionUtils = collectionUtils;
         this.markdown = markdown;
 
+
     }
 
     @Override
@@ -196,7 +196,12 @@ public class NoteOverviewCtrl implements Initializable {
                 getUninitializeTextAreaSendingRunnable(),
                 doSendConsumer,
                 showCurrentNoteRunnable);
-
+        getWebView().getEngine().executeScript(themeViewHandler.getConfigSheetContent());
+        webView.getEngine().documentProperty().addListener((obs, oldDoc, newDoc) -> {
+            if (newDoc != null) {
+                webView.getEngine().executeScript(themeViewHandler.getConfigSheetContent());
+            }
+        });
 //        if (mainCtrl.isDarkMode()) changeTheme();
 //        System.err.println(mainCtrl.isDarkMode());
 //        System.err.println(mainCtrl.getStorage().getTheme());
@@ -611,12 +616,6 @@ public class NoteOverviewCtrl implements Initializable {
     public void changeTheme() {
         String theme = mainCtrl.changeTheme() ? themeViewHandler.getDarkWebview() : themeViewHandler.getLightWebView();
         webViewLogger.getEngine().executeScript(theme);
-        webView.getEngine().executeScript(theme);
-        webView.getEngine().documentProperty().addListener((obs, oldDoc, newDoc) -> {
-            if (newDoc != null) {
-                webView.getEngine().executeScript(theme);
-            }
-        });
         webViewLogger.getEngine().documentProperty().addListener((obs, oldDoc, newDoc) -> {
             if (newDoc != null) {
                 webViewLogger.getEngine().executeScript(theme);
