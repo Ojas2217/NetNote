@@ -3,7 +3,6 @@ package client.business;
 import client.scenes.MainCtrl;
 import client.utils.NoteUtils;
 import commons.Note;
-import commons.NotePreview;
 import jakarta.inject.Inject;
 
 import java.util.List;
@@ -42,11 +41,17 @@ public class NewNoteTitleService {
      * @return true if the title is unique, false otherwise.
      */
     public boolean isUnique(String title) {
-        List<NotePreview> notes = mainCtrl.getOverviewCtrl().getNotes();
+        List<Note> notes;
+        if (mainCtrl.getOverviewCtrl().getSelectedCollection() != null) {
+            notes = mainCtrl.getOverviewCtrl().getSelectedCollection().getNotes();
+        } else {
+            notes = mainCtrl.getCollectionOverviewCtrl().getDefaultCollection().getNotes();
+        }
+
         if (notes == null) {
             return true;
         }
-        for (NotePreview note : notes) {
+        for (Note note : notes) {
             if (note.getTitle().equals(title)) {
                 return false;
             }

@@ -22,7 +22,6 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import static java.util.Objects.isNull;
 
 /**
@@ -59,6 +58,7 @@ public class CollectionOverviewCtrl {
         this.alertUtils = alertUtils;
         this.collectionUtils = collectionUtils;
         this.collectionOverviewService = collectionOverviewService;
+
 
     }
 
@@ -143,7 +143,14 @@ public class CollectionOverviewCtrl {
             Collection targetCollection = targetItem.getValue().getCollection();
             Collection draggedCollection = draggedItem.getParent().getValue().getCollection();
             Note note = draggedItem.getValue().getNote();
-
+            if (targetCollection.getNotes().stream().anyMatch(n -> n.getTitle().equals(note.getTitle()) && n.getId() != note.getId())) {
+                alertUtils.showError(
+                        "error",
+                        "Note with this title already exists in target collection",
+                        "Please change note title to continue"
+                );
+                return false;
+            }
             var pair = NoteCollectionPair.of(note, targetCollection);
             noteUtils.send("/app/transfer", pair);
             draggedItem.getParent().getChildren().remove(draggedItem);
@@ -152,6 +159,16 @@ public class CollectionOverviewCtrl {
         }
 
         return false;
+    }
+
+    public void showChildren() {
+        if (treeView.getSelectionModel().isEmpty()) return;
+        TreeItem<CollectionTreeItem> selectedCollection = treeView.getSelectionModel().getSelectedItem();
+        if (selectedCollection.getParent() != treeView.getRoot()) return;
+        if (selectedCollection.getValue().getCollection() == null) return;
+
+        Collection collection = selectedCollection.getValue().getCollection();
+        selectedCollection.setExpanded(!selectedCollection.isExpanded());
     }
 
     private void onDragDropEnd(DragEvent event, boolean success) {
@@ -172,8 +189,29 @@ public class CollectionOverviewCtrl {
             notePreviews.add(NotePreview.of(note.getId(), note.getTitle()));
         }
         mainCtrl.getOverviewCtrl().setCurrentCollectionNoteList(notePreviews);
+        mainCtrl.getOverviewCtrl().setSelectedCollection(collection);
         refresh();
         mainCtrl.getOverviewCtrl().refresh();
+    }
+
+    public void selectCollection(Collection collection) {
+        if (collection == null) {
+            collection = getDefaultCollection();
+        }
+        List<Note> notes = collection.getNotes();
+        List<NotePreview> notePreviews = new ArrayList<>();
+        for (Note note : notes) {
+            notePreviews.add(NotePreview.of(note.getId(), note.getTitle()));
+        }
+        mainCtrl.getOverviewCtrl().setCurrentCollectionNoteList(new ArrayList<>(notePreviews));
+        mainCtrl.getOverviewCtrl().setCurrentCollectionNoteList(notePreviews);
+        mainCtrl.getOverviewCtrl().setSelectedCollection(collection);
+        refresh();
+        mainCtrl.getOverviewCtrl().refresh();
+    }
+
+    public CollectionUtils getCollectionUtils() {
+        return collectionUtils;
     }
 
     public void showAdd() {
@@ -320,7 +358,11 @@ public class CollectionOverviewCtrl {
         TreeItem<CollectionTreeItem> root = new TreeItem<>();
 
         collections.forEach(collection -> {
-            TreeItem<CollectionTreeItem> treeItem = new TreeItem<>(new CollectionTreeItem(collection));
+            boolean isDefault = false;
+            if (Objects.equals(defaultCollection.getName(), collection.getName())) {
+                isDefault = true;
+            }
+            TreeItem<CollectionTreeItem> treeItem = new TreeItem<>(new CollectionTreeItem(collection, isDefault));
             collection.getNotes().forEach(n -> {
                 TreeItem<CollectionTreeItem> noteTreeItem = new TreeItem<>(new CollectionTreeItem(n));
                 treeItem.getChildren().add(noteTreeItem);

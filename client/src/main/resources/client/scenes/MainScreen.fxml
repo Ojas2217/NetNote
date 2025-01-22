@@ -54,7 +54,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.web.WebView?>
-
 <VBox fx:id="vBoxMain" alignment="CENTER" prefHeight="646.0" prefWidth="1017.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.NoteOverviewCtrl">
   <children>
     <MenuBar VBox.vgrow="ALWAYS">
@@ -166,6 +165,7 @@
                                        </font>
                                     </Label>
                                     <WebView fx:id="webView" fontScale="1.2" layoutX="-12.8" layoutY="27.0" prefHeight="526.0" prefWidth="227.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="-13.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="27.0" />
+
                                  </children>
                               </AnchorPane>
                            </children>

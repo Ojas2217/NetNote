@@ -265,4 +265,7 @@
     -fx-text-fill: #ffffff; /* Bright white text for selected item */
 }
 
+.tree-view .tree-disclosure-node > .arrow {
+    -fx-background-color: #ffffff; /* White arrow color */
+}
 

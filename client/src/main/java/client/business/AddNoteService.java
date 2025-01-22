@@ -2,9 +2,9 @@ package client.business;
 
 import client.scenes.MainCtrl;
 import client.utils.NoteUtils;
+import commons.Collection;
 import commons.Note;
 import commons.NoteCollectionPair;
-import commons.NotePreview;
 import jakarta.inject.Inject;
 
 import java.util.List;
@@ -31,7 +31,12 @@ public class AddNoteService {
      */
     public void addNote(String title) {
         var note = new Note(title, "");
-        var collection = mainCtrl.getCollectionOverviewCtrl().getDefaultCollection();
+        Collection collection;
+        if (mainCtrl.getOverviewCtrl().getSelectedCollection() != null) {
+            collection = mainCtrl.getOverviewCtrl().getSelectedCollection();
+        } else {
+            collection = mainCtrl.getCollectionOverviewCtrl().getDefaultCollection();
+        }
         var pair = NoteCollectionPair.of(note, collection);
         server.send("/app/add", pair);
     }
@@ -43,11 +48,17 @@ public class AddNoteService {
      * @return true if the title is unique, false otherwise.
      */
     public boolean isUnique(String title) {
-        List<NotePreview> notes = mainCtrl.getOverviewCtrl().getNotes();
+        List<Note> notes;
+        if (mainCtrl.getOverviewCtrl().getSelectedCollection() != null) {
+            notes = mainCtrl.getOverviewCtrl().getSelectedCollection().getNotes();
+        } else {
+            notes = mainCtrl.getCollectionOverviewCtrl().getDefaultCollection().getNotes();
+        }
+
         if (notes == null) {
             return true;
         }
-        for (NotePreview note: notes) {
+        for (Note note: notes) {
             if (note.getTitle().equals(title)) {
                 return false;
             }
