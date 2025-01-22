@@ -42,9 +42,9 @@ public class NewNoteTitleService {
      */
     public boolean isUnique(String title) {
         List<Note> notes;
-        if(mainCtrl.getOverviewCtrl().getSelectedCollection()!=null) {
+        if (mainCtrl.getOverviewCtrl().getSelectedCollection() != null) {
             notes = mainCtrl.getOverviewCtrl().getSelectedCollection().getNotes();
-        }else{
+        } else {
             notes = mainCtrl.getCollectionOverviewCtrl().getDefaultCollection().getNotes();
         }
 

@@ -6,14 +6,11 @@ import client.utils.AlertUtils;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.Note;
-import commons.NotePreview;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import static commons.exceptions.InternationalizationKeys.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -98,7 +95,7 @@ public class NewNoteTitleCtrl {
         }
         String oldTitle = note.get().getTitle();
         try {
-            if(mainCtrl.getOverviewCtrl().getSelectedCollection()!=null) {
+            if (mainCtrl.getOverviewCtrl().getSelectedCollection() != null) {
                 mainCtrl.getOverviewCtrl().getSelectedCollection().getNotes().remove(note.get());
                 String title = newNoteTitle.getText();
                 newNoteTitleService.newTitle(note.get(), title);
@@ -107,7 +104,7 @@ public class NewNoteTitleCtrl {
                 mainCtrl.getOverviewCtrl().getSelectedCollection().getNotes().add(note.get());
                 mainCtrl.getCollectionOverviewCtrl().selectCollection(mainCtrl.getOverviewCtrl().getSelectedCollection());
                 mainCtrl.showOverview();
-            }else{
+            } else {
                 mainCtrl.getCollectionOverviewCtrl().getDefaultCollection().getNotes().remove(note.get());
                 String title = newNoteTitle.getText();
                 newNoteTitleService.newTitle(note.get(), title);

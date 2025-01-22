@@ -226,7 +226,7 @@ public class MainCtrl {
      */
 
     public boolean changeTheme() {
-        if (overview.getStylesheets().size()==1) {
+        if (overview.getStylesheets().size() == 1) {
             overview.getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
             add.getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
             title.getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());

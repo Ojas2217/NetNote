@@ -7,7 +7,6 @@ import commons.Note;
 import commons.NoteCollectionPair;
 import jakarta.inject.Inject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,9 +32,9 @@ public class AddNoteService {
     public void addNote(String title) {
         var note = new Note(title, "");
         Collection collection;
-        if(mainCtrl.getOverviewCtrl().getSelectedCollection()!=null){
+        if (mainCtrl.getOverviewCtrl().getSelectedCollection() != null) {
             collection = mainCtrl.getOverviewCtrl().getSelectedCollection();
-        }else{
+        } else {
             collection = mainCtrl.getCollectionOverviewCtrl().getDefaultCollection();
         }
         var pair = NoteCollectionPair.of(note, collection);
@@ -50,9 +49,9 @@ public class AddNoteService {
      */
     public boolean isUnique(String title) {
         List<Note> notes;
-        if(mainCtrl.getOverviewCtrl().getSelectedCollection()!=null) {
+        if (mainCtrl.getOverviewCtrl().getSelectedCollection() != null) {
             notes = mainCtrl.getOverviewCtrl().getSelectedCollection().getNotes();
-        }else{
+        } else {
             notes = mainCtrl.getCollectionOverviewCtrl().getDefaultCollection().getNotes();
         }
 

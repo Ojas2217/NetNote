@@ -161,7 +161,7 @@ public class CollectionOverviewCtrl {
         return false;
     }
 
-    public void showChildren(){
+    public void showChildren() {
         if (treeView.getSelectionModel().isEmpty()) return;
         TreeItem<CollectionTreeItem> selectedCollection = treeView.getSelectionModel().getSelectedItem();
         if (selectedCollection.getParent() != treeView.getRoot()) return;
@@ -194,9 +194,9 @@ public class CollectionOverviewCtrl {
         mainCtrl.getOverviewCtrl().refresh();
     }
 
-    public void selectCollection(Collection collection){
-        if(collection==null){
-            collection=getDefaultCollection();
+    public void selectCollection(Collection collection) {
+        if (collection == null) {
+            collection = getDefaultCollection();
         }
         List<Note> notes = collection.getNotes();
         List<NotePreview> notePreviews = new ArrayList<>();
