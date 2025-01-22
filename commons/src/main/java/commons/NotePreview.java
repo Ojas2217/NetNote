@@ -1,5 +1,7 @@
 package commons;
 
+import java.util.Objects;
+
 /**
  * Note data transfer object for transferring the ID and title.
  */
@@ -26,5 +28,17 @@ public class NotePreview {
 
     public static NotePreview of(Long id, String title) {
         return new NotePreview(id, title);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        NotePreview that = (NotePreview) o;
+        return Objects.equals(id, that.id) && Objects.equals(title, that.title);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title);
     }
 }
