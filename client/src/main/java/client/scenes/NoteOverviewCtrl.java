@@ -196,6 +196,7 @@ public class NoteOverviewCtrl implements Initializable {
                 getUninitializeTextAreaSendingRunnable(),
                 doSendConsumer,
                 showCurrentNoteRunnable);
+
 //        if (mainCtrl.isDarkMode()) changeTheme();
 //        System.err.println(mainCtrl.isDarkMode());
 //        System.err.println(mainCtrl.getStorage().getTheme());
@@ -601,6 +602,10 @@ public class NoteOverviewCtrl implements Initializable {
     public OptionalLong getSelectedNoteId() {
         if (selectedNoteId < 0) return OptionalLong.empty();
         return OptionalLong.of(selectedNoteId);
+    }
+
+    public WebView getWebView() {
+        return webView;
     }
 
     public void changeTheme() {

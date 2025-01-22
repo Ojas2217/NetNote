@@ -174,6 +174,7 @@ public class MainCtrl {
         overview.setOnKeyPressed(e -> overviewCtrl.keyPressed(e));
         overviewCtrl.emptySearchText();
         overviewCtrl.refresh();
+        overview.getStylesheets().add(getClass().getResource("webView.css").toExternalForm());
     }
 
     public void showOverview(NoteSearchResult searchResult) {
@@ -225,7 +226,7 @@ public class MainCtrl {
      */
 
     public boolean changeTheme() {
-        if (overview.getStylesheets().isEmpty()) {
+        if (overview.getStylesheets().size()==1) {
             overview.getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
             add.getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
             title.getStylesheets().add(getClass().getResource("contrast.css").toExternalForm());
@@ -236,7 +237,7 @@ public class MainCtrl {
             storage.setTheme("dark");
             return true;
         } else {
-            overview.getStylesheets().clear();
+            overview.getStylesheets().remove(1);
             add.getStylesheets().clear();
             title.getStylesheets().clear();
             searchContentStage.getScene().getStylesheets().clear();

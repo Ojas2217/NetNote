@@ -161,6 +161,16 @@ public class CollectionOverviewCtrl {
         return false;
     }
 
+    public void showChildren(){
+        if (treeView.getSelectionModel().isEmpty()) return;
+        TreeItem<CollectionTreeItem> selectedCollection = treeView.getSelectionModel().getSelectedItem();
+        if (selectedCollection.getParent() != treeView.getRoot()) return;
+        if (selectedCollection.getValue().getCollection() == null) return;
+
+        Collection collection = selectedCollection.getValue().getCollection();
+        selectedCollection.setExpanded(!selectedCollection.isExpanded());
+    }
+
     private void onDragDropEnd(DragEvent event, boolean success) {
         event.setDropCompleted(success);
         event.consume();
@@ -173,6 +183,21 @@ public class CollectionOverviewCtrl {
         if (selectedCollection.getValue().getCollection() == null) return;
 
         Collection collection = selectedCollection.getValue().getCollection();
+        List<Note> notes = collection.getNotes();
+        List<NotePreview> notePreviews = new ArrayList<>();
+        for (Note note : notes) {
+            notePreviews.add(NotePreview.of(note.getId(), note.getTitle()));
+        }
+        mainCtrl.getOverviewCtrl().setCurrentCollectionNoteList(notePreviews);
+        mainCtrl.getOverviewCtrl().setSelectedCollection(collection);
+        refresh();
+        mainCtrl.getOverviewCtrl().refresh();
+    }
+
+    public void selectCollection(Collection collection){
+        if(collection==null){
+            collection=getDefaultCollection();
+        }
         List<Note> notes = collection.getNotes();
         List<NotePreview> notePreviews = new ArrayList<>();
         for (Note note : notes) {

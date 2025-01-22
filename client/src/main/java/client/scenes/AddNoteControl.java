@@ -93,6 +93,10 @@ public class AddNoteControl {
             noteTitle.setFocusTraversable(false);
             cancel.requestFocus();
             mainCtrl.logRegular("Added new note: '" + title + "'");
+            //no idea why this part is needed
+            mainCtrl.getOverviewCtrl().changeTheme();
+            mainCtrl.getOverviewCtrl().changeTheme();
+            //but if you remove it the note table bugs out when adding the first note to an empty collection
             mainCtrl.showOverview();
         } catch (WebApplicationException e) {
             alertUtils.showError(

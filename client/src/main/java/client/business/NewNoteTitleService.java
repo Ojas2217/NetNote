@@ -41,7 +41,13 @@ public class NewNoteTitleService {
      * @return true if the title is unique, false otherwise.
      */
     public boolean isUnique(String title) {
-        List<Note> notes = mainCtrl.getOverviewCtrl().getSelectedCollection().getNotes();
+        List<Note> notes;
+        if(mainCtrl.getOverviewCtrl().getSelectedCollection()!=null) {
+            notes = mainCtrl.getOverviewCtrl().getSelectedCollection().getNotes();
+        }else{
+            notes = mainCtrl.getCollectionOverviewCtrl().getDefaultCollection().getNotes();
+        }
+
         if (notes == null) {
             return true;
         }

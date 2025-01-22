@@ -1,12 +1,19 @@
-/* Style for the WebView */
-#webView {
-    -fx-font-size: 1.2em; /* Font scaling */
-    -fx-layout-x: -12.8px; /* Layout X-coordinate */
-    -fx-layout-y: 27px; /* Layout Y-coordinate */
-    -fx-pref-height: 526px; /* Preferred height */
-    -fx-pref-width: 227px; /* Preferred width */
-    -fx-anchor-pane-bottom-anchor: 1.0px; /* Bottom anchor */
-    -fx-anchor-pane-left-anchor: -13.0px; /* Left anchor */
-    -fx-anchor-pane-right-anchor: 3.0px; /* Right anchor */
-    -fx-anchor-pane-top-anchor: 27.0px; /* Top anchor */
+/* Light theme for the WebView */
+.web-view {
+    -fx-background-color: #ffffff; /* Light background for the WebView */
+    -fx-page-fill: #ffffff;
+    -fx-text-fill: #000000; /* Black text */
+    -fx-control-inner-background: #ffffff;
+}
+
+/* WebView content styling - ensure the content inside inherits the light mode */
+.web-view .content {
+    -fx-background-color: #f9f9f9; /* Light background for content */
+    -fx-text-fill: #000000; /* Black text for content */
+}
+
+/* WebView styling for inner HTML content (if needed for your web content) */
+.web-view .web-view {
+    -fx-background-color: #f9f9f9; /* Light background for inner web content */
+    -fx-text-fill: #000000; /* Black text for web content */
 }
