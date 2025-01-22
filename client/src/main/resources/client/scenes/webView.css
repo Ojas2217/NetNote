@@ -1,0 +1,12 @@
+/* Style for the WebView */
+#webView {
+    -fx-font-size: 1.2em; /* Font scaling */
+    -fx-layout-x: -12.8px; /* Layout X-coordinate */
+    -fx-layout-y: 27px; /* Layout Y-coordinate */
+    -fx-pref-height: 526px; /* Preferred height */
+    -fx-pref-width: 227px; /* Preferred width */
+    -fx-anchor-pane-bottom-anchor: 1.0px; /* Bottom anchor */
+    -fx-anchor-pane-left-anchor: -13.0px; /* Left anchor */
+    -fx-anchor-pane-right-anchor: 3.0px; /* Right anchor */
+    -fx-anchor-pane-top-anchor: 27.0px; /* Top anchor */
+}
