@@ -6,6 +6,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+/**
+ * Entity class representing a file that can be added to a Note.
+ * <p>
+ * The {@code File} class is a JPA entity annotated with {@link Entity}, which maps
+ * it to a database table. It contains fields for the file's ID, name, extension,
+ * Note it belongs to and content, along with constructors.
+ * </p>
+ */
 @Entity
 public class File {
     @Id
