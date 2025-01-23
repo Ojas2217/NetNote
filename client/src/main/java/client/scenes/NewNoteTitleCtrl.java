@@ -123,7 +123,7 @@ public class NewNoteTitleCtrl {
 
                 note.get().collection = noteCollection;
                 noteCollection.getNotes().add(note.get());
-
+                mainCtrl.getCollectionOverviewCtrl().getCollectionUtils().updateCollection(noteCollection);
                 mainCtrl.getCollectionOverviewCtrl().selectCollection(noteCollection);
                 mainCtrl.showOverview();
             }
