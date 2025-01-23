@@ -35,7 +35,6 @@ class CollectionOverviewCtrlTest {
                 collectionUtils,
                 collectionOverviewService
         );
-        collectionOverviewCtrl.setTreeView(treeView);
     }
 
     @Test
