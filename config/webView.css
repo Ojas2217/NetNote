@@ -1,6 +1,9 @@
+/*All of this is editable*/
 body {
-    background-color: #fff000;
-    color: #ffffff;
+    font-family: "Comic Sans MS";
+    font-size: 18px;
+    background-color: #000000;
+    color: #0000ff;
 }
 a {
     color: #4e9af1;

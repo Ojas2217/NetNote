@@ -71,3 +71,33 @@ On the bottom of the program several buttons can be found. These include:
 **When the user is creating a new note title**
 - Enter: This will confirm the new title
 - Escape: This will cancel the new title creation
+
+# Config files
+
+**There are three config files, all located in the 'config' directory**
+1. For the markdown webview (webView.css), note: even though we have two webviews being used in our app, only the markdown one was to be styled according to the requirements.
+2. For the user language and theme (userConfig.properties)
+3. For Collections (collections.txt)
+
+# Implemented Features
+
+## Collections
+The Collections button can be found on the main screen, when clicked it prompts a menu containing all the collection, here you can:
+- add new collections
+- delete collections
+- move notes between collections (using drag and drop)
+- see all collections (using the see all button)
+Things to be noted:
+- When no collection is selected (either on startup or when the 'see-all' button is clicked) any new note will be added to the default collection
+  and if you change the title of a note while no collection is selected, that note will automatically be added to the default collection regardless of which collection it was in before
+- Please select a collection before making changes to notes
+- The default collection can not be changed.
+
+## Live Language Switch
+Our app supports six languages, all of which can be accessed through the drop-down menu on the bottom right
+- Once you change your language, the flag icon next to the box gets updated, alternatively the user can also click on this flag to access the language menu
+
+## Automated change synchronization
+
+Our app uses websockets to synchronize changes in live time (Only changes related to a note are synchronized)
+to be noted: we use a buffer to buffer the text content of a note, as updating with every keystroke would be inefficient and cause bugs.
