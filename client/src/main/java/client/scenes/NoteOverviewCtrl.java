@@ -11,6 +11,7 @@ import client.utils.AlertUtils;
 import client.utils.CollectionUtils;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
+import commons.Collection;
 import commons.CollectionPreview;
 import commons.Note;
 import commons.NotePreview;
@@ -30,7 +31,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.web.WebView;
-
 import javax.swing.*;
 import java.io.InputStream;
 import java.net.URL;
@@ -74,7 +74,7 @@ public class NoteOverviewCtrl implements Initializable {
     private ObservableList<NotePreview> data;
     private List<NotePreview> notes;
     private CollectionPreview currentCollection;
-
+    private Collection selectedCollection;
     private List<NotePreview> currentCollectionNoteList;
     @FXML
     private TableView<NotePreview> table;
@@ -152,6 +152,7 @@ public class NoteOverviewCtrl implements Initializable {
         this.collectionUtils = collectionUtils;
         this.markdown = markdown;
 
+
     }
 
     @Override
@@ -189,12 +190,18 @@ public class NoteOverviewCtrl implements Initializable {
         server.registerForMessages("/topic/update", q -> {
             if (selectedNoteId == q.id) updateText(q.content);
         });
-
+        selectedNoteContent.setWrapText(true);
         languageHelper.initializeLanguageComboBox(
                 languageComboBox,
                 getUninitializeTextAreaSendingRunnable(),
                 doSendConsumer,
                 showCurrentNoteRunnable);
+        getWebView().getEngine().executeScript(themeViewHandler.getConfigSheetContent());
+        webView.getEngine().documentProperty().addListener((obs, oldDoc, newDoc) -> {
+            if (newDoc != null) {
+                webView.getEngine().executeScript(themeViewHandler.getConfigSheetContent());
+            }
+        });
 //        if (mainCtrl.isDarkMode()) changeTheme();
 //        System.err.println(mainCtrl.isDarkMode());
 //        System.err.println(mainCtrl.getStorage().getTheme());
@@ -306,6 +313,10 @@ public class NoteOverviewCtrl implements Initializable {
 
     private void enableContent(boolean b) {
         selectedNoteContent.setDisable(b);
+    }
+
+    public void showLanguageOptions() {
+        languageComboBox.show();
     }
 
     private void clear() {
@@ -421,17 +432,10 @@ public class NoteOverviewCtrl implements Initializable {
         Optional<Note> note = fetch(notePreview);
         if (note.isEmpty()) return;
 
-        show(note.get());
-        select(notePreview);
+        select(notePreview.getId());
+        showSelectedNote();
 
         selectedNoteContent.selectRange(searchResult.getStartIndex(), searchResult.getEndIndex());
-    }
-
-    /**
-     * Select a {@link Note} in the table by its NotePreview
-     */
-    public void select(NotePreview note) {
-        select(note.getId());
     }
 
     /**
@@ -517,6 +521,7 @@ public class NoteOverviewCtrl implements Initializable {
             setViewableNotes(foundInNotes.stream().map(NoteSearchResult::getNotePreview).distinct().toList());
             mainCtrl.logRegular(noteSearchHelper.getSearchLogString(foundInNotes, queryString));
             mainCtrl.showSearchContent(foundInNotes);
+            System.out.println("Found " + input + " " + foundInNotes.size() + " times");
         } else {
             searchAllNotes(input);
         }
@@ -604,15 +609,13 @@ public class NoteOverviewCtrl implements Initializable {
         return OptionalLong.of(selectedNoteId);
     }
 
+    public WebView getWebView() {
+        return webView;
+    }
+
     public void changeTheme() {
         String theme = mainCtrl.changeTheme() ? themeViewHandler.getDarkWebview() : themeViewHandler.getLightWebView();
         webViewLogger.getEngine().executeScript(theme);
-        webView.getEngine().executeScript(theme);
-        webView.getEngine().documentProperty().addListener((obs, oldDoc, newDoc) -> {
-            if (newDoc != null) {
-                webView.getEngine().executeScript(theme);
-            }
-        });
         webViewLogger.getEngine().documentProperty().addListener((obs, oldDoc, newDoc) -> {
             if (newDoc != null) {
                 webViewLogger.getEngine().executeScript(theme);
@@ -656,6 +659,14 @@ public class NoteOverviewCtrl implements Initializable {
         } catch (ProcessOperationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Collection getSelectedCollection() {
+        return selectedCollection;
+    }
+
+    public void setSelectedCollection(Collection selectedCollection) {
+        this.selectedCollection = selectedCollection;
     }
 
     public void changeFlagIcon(String language) {

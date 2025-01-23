@@ -6,7 +6,6 @@ import commons.Collection;
 import commons.exceptions.ProcessOperationException;
 import jakarta.inject.Inject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,8 +28,13 @@ public class AddCollectionService {
      * @param title the title of the note.
      */
     public void addCollection(String title) {
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be null or empty.");
+        }
         try {
-            server.createCollection(new Collection(title, new ArrayList<>()));
+            Collection collection = new Collection(title);
+            collection = server.createCollection(collection);
+            mainCtrl.getCollectionOverviewCtrl().addToCollections(collection);
         } catch (ProcessOperationException e) {
             throw new RuntimeException(e);
         }

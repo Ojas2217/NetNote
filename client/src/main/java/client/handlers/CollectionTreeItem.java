@@ -9,13 +9,15 @@ import commons.Note;
 public class CollectionTreeItem {
     private Note note;
     private Collection collection;
+    private boolean isDefault;
 
     public CollectionTreeItem(Note note) {
         this.note = note;
     }
 
-    public CollectionTreeItem(Collection collection) {
+    public CollectionTreeItem(Collection collection, boolean isDefault) {
         this.collection = collection;
+        this.isDefault = isDefault;
     }
 
     public Note getNote() {
@@ -28,6 +30,12 @@ public class CollectionTreeItem {
 
     @Override
     public String toString() {
-        return (note != null) ? note.getTitle() : collection.getName();
+        if (note != null) {
+            return note.getTitle();
+        } else if (isDefault) {
+            return "[DEFAULT] " + collection.getName();
+        } else {
+            return collection.getName();
+        }
     }
 }

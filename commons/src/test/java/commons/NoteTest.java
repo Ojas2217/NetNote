@@ -66,4 +66,55 @@ class NoteTest {
         String expected = ToStringBuilder.reflectionToString(note, MULTI_LINE_STYLE);
         assertEquals(expected, note.toString());
     }
+
+    @Test
+    void getId() {
+        assertEquals(0, note.getId());
+    }
+
+    @Test
+    void setContent() {
+        String newContent = "new content";
+        note.setContent(newContent);
+        assertEquals(newContent, note.getContent());
+    }
+
+    @Test
+    void getCollection() {
+        Collection collection = new Collection("Test Collection", List.of(note));
+        note.setCollection(collection);
+        assertEquals(collection, note.getCollection());
+    }
+
+    @Test
+    void setCollection() {
+        Collection collection = new Collection("Test Collection", List.of());
+        note.setCollection(collection);
+        assertEquals(collection, note.getCollection());
+    }
+
+    @Test
+    void contentSearchQueryStringEdgeCases() {
+        // null
+        note.setContent(null);
+        assertTrue(note.contentSearchQueryString("test").isEmpty(), "Expected empty result for null content");
+
+        // empty
+        note.setContent("");
+        assertTrue(note.contentSearchQueryString("test").isEmpty(), "Expected empty result for empty content");
+
+        // empty query string
+        note.setContent("content");
+        assertTrue(note.contentSearchQueryString("").isEmpty(), "Expected empty result for empty query string");
+    }
+
+    @Test
+    void toNotePreview() {
+        NotePreview notePreview = note.toNotePreview();
+        assertEquals(note.getId(), notePreview.getId());
+        assertEquals(note.getTitle(), notePreview.getTitle());
+    }
+
+
+
 }

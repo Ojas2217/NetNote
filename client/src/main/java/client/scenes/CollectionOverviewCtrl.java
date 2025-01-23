@@ -21,7 +21,8 @@ import javafx.scene.input.*;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
+import static java.util.Objects.isNull;
 
 /**
  * Overview controller class for the collections menu
@@ -35,12 +36,14 @@ public class CollectionOverviewCtrl {
     @FXML
     private TreeView<CollectionTreeItem> treeView;
     private Collection defaultCollection;
+    private List<Collection> collections;
+
     /**
      * Gets the required mainCtrl and utils
      *
-     * @param mainCtrl the mainCtrl
-     * @param noteUtils utils for notes
-     * @param alertUtils utils to alert the user
+     * @param mainCtrl        the mainCtrl
+     * @param noteUtils       utils for notes
+     * @param alertUtils      utils to alert the user
      * @param collectionUtils utils for collections
      */
 
@@ -56,6 +59,7 @@ public class CollectionOverviewCtrl {
         this.collectionUtils = collectionUtils;
         this.collectionOverviewService = collectionOverviewService;
 
+
     }
 
     /**
@@ -66,7 +70,8 @@ public class CollectionOverviewCtrl {
         treeView.setOnDragDetected(this::treeViewOnDrag);
         treeView.setOnDragOver(this::treeViewOnDragOver);
         treeView.setOnDragDropped(this::treeViewOnDragDropped);
-        initializeDefaultCollection();
+
+        updateCollections();
 
         noteUtils.registerForMessages("/topic/transfer", _ -> refresh());
     }
@@ -138,7 +143,14 @@ public class CollectionOverviewCtrl {
             Collection targetCollection = targetItem.getValue().getCollection();
             Collection draggedCollection = draggedItem.getParent().getValue().getCollection();
             Note note = draggedItem.getValue().getNote();
-
+            if (targetCollection.getNotes().stream().anyMatch(n -> n.getTitle().equals(note.getTitle()) && n.getId() != note.getId())) {
+                alertUtils.showError(
+                        "error",
+                        "Note with this title already exists in target collection",
+                        "Please change note title to continue"
+                );
+                return false;
+            }
             var pair = NoteCollectionPair.of(note, targetCollection);
             noteUtils.send("/app/transfer", pair);
             draggedItem.getParent().getChildren().remove(draggedItem);
@@ -147,6 +159,16 @@ public class CollectionOverviewCtrl {
         }
 
         return false;
+    }
+
+    public void showChildren() {
+        if (treeView.getSelectionModel().isEmpty()) return;
+        TreeItem<CollectionTreeItem> selectedCollection = treeView.getSelectionModel().getSelectedItem();
+        if (selectedCollection.getParent() != treeView.getRoot()) return;
+        if (selectedCollection.getValue().getCollection() == null) return;
+
+        Collection collection = selectedCollection.getValue().getCollection();
+        selectedCollection.setExpanded(!selectedCollection.isExpanded());
     }
 
     private void onDragDropEnd(DragEvent event, boolean success) {
@@ -167,13 +189,39 @@ public class CollectionOverviewCtrl {
             notePreviews.add(NotePreview.of(note.getId(), note.getTitle()));
         }
         mainCtrl.getOverviewCtrl().setCurrentCollectionNoteList(notePreviews);
+        mainCtrl.getOverviewCtrl().setSelectedCollection(collection);
         refresh();
         mainCtrl.getOverviewCtrl().refresh();
+    }
+
+    public void selectCollection(Collection collection) {
+        if (collection == null) {
+            collection = getDefaultCollection();
+        }
+        List<Note> notes = collection.getNotes();
+        List<NotePreview> notePreviews = new ArrayList<>();
+        for (Note note : notes) {
+            notePreviews.add(NotePreview.of(note.getId(), note.getTitle()));
+        }
+        mainCtrl.getOverviewCtrl().setCurrentCollectionNoteList(new ArrayList<>(notePreviews));
+        mainCtrl.getOverviewCtrl().setCurrentCollectionNoteList(notePreviews);
+        mainCtrl.getOverviewCtrl().setSelectedCollection(collection);
+        refresh();
+        mainCtrl.getOverviewCtrl().refresh();
+    }
+
+    public CollectionUtils getCollectionUtils() {
+        return collectionUtils;
     }
 
     public void showAdd() {
         mainCtrl.showAddCollection();
         refresh();
+    }
+
+    public void addToCollections(Collection collection) {
+        System.out.println(collection);
+        collections.add(collection);
     }
 
     /**
@@ -203,29 +251,86 @@ public class CollectionOverviewCtrl {
     }
 
     public void refresh() {
-        List<Collection> collections = fetchCollections();
+        updateCollections();
         setViewableCollections(collections);
     }
 
+    /**
+     * Loads, saves, updates collections.
+     */
+    public void updateCollections() {
 
-    public void initializeDefaultCollection() {
-        var existingCollections = fetchCollections();
-        if (existingCollections.isEmpty()) {
-            var collection = new Collection("default");
-            try {
-                collectionUtils.createCollection(collection);
-                existingCollections = fetchCollections();
-            } catch (ProcessOperationException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        var localCollections = collections;
+
+        // Loads collections from file if not loaded already.
+        if (isNull(collections)) localCollections = mainCtrl.getStorage().getCollections();
+
         try {
-            updateDefaultCollection(existingCollections);
+
+            // Gets collections from the server. Might be better to redesign
+            // this part to get collections by id, but this is simpler and
+            // shouldn't cause problems with a small number of collections.
+            var serverCollections = collectionUtils.getAllCollections();
+
+            if (serverCollections == null || serverCollections.isEmpty()) {
+
+                // Not doing fetching from the server, because creating a collection
+                // already sends a response with what will be the only collection
+                // on the server, so we avoid the case that it gets immediately
+                // deleted and then NullPointerException.
+                var collection = initializeDefaultCollection();
+                collections = new ArrayList<Collection>(List.of(collection));
+                setDefaultCollection(collection);
+                return;
+            }
+
+            if (localCollections == null || localCollections.isEmpty()) {
+                collections = new ArrayList<Collection>(List.of(serverCollections.getFirst()));
+                setDefaultCollection(serverCollections.getFirst());
+                return;
+            }
+
+            var serverCollectionIds = serverCollections.stream().map(Collection::getId).toList();
+            collections = new ArrayList<Collection>(localCollections.stream()
+                    .map(collection -> {
+                        if (serverCollectionIds.contains(collection.getId()))
+                            return serverCollections.get(serverCollectionIds.indexOf(collection.getId()));
+                        else
+                            return null;
+                    })
+
+                    // This effectively means that a user will no longer see collections
+                    // that they previously had, if they get deleted. Maybe a warning
+                    // message would be nice, but I don't think it's necessary.
+                    .filter(Objects::nonNull)
+                    .toList());
+
+            // This should probably be loaded from and saved in the config.
+            setDefaultCollection(collections.getFirst());
+
+        } catch (ProcessOperationException e) {
+            System.err.println(e);
+        }
+
+        setConfigCollection();
+    }
+
+    /**
+     * <p>
+     *    This method is meant to create a default {@link Collection}
+     *    ONLY IF the server has no collections!
+     * </p>
+     */
+    public Collection initializeDefaultCollection() {
+        try {
+            var collection = new Collection("default");
+            return collectionUtils.createCollection(collection);
         } catch (ProcessOperationException e) {
             throw new RuntimeException(e);
 
         }
     }
+
     /**
      * Attempts to fetch all collections from the server
      *
@@ -253,7 +358,11 @@ public class CollectionOverviewCtrl {
         TreeItem<CollectionTreeItem> root = new TreeItem<>();
 
         collections.forEach(collection -> {
-            TreeItem<CollectionTreeItem> treeItem = new TreeItem<>(new CollectionTreeItem(collection));
+            boolean isDefault = false;
+            if (Objects.equals(defaultCollection.getName(), collection.getName())) {
+                isDefault = true;
+            }
+            TreeItem<CollectionTreeItem> treeItem = new TreeItem<>(new CollectionTreeItem(collection, isDefault));
             collection.getNotes().forEach(n -> {
                 TreeItem<CollectionTreeItem> noteTreeItem = new TreeItem<>(new CollectionTreeItem(n));
                 treeItem.getChildren().add(noteTreeItem);
@@ -272,20 +381,6 @@ public class CollectionOverviewCtrl {
      */
     private void updateDefaultCollection(List<Collection> collections) throws ProcessOperationException {
         setDefaultCollection(collections.getFirst());
-        List<Note> allNotes = noteUtils.getAllNotes();
-        Optional<Collection> defaultCollection = collections.stream().filter(c -> c.getName().equals("default")).findFirst();
-        collections.stream().filter(c -> !c.getName().equals("default")).toList();
-        for (Note note : allNotes) {
-            int check = 0;
-            for (Collection collection : collections) {
-                if (collection.getNotes().contains(note)) {
-                    check++;
-                }
-            }
-            if (check == 0) {
-                defaultCollection.get().getNotes().add(note);
-            }
-        }
     }
 
     public void seeAll() {
@@ -300,7 +395,16 @@ public class CollectionOverviewCtrl {
         this.defaultCollection = collection;
     }
 
-    public void setTreeView(TreeView<CollectionTreeItem> treeView) {
-        this.treeView = treeView;
+    /**
+     * sets the collections to the config
+     */
+    public void setConfigCollection() {
+        if (collections != null) {
+            mainCtrl.getStorage().setCollections(collections);
+        }
+    }
+
+    public void getConfigCollection() {
+        collections = mainCtrl.getStorage().getCollections();
     }
 }
