@@ -48,6 +48,7 @@ public class File {
                     .substring(multipartFile.getOriginalFilename().lastIndexOf('.') + 1);
         }
         this.content = multipartFile.getBytes();
+        this.note = note;
     }
 
     public long getId() {
