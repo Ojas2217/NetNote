@@ -5,9 +5,7 @@ import client.business.NewNoteTitleService;
 import client.utils.AlertUtils;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
-import commons.Collection;
 import commons.Note;
-import commons.NoteCollectionPair;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
@@ -97,11 +95,11 @@ public class NewNoteTitleCtrl {
         }
         String oldTitle = note.get().getTitle();
         try {
-                String title = newNoteTitle.getText();
-                newNoteTitleService.newTitle(note.get(), title);
-                clearFields();
-                mainCtrl.logRegular("Changed the title of note '" + oldTitle + "' to '" + title + "'");
-                mainCtrl.showOverview();
+            String title = newNoteTitle.getText();
+            newNoteTitleService.newTitle(note.get(), title);
+            clearFields();
+            mainCtrl.logRegular("Changed the title of note '" + oldTitle + "' to '" + title + "'");
+            mainCtrl.showOverview();
         } catch (Exception e) {
             mainCtrl.logError("Error changing title of note " + note.get().getTitle() + ": " + e.getMessage());
             e.printStackTrace();

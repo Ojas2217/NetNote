@@ -12,7 +12,6 @@ import client.utils.CollectionUtils;
 import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.Collection;
-import commons.CollectionPreview;
 import commons.Note;
 import commons.NotePreview;
 import commons.exceptions.ProcessOperationException;

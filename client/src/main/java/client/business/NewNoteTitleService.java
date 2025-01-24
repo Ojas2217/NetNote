@@ -4,7 +4,6 @@ import client.scenes.MainCtrl;
 import client.utils.NoteUtils;
 import commons.Collection;
 import commons.Note;
-import commons.NoteCollectionPair;
 import jakarta.inject.Inject;
 
 import java.util.List;
@@ -35,9 +34,9 @@ public class NewNoteTitleService {
         String oldTitle = note.getTitle();
         note.setTitle(newTitle);
         try {
-            note.collection=null;
+            note.collection = null;
             collection.removeNoteById(note.id);
-            server.send("/app/title",note);
+            server.send("/app/title" , note);
             note.setCollection(collection);
             collection.addNote(note);
             mainCtrl.getCollectionOverviewCtrl().selectCollection(collection);
