@@ -1,6 +1,7 @@
 package client.handlers;
 
 import commons.NotePreview;
+import jakarta.inject.Inject;
 
 /**
  * Handler class for handling the SearchContent result
@@ -13,10 +14,13 @@ import commons.NotePreview;
 public class NoteSearchResult {
     private final NotePreview note;
     private final SearchIndices searchIndices;
+    private final String lineSnippet;
 
-    public NoteSearchResult(NotePreview note, SearchIndices searchIndices) {
+    @Inject
+    public NoteSearchResult(NotePreview note, SearchIndices searchIndices, String lineSnippet) {
         this.note = note;
         this.searchIndices = searchIndices;
+        this.lineSnippet = lineSnippet;
     }
 
     public NotePreview getNotePreview() {
@@ -37,5 +41,9 @@ public class NoteSearchResult {
 
     public Integer getLineOffset() {
         return searchIndices.getLineOffset();
+    }
+
+    public String getLineSnippet() {
+        return lineSnippet;
     }
 }

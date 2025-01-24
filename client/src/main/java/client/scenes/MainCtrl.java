@@ -19,10 +19,9 @@ package client.scenes;
 
 import client.MyStorage;
 import client.handlers.NoteSearchResult;
-import client.handlers.SceneInfo;
+import client.handlers.StageInfo;
 import client.services.Logger;
 import javafx.application.Platform;
-import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -136,6 +135,7 @@ public class MainCtrl {
         searchContentStage.setTitle(getResourceBundle().getString(SEARCH_CONTENT.getKey()));
         searchContentStage.setScene(searchContentScene);
         searchContentStage.setAlwaysOnTop(true);
+        searchContentStage.setOnCloseRequest(e -> saveStageInfo(searchContentStage));
     }
 
     /**
@@ -174,11 +174,10 @@ public class MainCtrl {
         overview.setOnKeyPressed(e -> overviewCtrl.keyPressed(e));
         overviewCtrl.emptySearchText();
         overviewCtrl.refresh();
-
-
     }
 
     public void showOverview(NoteSearchResult searchResult) {
+        searchContentStage.hide();
         showOverview();
         overviewCtrl.show(searchResult);
     }
@@ -258,19 +257,16 @@ public class MainCtrl {
      * @param searchResult the list of all notes and their indices where a certain SearchValue was found
      */
     public void showSearchContent(List<NoteSearchResult> searchResult) {
-        SceneInfo searchContentSceneInfo = getSceneInfo(searchContentStage);
         if (searchResult.isEmpty()) {
             searchContentStage.hide();
             return;
         }
 
-        applySceneInfo(searchContentStage, searchContentSceneInfo);
+        StageInfo searchContentStageInfo = storage.getSearchNoteContentStageInfo();
+        applySceneInfo(searchContentStage, searchContentStageInfo);
         searchContentStage.show();
-        searchContentStage.sizeToScene();
-        searchContentStage.setX(xCoordinate);
-        searchContentStage.setY(yCoordinate);
-        Platform.runLater(() -> primaryStage.requestFocus());
 
+        Platform.runLater(() -> primaryStage.requestFocus());
         searchNoteContentCtrl.setSearchResult(searchResult);
     }
 
@@ -289,29 +285,38 @@ public class MainCtrl {
         collectionOverviewCtrl.refresh();
     }
 
+    private void saveStageInfo(Stage stage) {
+        StageInfo stageInfo = getStageInfo(stage);
+        storage.setSearchNoteContentStageInfo(stageInfo);
+    }
+
     /**
-     * Get the size and position of a scene
+     * Get the size and position of a stage
      *
      * @param stage the stage that the scene is associated with
-     * @return a SceneInfo that contains the size and position of the provided stage
+     * @return a StageInfo that contains the size and position of the provided stage
      */
-    public SceneInfo getSceneInfo(Stage stage) {
-        Point2D size = new Point2D(stage.getWidth(), stage.getHeight());
-        Point2D pos = new Point2D(stage.getX(), stage.getY());
-        return new SceneInfo(size, pos);
+    public StageInfo getStageInfo(Stage stage) {
+        return new StageInfo(stage.getWidth(), stage.getHeight(), stage.getX(), stage.getY());
     }
 
     /**
      * Applies the provided sceneInfo to the provided stage
      *
      * @param stage the stage to apply the size and position to
-     * @param sceneInfo the size and position to apply
+     * @param stageInfo the size and position to apply
      */
-    public void applySceneInfo(Stage stage, SceneInfo sceneInfo) {
-        stage.setWidth(sceneInfo.getSize().getX());
-        stage.setHeight(sceneInfo.getSize().getY());
-        stage.setX(sceneInfo.getPos().getX());
-        stage.setY(sceneInfo.getPos().getY());
+    public void applySceneInfo(Stage stage, StageInfo stageInfo) {
+        if (stageInfo == null) {
+            searchContentStage.sizeToScene();
+            searchContentStage.setX(xCoordinate);
+            searchContentStage.setY(yCoordinate);
+        } else {
+            stage.setWidth(stageInfo.width());
+            stage.setHeight(stageInfo.height());
+            stage.setX(stageInfo.x());
+            stage.setY(stageInfo.y());
+        }
     }
 
     public ResourceBundle getResourceBundle() {

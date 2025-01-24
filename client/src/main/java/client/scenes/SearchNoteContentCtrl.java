@@ -26,6 +26,8 @@ public class SearchNoteContentCtrl {
     private TableColumn<NoteSearchResult, Integer> lineNrColumn;
     @FXML
     private TableColumn<NoteSearchResult, Integer> lineOffsetColumn;
+    @FXML
+    private TableColumn<NoteSearchResult, String> lineSnippetColumn;
 
     private List<NoteSearchResult> searchResult;
 
@@ -62,6 +64,9 @@ public class SearchNoteContentCtrl {
                 new ReadOnlyIntegerWrapper(cellData.getValue().getLineNr()).asObject());
         lineOffsetColumn.setCellValueFactory(cellData ->
                 new ReadOnlyIntegerWrapper(cellData.getValue().getLineOffset()).asObject());
+        lineSnippetColumn.setCellValueFactory(cellData ->
+                new ReadOnlyStringWrapper(cellData.getValue().getLineSnippet()));
+
 
         ObservableList<NoteSearchResult> data = FXCollections.observableArrayList(searchResults);
         tableViewResult.setItems(data);
