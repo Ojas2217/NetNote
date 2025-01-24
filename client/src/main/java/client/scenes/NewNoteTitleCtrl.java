@@ -7,6 +7,7 @@ import client.utils.NoteUtils;
 import com.google.inject.Inject;
 import commons.Collection;
 import commons.Note;
+import commons.NoteCollectionPair;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
@@ -96,37 +97,11 @@ public class NewNoteTitleCtrl {
         }
         String oldTitle = note.get().getTitle();
         try {
-            if (mainCtrl.getOverviewCtrl().getSelectedCollection() != null) {
-                note.get().collection = mainCtrl.getOverviewCtrl().getSelectedCollection();
-
-                mainCtrl.getOverviewCtrl().getSelectedCollection().getNotes().remove(note.get());
-
                 String title = newNoteTitle.getText();
                 newNoteTitleService.newTitle(note.get(), title);
                 clearFields();
                 mainCtrl.logRegular("Changed the title of note '" + oldTitle + "' to '" + title + "'");
-
-                note.get().collection = mainCtrl.getOverviewCtrl().getSelectedCollection();
-                mainCtrl.getOverviewCtrl().getSelectedCollection().getNotes().add(note.get());
-
-                mainCtrl.getCollectionOverviewCtrl().selectCollection(mainCtrl.getOverviewCtrl().getSelectedCollection());
                 mainCtrl.showOverview();
-            } else {
-                Collection noteCollection = mainCtrl.getCollectionOverviewCtrl().getDefaultCollection();
-                note.get().collection = null;
-                noteCollection.getNotes().remove(note.get());
-
-                String title = newNoteTitle.getText();
-                newNoteTitleService.newTitle(note.get(), title);
-                clearFields();
-                mainCtrl.logRegular("Changed the title of note '" + oldTitle + "' to '" + title + "'");
-
-                note.get().collection = noteCollection;
-                noteCollection.getNotes().add(note.get());
-                mainCtrl.getCollectionOverviewCtrl().getCollectionUtils().updateCollection(noteCollection);
-                mainCtrl.getCollectionOverviewCtrl().selectCollection(noteCollection);
-                mainCtrl.showOverview();
-            }
         } catch (Exception e) {
             mainCtrl.logError("Error changing title of note " + note.get().getTitle() + ": " + e.getMessage());
             e.printStackTrace();

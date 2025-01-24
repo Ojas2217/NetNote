@@ -73,7 +73,6 @@ public class NoteOverviewCtrl implements Initializable {
 
     private ObservableList<NotePreview> data;
     private List<NotePreview> notes;
-    private CollectionPreview currentCollection;
     private Collection selectedCollection;
     private List<NotePreview> currentCollectionNoteList;
     @FXML
@@ -152,7 +151,6 @@ public class NoteOverviewCtrl implements Initializable {
         this.collectionUtils = collectionUtils;
         this.markdown = markdown;
 
-
     }
 
     @Override
@@ -202,9 +200,6 @@ public class NoteOverviewCtrl implements Initializable {
                 webView.getEngine().executeScript(themeViewHandler.getConfigSheetContent());
             }
         });
-//        if (mainCtrl.isDarkMode()) changeTheme();
-//        System.err.println(mainCtrl.isDarkMode());
-//        System.err.println(mainCtrl.getStorage().getTheme());
     }
 
     /**
@@ -584,11 +579,6 @@ public class NoteOverviewCtrl implements Initializable {
         if (note.isEmpty()) return;
         try {
             mainCtrl.showNewTitle();
-            if (!mainCtrl.getNewCtrl().getNewNoteTitle().getText().isEmpty()) {
-                mainCtrl.getNewCtrl().getNewNoteTitleService().newTitle(
-                        note.get(), mainCtrl.getNewCtrl().getNewNoteTitle().getText()
-                );
-            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
             alertUtils.showError(
@@ -649,7 +639,6 @@ public class NoteOverviewCtrl implements Initializable {
     }
 
     public void seeAllCollections() {
-        currentCollection = null;
         try {
             List<NotePreview> notes = collectionUtils.getAllCollections()
                     .stream().flatMap(x -> x.getNotes().stream())
