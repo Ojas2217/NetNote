@@ -90,4 +90,8 @@ public class Collection {
     public String toString() {
         return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
     }
+
+    public void removeNoteById(long id) {
+        this.getNotes().removeIf(note -> note.getId() == id);
+    }
 }

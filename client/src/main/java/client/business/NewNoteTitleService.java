@@ -2,6 +2,7 @@ package client.business;
 
 import client.scenes.MainCtrl;
 import client.utils.NoteUtils;
+import commons.Collection;
 import commons.Note;
 import jakarta.inject.Inject;
 
@@ -24,10 +25,24 @@ public class NewNoteTitleService {
         if (note == null || newTitle == null || newTitle.isEmpty()) {
             throw new IllegalArgumentException("Note or title is invalid.");
         }
+        Collection collection;
+        if (mainCtrl.getOverviewCtrl().getSelectedCollection() != null) {
+            collection = mainCtrl.getOverviewCtrl().getSelectedCollection();
+        } else {
+            collection = mainCtrl.getCollectionOverviewCtrl().getDefaultCollection();
+        }
         String oldTitle = note.getTitle();
         note.setTitle(newTitle);
         try {
-            server.send("/app/title", note);
+            note.collection = null;
+            collection.removeNoteById(note.id);
+            server.send("/app/title" , note);
+            note.setCollection(collection);
+            collection.addNote(note);
+            mainCtrl.getCollectionOverviewCtrl().selectCollection(collection);
+            //this part is needed cuz the theme bugs out for some reason:
+            mainCtrl.getOverviewCtrl().changeTheme();
+            mainCtrl.getOverviewCtrl().changeTheme();
         } catch (Exception e) {
             note.setTitle(oldTitle); // Revert changes on failure
             throw new Exception("Failed to update the note title. " + e.getMessage(), e);
