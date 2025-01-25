@@ -9,6 +9,8 @@ import commons.Note;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -76,6 +78,81 @@ public class NewNoteTitleServiceTest {
         });
 
         assertEquals("Failed to update the note title. Server error", exception.getMessage());
+        assertEquals("Old Title", note.getTitle());
+    }
+
+    @Test
+    public void isUniqueWithMultipleNotes() {
+        Note note1 = new Note("Title 1", "Content");
+        Note note2 = new Note("Title 2", "Content");
+        Collection selectedCollection = mock(Collection.class);
+
+        when(selectedCollection.getNotes()).thenReturn(List.of(note1, note2));
+
+        MainCtrl mainCtrlMock = mock(MainCtrl.class);
+        NoteOverviewCtrl overviewCtrlMock = mock(NoteOverviewCtrl.class);
+        when(mainCtrlMock.getOverviewCtrl()).thenReturn(overviewCtrlMock);
+        when(overviewCtrlMock.getSelectedCollection()).thenReturn(selectedCollection);
+
+        NewNoteTitleService service = new NewNoteTitleService(mock(NoteUtils.class), mainCtrlMock);
+        assertFalse(service.isUnique("Title 1")); // Duplicate title
+        assertTrue(service.isUnique("Unique Title")); // Unique title
+    }
+
+    @Test
+    public void isUniqueEmptyTitle() {
+        Note note = new Note("Some Title", "Content");
+        Collection selectedCollection = mock(Collection.class);
+
+        when(selectedCollection.getNotes()).thenReturn(List.of(note));
+
+        MainCtrl mainCtrlMock = mock(MainCtrl.class);
+        NoteOverviewCtrl overviewCtrlMock = mock(NoteOverviewCtrl.class);
+        when(mainCtrlMock.getOverviewCtrl()).thenReturn(overviewCtrlMock);
+        when(overviewCtrlMock.getSelectedCollection()).thenReturn(selectedCollection);
+
+        NewNoteTitleService service = new NewNoteTitleService(mock(NoteUtils.class), mainCtrlMock);
+        assertTrue(service.isUnique("")); // Empty title should be treated as unique
+    }
+
+    @Test
+    public void isUniqueWithOneMatchingTitle() {
+        Note note1 = new Note("Title 1", "Content");
+        Note note2 = new Note("Title 2", "Content");
+        Note note3 = new Note("Title 3", "Content");
+
+        Collection collectionMock = mock(Collection.class);
+        when(collectionMock.getNotes()).thenReturn(List.of(note1, note2, note3));
+
+        MainCtrl mainCtrlMock = mock(MainCtrl.class);
+        NoteOverviewCtrl overviewCtrlMock = mock(NoteOverviewCtrl.class);
+        when(mainCtrlMock.getOverviewCtrl()).thenReturn(overviewCtrlMock);
+        when(overviewCtrlMock.getSelectedCollection()).thenReturn(collectionMock);
+
+        NewNoteTitleService service = new NewNoteTitleService(mock(NoteUtils.class), mainCtrlMock);
+
+        assertFalse(service.isUnique("Title 2")); // Matching title
+        assertTrue(service.isUnique("Unique Title")); // Unique title
+    }
+
+    @Test
+    public void newTitleRemoveNoteByIdException() {
+        Note note = new Note("Old Title", "Content");
+        String newTitle = "New Title";
+
+        Collection collectionMock = mock(Collection.class);
+        doThrow(new RuntimeException("Remove failed")).when(collectionMock).removeNoteById(note.id);
+
+        MainCtrl mainCtrlMock = mock(MainCtrl.class);
+        NoteOverviewCtrl overviewCtrlMock = mock(NoteOverviewCtrl.class);
+        when(mainCtrlMock.getOverviewCtrl()).thenReturn(overviewCtrlMock);
+        when(overviewCtrlMock.getSelectedCollection()).thenReturn(collectionMock);
+
+        NoteUtils noteUtilsMock = mock(NoteUtils.class);
+        NewNoteTitleService service = new NewNoteTitleService(noteUtilsMock, mainCtrlMock);
+
+        Exception exception = assertThrows(Exception.class, () -> service.newTitle(note, newTitle));
+        assertEquals("Failed to update the note title. Remove failed", exception.getMessage());
         assertEquals("Old Title", note.getTitle());
     }
 
