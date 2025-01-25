@@ -72,9 +72,9 @@ class NoteSearchHelperTest {
     @Test
     void getSearchLogString() {
         List<NoteSearchResult> hits = List.of(
-                new NoteSearchResult(new NotePreview(11L, "elephant"), new SearchIndices(-1, -1, new Pair<>(-1, -1))),
-                new NoteSearchResult(new NotePreview(11L, "elephant"), new SearchIndices(10, 5, new Pair<>(3, 1))),
-                new NoteSearchResult(new NotePreview(12L, "in da room"), new SearchIndices(-1, -1, new Pair<>(-1, -1)))
+                new NoteSearchResult(new NotePreview(11L, "elephant"), new SearchIndices(-1, -1, new Pair<>(-1, -1)), "..."),
+                new NoteSearchResult(new NotePreview(11L, "elephant"), new SearchIndices(10, 5, new Pair<>(3, 1)), "..."),
+                new NoteSearchResult(new NotePreview(12L, "in da room"), new SearchIndices(-1, -1, new Pair<>(-1, -1)), "...")
         );
 
         String log = noteSearchHelper.getSearchLogString(hits, "boba");

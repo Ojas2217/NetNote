@@ -21,7 +21,8 @@ import static commons.exceptions.InternationalizationKeys.*;
  */
 public class NoteSearchHelper {
 
-    AlertUtils alertUtils;
+    private final AlertUtils alertUtils;
+    private final int lineSnippetCharCount = 20;
 
     @Inject
     public NoteSearchHelper(AlertUtils alertUtils) {
@@ -44,9 +45,13 @@ public class NoteSearchHelper {
                 List<Integer> foundIndices = note.contentSearchQueryString(query);
                 if (!foundIndices.isEmpty()) {
                     foundIndices.forEach(i -> {
-                        Pair<Integer, Integer> lineNrOffset = getLineNrOffset(note.getContent(), i);
+                        String noteContent = note.getContent();
+
+                        Pair<Integer, Integer> lineNrOffset = getLineNrOffset(noteContent, i);
                         SearchIndices searchIndices = new SearchIndices(i, i + query.length(), lineNrOffset);
-                        foundInNotes.add(new NoteSearchResult(n, searchIndices));
+                        String lineSnippet = getLineSnippet(noteContent, searchIndices);
+
+                        foundInNotes.add(new NoteSearchResult(n, searchIndices, lineSnippet));
                     });
                 }
             } catch (ProcessOperationException e) {
@@ -75,14 +80,38 @@ public class NoteSearchHelper {
 
         int currentIndex = 0;
         for (int i = 0; i < lines.size(); i++) {
-            int newIndex = currentIndex + lines.get(i).length();
+            int newIndex = currentIndex + lines.get(i).length() + 1;
             if (index < newIndex) {
-                return new Pair<>(i + 1, index - currentIndex + 1 - i);
+                return new Pair<>(i + 1, index - currentIndex + 1);
             }
             currentIndex = newIndex;
         }
 
         return new Pair<>(-1, -1);
+    }
+
+    /**
+     * Gets the line snippet surrounding the found searchResult
+     *
+     * @param content the entire noteContent
+     * @param searchIndices the searchIndices of the searchResult
+     * @return the line snippet
+     */
+    private String getLineSnippet(String content, SearchIndices searchIndices) {
+        List<String> lines = Arrays.stream(content.split("\n")).toList();
+
+        int lineIndex = searchIndices.getLineNr() - 1;
+        if (lineIndex < 0 || lineIndex >= lines.size()) return "";
+
+        String line = lines.get(lineIndex);
+        int startIndex = Math.max(0, searchIndices.getLineOffset() - lineSnippetCharCount);
+        int searchLength = searchIndices.getEndIndex() - searchIndices.getStartIndex();
+        int endIndex = Math.min(line.length(), searchIndices.getLineOffset() + searchLength + lineSnippetCharCount);
+
+        StringBuilder snippet = new StringBuilder(line.substring(startIndex, endIndex));
+        if (startIndex != 0) snippet.insert(0, "...");
+        if (endIndex != line.length()) snippet.append("...");
+        return snippet.toString();
     }
 
     public String getSearchLogString(List<NoteSearchResult> foundInNotes, String queryString) {

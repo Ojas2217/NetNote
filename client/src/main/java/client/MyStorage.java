@@ -1,5 +1,7 @@
 package client;
 
+import client.handlers.StageInfo;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.Collection;
 
@@ -167,5 +169,37 @@ public class MyStorage {
         } catch (IOException e) {
             System.err.println("error reading collection file");
         }
+    }
+
+    /**
+     * Stores the provided stageInfo of the searchNoteContent
+     *
+     * @param stageInfo the stageInfo of the searchNoteContent
+     */
+    public void setSearchNoteContentStageInfo(StageInfo stageInfo) {
+        try {
+            setItemConfig("searchNoteContentStageInfo", objectMapper.writeValueAsString(stageInfo));
+        } catch (IOException e) {
+            System.err.println("error reading parsing stageInfo to JSON format");
+        }
+    }
+
+    /**
+     * Retrieves the stored searchNoteContentStage stageInfo
+     *
+     * @return the parsed stageInfo
+     */
+    public StageInfo getSearchNoteContentStageInfo() {
+        String stageInfoJson = getConfigValue("searchNoteContentStageInfo");
+
+        if (stageInfoJson != null) {
+            try {
+                return objectMapper.readValue(stageInfoJson, StageInfo.class);
+            } catch (JsonProcessingException e) {
+                System.err.println("error parsing stageInfo to JSON format");
+            }
+        }
+
+        return null;
     }
 }
