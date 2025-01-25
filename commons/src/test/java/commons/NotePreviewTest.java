@@ -13,6 +13,7 @@ class NotePreviewTest {
         assertEquals(expected, notePreview.getId());
     }
 
+
     @Test
     void getName() {
         String expected = "title";
