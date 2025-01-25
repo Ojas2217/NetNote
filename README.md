@@ -89,8 +89,8 @@ The Collections button can be found on the main screen, when clicked it prompts 
 - move notes between collections (using drag and drop)
 - see all collections (using the see all button)
 Things to be noted:
-- When no collection is selected (either on startup or when the 'see-all' button is clicked) any new note will be added to the LAST SELECTED collection (on start up this is the default collection).
-  and if you change the title of a note while no collection is selected, then the collection to which that note belongs will be automatically selected.
+- When no collection is selected (either on startup or when the 'see-all' button is clicked) any new note will be added to the DEFAULT Collection.
+- If you make any changes (new title) to a note when no collection is selected please select that notes collection (default if none) to view the change
 - The default collection can not be changed.
 
 ## Live Language Switch

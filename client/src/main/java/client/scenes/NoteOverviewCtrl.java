@@ -638,6 +638,7 @@ public class NoteOverviewCtrl implements Initializable {
     }
 
     public void seeAllCollections() {
+        setSelectedCollection(null);
         try {
             List<NotePreview> notes = collectionUtils.getAllCollections()
                     .stream().flatMap(x -> x.getNotes().stream())
