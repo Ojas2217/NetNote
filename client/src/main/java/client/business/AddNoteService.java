@@ -39,6 +39,7 @@ public class AddNoteService {
         }
         var pair = NoteCollectionPair.of(note, collection);
         server.send("/app/add", pair);
+        mainCtrl.getCollectionOverviewCtrl().selectCollection(collection);
     }
 
     /**
