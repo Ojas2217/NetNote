@@ -2,10 +2,11 @@ package server.api;
 
 import commons.File;
 import commons.exceptions.ProcessOperationException;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import server.service.FileService;
-
 import java.util.List;
 
 /**
@@ -41,8 +42,28 @@ public class FileController {
     }
 
     @DeleteMapping("/{fileId}")
-    public ResponseEntity<Void> deleteFile(@PathVariable long fileId, @PathVariable long noteId) {
-        fileService.deleteFile(fileId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<File> deleteFile(@PathVariable long fileId,
+                                           @PathVariable long noteId) {
+        //fileService.deleteFile(fileId);
+        //return ResponseEntity.ok().build();
+        try {
+            fileService.deleteFile(fileId, noteId);
+            return ResponseEntity.ok(fileService.deleteFile(fileId, noteId));
+
+        } catch (ProcessOperationException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<File> uploadFile(
+            @RequestParam("file") MultipartFile multipartFile,
+            @PathVariable long noteId) {
+        try {
+            File newFile = fileService.uploadFile(multipartFile, noteId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

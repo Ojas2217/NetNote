@@ -47,12 +47,35 @@ public class FileService {
 
     }
 
-    public Optional<File> uploadFile(MultipartFile multipartFile, Note note) throws IOException {
+    public File uploadFile(MultipartFile multipartFile, long noteId) throws IOException {
+        Note note = noteRepository.getById(noteId);
         File file = new File(note, multipartFile);
         fileRepository.save(file);
         fileRepository.flush();
 
-        return fileRepository.findById(file.getId());
+        return fileRepository.findById(file.getId()).orElseThrow(
+                () -> new IOException("Upload failed.")
+        );
+    }
+
+    public File uploadFileByName(File file, Note note) throws IOException {
+        fileRepository.save(file);
+        fileRepository.flush();
+        return file;
+    }
+
+    public File deleteFile(long fileId, long noteId) throws ProcessOperationException {
+        File file = fileRepository
+                .findById(fileId)
+                .orElseThrow(() ->
+                        new ProcessOperationException(
+                                "Invalid File ID.",
+                                HttpStatus.BAD_REQUEST.value(),
+                                ExceptionType.INVALID_REQUEST
+                        )
+                );
+        fileRepository.delete(file);
+        return file;
     }
 
 }
