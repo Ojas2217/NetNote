@@ -47,6 +47,7 @@ The content of the currently selected note can be edited by left-clicking the ov
 ## Markdown renderer
 On the right side of the program a rendered version of the content of the currently selected note is displayed to the user.
 This rendering is handled by Markdown.
+Note: The webview DOES NOT change colours when you click the 'change theme' button, this is because the content of the webview can be customized by the user. (using the config file webView.css)
 
 ## Logger
 On the bottom center another markdown rendering can be observed. This is a logger which keeps track of certain events like adding and deleting of notes,
