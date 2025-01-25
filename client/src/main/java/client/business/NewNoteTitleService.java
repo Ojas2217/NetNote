@@ -39,7 +39,7 @@ public class NewNoteTitleService {
             server.send("/app/title" , note);
             note.setCollection(collection);
             collection.addNote(note);
-            mainCtrl.getCollectionOverviewCtrl().selectCollection(collection);
+            mainCtrl.getCollectionOverviewCtrl().selectCollection(note.collection != null ? note.collection : collection);
             //this part is needed cuz the theme bugs out for some reason:
             mainCtrl.getOverviewCtrl().changeTheme();
             mainCtrl.getOverviewCtrl().changeTheme();

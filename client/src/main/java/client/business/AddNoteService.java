@@ -37,9 +37,16 @@ public class AddNoteService {
         } else {
             collection = mainCtrl.getCollectionOverviewCtrl().getDefaultCollection();
         }
+        note.collection = null;
+        collection.removeNoteById(note.id);
         var pair = NoteCollectionPair.of(note, collection);
         server.send("/app/add", pair);
-        mainCtrl.getCollectionOverviewCtrl().selectCollection(collection);
+        note.setCollection(collection);
+        collection.addNote(note);
+        mainCtrl.getCollectionOverviewCtrl().selectCollection(note.collection != null ? note.collection : collection);
+        //this part is needed cuz the theme bugs out for some reason:
+        mainCtrl.getOverviewCtrl().changeTheme();
+        mainCtrl.getOverviewCtrl().changeTheme();
     }
 
     /**
