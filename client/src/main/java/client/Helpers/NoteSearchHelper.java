@@ -82,7 +82,7 @@ public class NoteSearchHelper {
         for (int i = 0; i < lines.size(); i++) {
             int newIndex = currentIndex + lines.get(i).length() + 1;
             if (index < newIndex) {
-                return new Pair<>(i + 1, index - currentIndex + 1 - i);
+                return new Pair<>(i + 1, index - currentIndex + 1);
             }
             currentIndex = newIndex;
         }
