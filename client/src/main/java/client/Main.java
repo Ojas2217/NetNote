@@ -30,6 +30,7 @@ import client.utils.AlertUtils;
 import com.google.inject.Injector;
 import client.utils.ServerUtils;
 import javafx.application.Application;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.util.Locale;
@@ -77,7 +78,11 @@ public class Main extends Application {
         {
             var msg = "Server needs to be started before the client, but it does not seem to be available";
             System.err.println(msg);
-
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Server unavailable");
+            alert.setHeaderText("Please start the server first");
+            alert.setContentText("Server needs to be started before the client, but it does not seem to be available");
+            alert.showAndWait();
             final int SLEEP_DURATION = 500;
 
             while (!serverUtils.isServerAvailable()) {
