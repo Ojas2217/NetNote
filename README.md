@@ -3,7 +3,7 @@
 NetNote is a distributed Note Taking application made as a part of the CSE1105 course at TU Delft
 
 # Installation and Usage
-To run the template project from the command line, you either need to have [Maven](https://maven.apache.org/install.html) installed on your local system (`mvn`) or you need to use the Maven wrapper (`mvnw`). You can then execute
+To run the project from the command line, you either need to have [Maven](https://maven.apache.org/install.html) installed on your local system (`mvn`) or you need to use the Maven wrapper (`mvnw`). You can then execute
 
 	mvn clean install
 
