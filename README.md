@@ -1,6 +1,6 @@
 # NetNote
 
-NetNote is a distributed Note Taking application made as a part of the CSE1105 course at TU Delft. It Uses JavaFX for the Frontend and SpringBoot for the backend.
+NetNote is a Note Taking application made as a part of the CSE1105 course at TU Delft. It Uses JavaFX for the Frontend and SpringBoot for the backend.
 
 **Table Of Contents**\
 [Installation](#installation-and-usage)\
